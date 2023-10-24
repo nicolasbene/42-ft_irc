@@ -30,8 +30,8 @@ int main(int argc, char** argv)
 	struct sockaddr_in serverAddress;
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(8080);
-	serverAddress.sin_addr.s_addr = inet_addr("hello.com");
-	//serverAddress.sin_addr.s_addr = INADDR_ANY;
+	// serverAddress.sin_addr.s_addr = inet_addr("hello.com");
+	serverAddress.sin_addr.s_addr = INADDR_ANY;
 
 
 	// Création du socket
