@@ -1,18 +1,26 @@
-	 name: C++ CI
+name: cpp-linter
+on: pull_request
 
-	 on:
-		 push:
-			 branches: [ main ]
-		 pull_request:
-			 branches: [ main ]
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-	 jobs:
-		build-and-test:
-			runs-on: ubuntu-latest
-			steps:
-			- name: checkout repo
-				uses: actions/checkout@v2
-			- name: build application
-				run: make
-			- name: test application
-				run: make test FDEBUG=true
+      - name: Generate compilation database
+        run: make compile_commands
+
+      - name: C++ linter
+        uses: cpp-linter/cpp-linter-action@v2.6.0
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: file
+          database: bin/
+          tidy-checks: '' # rely on .clang-tidy file
+
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
+        run: echo "Some files failed the linting checks!" && exit 1
