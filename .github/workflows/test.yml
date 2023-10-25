@@ -15,4 +15,4 @@
       - name: build application
         run: make
       - name: test application
-        run: make test FDEBUG=true
+        run: make test FDEBUG=false
