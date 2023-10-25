@@ -8,7 +8,6 @@ INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
 LFLAGS	= 
 LINKS	= 
 VFLAGS	=
-TFLAGS	= -pthread
 
 ### EXECUTABLE ###
 NAME	= $(PROJECT)
@@ -55,38 +54,9 @@ H_DIR		= incl
 
 ### SOURCE FILES ###
 SRCS	=	main.cpp \
-			utils/log.cpp \
-			utils/split.cpp \
-			utils/is_empty.cpp \
-			utils/itoa.cpp \
-			parsing/Message.cpp \
-			parsing/Message_parsing.cpp \
-			server/Server.cpp \
-			server/Client.cpp \
-			server/Buffer.cpp \
-			server/RockPaperScissorsBot.cpp \
-			command/Command.cpp \
-			command/error_command.cpp \
-			command/reply_command.cpp \
-			command/PASS.cpp \
-			command/NICK.cpp \
-			command/USER.cpp \
-			command/JOIN.cpp \
-			command/PART.cpp \
-			command/KICK.cpp \
-			command/INVITE.cpp \
-			command/TOPIC.cpp \
-			command/PRIVMSG.cpp \
-			command/NOTICE.cpp \
-			command/MODE.cpp \
-			command/ModeParser.cpp \
-			management/Channel.cpp
-
+			utils/min.cpp
 
 T_SRCS	=	tests/main.cpp \
-			tests/parsing.cpp \
-			tests/command.cpp \
-			tests/CmdTest.cpp \
 			tests/core/Test.cpp \
 			tests/core/Config.cpp \
 			tests/core/run_tests.cpp
@@ -141,7 +111,7 @@ val: $(NAME)
 	@$(VALGRIND) ./$(NAME) $(ARGS)
 
 $(TEST): $(NAME) $(T_OBJS)
-	@$(CC) $(CFLAGS) $(TFLAGS) $(LFLAGS) $(T_OBJS) -o $(TEST)
+	@$(CC) $(CFLAGS) $(LFLAGS) $(T_OBJS) -o $(TEST)
 	@echo "$(PROJECT): $(GREEN)Test binary created -> $(WHITE)$@$(RESET)"
 
 test: $(TEST)
