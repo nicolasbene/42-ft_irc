@@ -5,9 +5,6 @@ CC		= c++
 CFLAGS	= -Wall -Wextra -std=c++98
 CFLAGS	+= -MMD -MP
 INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
-LFLAGS	= 
-LINKS	= 
-VFLAGS	=
 
 ### EXECUTABLE ###
 NAME	= $(PROJECT)
@@ -21,30 +18,11 @@ TEST	= $(OBJ_DIR)/test_bin
 ### ENV VARIABLES ###
 -include .env
 FDEBUG		?= false
-FTEST		?= false
-FNOERROR	?= false
-FEXTRA		?= false
-FASAN		?= false
-
-ifeq ($(FNOERROR),false)
-	CFLAGS += -Werror
-endif
-
-ifeq ($(FEXTRA),true)
-	CFLAGS	+= -Wshadow -Wpedantic -Wuninitialized -Wmissing-include-dirs -Wundef -Winvalid-pch
-	CFLAGS	+= -Winit-self -Wswitch-enum -Wswitch-default -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k
-	CFLAGS	+= -Wdouble-promotion -Wfloat-equal -Wpointer-arith
-endif
 
 ifeq ($(FDEBUG),true)
 	CFLAGS += -g3
 	VFLAGS += -D DEBUG_MODE
 endif
-
-ifeq ($(FASAN),true)
-	CFLAGS += -fsanitize=address
-endif
-
 
 ### INCLUDES ###
 OBJ_DIR		= bin
@@ -78,7 +56,7 @@ PURPLE	= \033[1;35m
 CYAN	= \033[1;36m
 WHITE	= \033[1;37m
 
-### OTHERS ###
+### OTHERS ### Utile pour utilise valgrind sur mac
 UNAME_S = $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	VALGRIND	= leaks --list --groupByType --atExit --
@@ -130,8 +108,9 @@ clean:
 	@echo "$(PROJECT): $(RED)Supressing object files$(RESET)"
 	@rm -rf $(OBJ_DIR)
 
+##utile pour les tests statiques pour checker des erreurs de norme ou synthax
 lint:
-	@clang-tidy src/*.cpp src/*/*.cpp incl/*.h
+	@/usr/bin/clang-tidy-12 src/*.cpp src/*/*.cpp incl/*.h
 
 fclean:	clean
 	@echo "$(PROJECT): $(RED)Supressing program file$(RESET)"
