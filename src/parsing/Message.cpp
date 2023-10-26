@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 22:52:24 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/25 22:52:26 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/26 16:34:33 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,49 +41,4 @@ Message & Message::operator=(Message const & rhs)
 		this->parameters = rhs.parameters;
 	}
 	return *this;
-}
-		
-std::string Message::getRaw(void) const
-{
-	return this->raw;
-}
-
-std::map<std::string, std::string> Message::getTags(void) const
-{
-	return this->tags;
-}
-
-std::string Message::getPrefix(void) const
-{
-	return this->prefix;
-}
-
-t_cmd_type Message::getCmd(void) const
-{
-	return this->cmd;
-}
-
-std::vector<std::string> Message::getParameters(void) const
-{
-	return this->parameters;
-}
-
-t_parse_return Message::addRaw(std::string raw)
-{
-}
-
-t_parse_return Message::addTag(std::string tag)
-{
-}
-
-t_parse_return Message::addPrefix(std::string prefix)
-{
-}
-
-t_parse_return Message::addCmd(t_cmd_type cmd)
-{
-}
-
-t_parse_return Message::addParameter(std::string parameter)
-{
 }
