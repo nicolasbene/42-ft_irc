@@ -1,8 +1,21 @@
 #include <iostream>
 #include "error.h"
 
-int	main()
+int	main(int argc, char** argv)
 {
-	std::cout << "Bonjour" << std::endl;
-	return 0;
+	if (argc != 3)
+	{
+		std::cout << "Usage: " << argv[0] << " <port> <password>" << std::endl;
+		return (1);
+	}
+
+	if (strlen(argv[2]) < 8)
+	{
+		std::cout << "Invalid password" << std::endl;
+		return (1);
+	}
+
+	
+
+	return (0);
 }
