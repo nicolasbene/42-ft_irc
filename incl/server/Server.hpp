@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/27 17:51:11 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/27 18:54:33 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,14 @@ class	Server
 
 		int start(void);
 		int stop(void);
+		int loop(void);
+
+	private:
+		std::string		_port;
+		std::string		_password;
+		int				_sock;
+		struct sockaddr_in	_addr;
 		
-}
+};
 
 #endif
