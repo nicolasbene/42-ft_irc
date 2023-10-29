@@ -6,9 +6,9 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 21:08:55 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/26 16:44:44 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/29 22:46:43 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-https://github.com/osslate/irc-message/blob/master/index.js
+// https://github.com/osslate/irc-message/blob/master/index.js
 

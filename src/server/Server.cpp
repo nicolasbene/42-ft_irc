@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/27 18:53:24 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/29 22:49:54 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int Server::stop(void)
 	return (0);
 }
 
-int Server::loop(void)
-{
+// int Server::loop(void)
+// {
 	
-}
+// }
