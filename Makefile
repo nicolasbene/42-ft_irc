@@ -32,7 +32,7 @@ H_DIR		= incl
 
 ### SOURCE FILES ###
 SRCS	=	main.cpp \
-			server/Server.cpp \
+			Server.cpp \
 			utils/min.cpp
 
 T_SRCS	=	tests/main.cpp \

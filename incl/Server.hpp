@@ -6,36 +6,38 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/27 18:54:33 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/30 16:00:40 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
-# define SERVER_HPP
+#define SERVER_HPP
 
-# include <string>
-# include <string.h>
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <arpa/inet.h>
+#include <netdb.h>
+#include <poll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
+#include <cerrno>
+#include <map>
+#include <vector>
 
-class	Server
+#include "Message.hpp"
+
+extern bool g_isRunning;
+
+class Server
 {
-	public:
-		Server(std::string const &port, std::string const &password);
-		~Server(void);
+  public:
+	Server(const char* port, const char* password);
+	~Server();
 
-		int start(void);
-		int stop(void);
-		int loop(void);
+	int poll();
+	void stop();
 
-	private:
-		std::string		_port;
-		std::string		_password;
-		int				_sock;
-		struct sockaddr_in	_addr;
-		
+  private:
+	const char* m_password;
 };
 
 #endif
