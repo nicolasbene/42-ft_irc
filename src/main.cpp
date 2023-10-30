@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Server.hpp"
+#include <cstring>
 
 int	main(int argc, char** argv)
 {
@@ -16,9 +17,6 @@ int	main(int argc, char** argv)
 	}
 
 	Server	server(argv[1], argv[2]);
-
-
-
 
 	return (0);
 }
