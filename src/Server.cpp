@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/31 13:19:39 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:22:16 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,4 +158,14 @@ bool    Server::is_valid_password(const std::string& password)
 			return false;
 	}
 	return true;
+}
+
+void 	Server::write_logo() const
+{
+	std::string line;
+	std::ifstream infile("assets/logo.txt");
+	while (std::getline(infile, line))
+	{
+		std::cout << line << std::endl;
+	}	
 }
