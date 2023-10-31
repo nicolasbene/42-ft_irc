@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/31 12:59:44 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:19:39 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,11 @@ Server::Server(const std::string& port, const std::string& password) :
 	_sockfd(-1), _nb_clients(0), _port(port),
 	_password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
+	// Initialisation du serveur avec le port et le mot de passe
 	Log::info() << "using the given port " << port << '\n';
 	Log::info() << "using the given password '" << password << "'" << '\n';
 
+	// Initialisation de la structure _hints pour getaddrinfo
 	memset(&_hints, 0, sizeof(_hints));
 	_hints.ai_family = AF_INET;
 	_hints.ai_socktype = SOCK_STREAM;
@@ -52,6 +54,7 @@ Server::~Server()
 
 int	Server::start()
 {
+	// Création, liaison et écoute du socket du serveur
 	_sockfd = socket(_servinfo->ai_family, _servinfo->ai_socktype,
 		_servinfo->ai_protocol);
 	if (_sockfd == -1) {
@@ -67,28 +70,29 @@ int	Server::start()
 		exit(1);
 	}
 	Log::info() << "server started" << '\n';
-	
-	
+
 	return (0);
 }
 
 int	Server::poll()
 {
 	pollfd	server_pfd;
-	
+
 	server_pfd.fd = _sockfd;
 	server_pfd.events = POLLIN;
 	server_pfd.revents = 0;
 
 	std::vector<pollfd>	client_pfds;
 	client_pfds.reserve(MAX_CONNEXIONS);
-	
+
 	while (true) {
+		// Utilisation de poll pour surveiller les connexions entrantes
 		if (::poll(&server_pfd, 1, -1) == -1) {
 			Log::error() << "could not poll the server socket" << '\n';
 			exit(1);
 		}
 		if (server_pfd.revents & POLLIN) {
+			// Accepter de nouvelles connexions si possible
 			if (_nb_clients < MAX_CONNEXIONS) {
 				struct sockaddr_storage	client_addr;
 				socklen_t				client_addr_size = sizeof(client_addr);
@@ -110,6 +114,7 @@ int	Server::poll()
 		}
 		for (int i = 0; i < _nb_clients; ++i) {
 			if (client_pfds[i].revents & POLLIN) {
+				// Lecture des données reçues des clients
 				char	buffer[1024];
 				int		bytes_read = recv(client_pfds[i].fd, buffer, 1024, 0);
 				if (bytes_read == -1) {
@@ -117,6 +122,7 @@ int	Server::poll()
 					exit(1);
 				}
 				if (bytes_read == 0) {
+					// Si la lecture est vide, le client s'est déconnecté
 					close(client_pfds[i].fd);
 					client_pfds.erase(client_pfds.begin() + i);
 					--_nb_clients;
@@ -128,6 +134,28 @@ int	Server::poll()
 			}
 		}
 	}
-	
-	
+}
+
+bool    Server::is_valid_port(const std::string& port)
+{
+	if (port.empty())
+		return false;
+	for (std::string::const_iterator it = port.begin(); it != port.end(); it++) {
+		if (!isdigit(*it))
+			return false;
+	}
+	if (atoi(port.c_str()) < 1024 || atoi(port.c_str()) > 65535)
+		return false;
+	return true;
+}
+
+bool    Server::is_valid_password(const std::string& password)
+{
+	if (password.size() < 1 || password.size() > 255)
+		return false;
+	for (std::string::const_iterator it = password.begin(); it != password.end(); it++) {
+		if (std::isspace(*it) || *it == '\0' || *it == ':')
+			return false;
+	}
+	return true;
 }
