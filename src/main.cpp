@@ -17,6 +17,8 @@ int	main(int argc, char** argv)
 	}
 
 	Server	server(argv[1], argv[2]);
+	
+	server.start();
 
 	server.poll();
 

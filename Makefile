@@ -33,6 +33,7 @@ H_DIR		= incl
 ### SOURCE FILES ###
 SRCS	=	main.cpp \
 			Server.cpp \
+			Log.cpp \
 			utils/min.cpp
 
 T_SRCS	=	tests/main.cpp \
