@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/31 00:15:11 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 12:16:40 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ Server::Server(const char* port, const char* password) : _password(password) {
 		throw std::runtime_error(std::strerror(errno));
 	}
 
-	_clients.addPollFd(sock_fd);
+	addPollFd(sock_fd);
 
 	std::cout << "Server started and listening on port " << port << '\n';
 }
@@ -67,16 +67,17 @@ int Server::createSocket(const char* port) {
 
 void Server::addPollFd(int fd)
 {
-	pollfd newElem;
-	newElem.fd = fd;
-	newElem.events = POLLIN;
-	newElem.revents = 0;
-	_fds.push_back(newElem);
+	pollfd pfd;
+	pfd.fd = fd;
+	pfd.events = POLLIN;
+
+	_fds.push_back(pfd);
 }
+
 int Server::poll()
 {
     // Étape 1 : Obtenez la liste des descripteurs de fichiers à surveiller
-    std::vector<pollfd>& pfds = _clients.getPollfds();
+    std::vector<pollfd>& pfds = getPollfds();
 
     // Étape 2 : Utilisez la fonction poll pour attendre des événements sur les descripteurs de fichiers
     if (::poll(pfds.data(), pfds.size(), 1000) == -1)
@@ -119,7 +120,7 @@ int Server::poll()
                 // Log::info() << "New connection on fd " << newFd << " from " << IPStr
                 //             << '\n';
 
-                _clients.addPollFd(newFd);
+                addPollFd(newFd);
                 // _clients.get(newFd).second.setHost(IPStr);
 
                 // // Si l'utilisateur est le premier à rejoindre le serveur, faites-en un opérateur réseau
@@ -155,9 +156,4 @@ int Server::poll()
 std::vector<pollfd>& Server::getPollfds(void)
 {
 	return (_fds);
-}
-
-void Server::stop()
-{
-	// Log::info() << "Server stopped\n";
 }

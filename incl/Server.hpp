@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/31 00:06:04 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 12:14:49 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ class Server
   private:
 	const char* _password;
 	std::vector<pollfd> _fds;
-	std::map<int, std::string> _clients;
 };
 
 #endif
