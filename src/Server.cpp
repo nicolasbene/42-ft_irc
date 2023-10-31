@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/30 16:02:37 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 00:15:11 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include <cerrno>
+#include <vector>
+#include <poll.h> // Inclure la bibliothèque pour utiliser poll()
+#include <errno.h> // Inclure la bibliothèque pour la gestion des erreurs
+
 #include <ctime>
 #include <sstream>
 #include <stdexcept>
@@ -23,71 +26,138 @@
 #include <fstream>
 #include <iostream>
 
+Server::~Server() {}
 
-Server::Server(const char* port, const char* password) : m_password(password)
+Server::Server(const char* port, const char* password) : _password(password) {
+	int sock_fd = createSocket(port);
+
+	if (listen(sock_fd, 10) == -1) {
+		close(sock_fd);
+		throw std::runtime_error(std::strerror(errno));
+	}
+
+	_clients.addPollFd(sock_fd);
+
+	std::cout << "Server started and listening on port " << port << '\n';
+}
+
+int Server::createSocket(const char* port) {
+	int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock_fd < 0) {
+		throw std::runtime_error(std::strerror(errno));
+	}
+
+	int yes = 1;
+	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+		close(sock_fd);
+		throw std::runtime_error(std::strerror(errno));
+	}
+
+	sockaddr_in serverAddress;
+	serverAddress.sin_family = AF_INET;
+	serverAddress.sin_port = htons(atoi(port));
+	serverAddress.sin_addr.s_addr = INADDR_ANY;
+
+	if (bind(sock_fd, reinterpret_cast<struct sockaddr*>(&serverAddress), sizeof(serverAddress)) == -1) {
+		close(sock_fd);
+		throw std::runtime_error(std::strerror(errno));
+	}
+	return sock_fd;
+}
+
+void Server::addPollFd(int fd)
 {
-    int sock_fd = 0; // Descripteur de fichier du socket
-    int yes = 1; // Variable utilisée pour configurer les options du socket
-    addrinfo hints; // Structure pour spécifier les critères de getaddrinfo
+	pollfd newElem;
+	newElem.fd = fd;
+	newElem.events = POLLIN;
+	newElem.revents = 0;
+	_fds.push_back(newElem);
+}
+int Server::poll()
+{
+    // Étape 1 : Obtenez la liste des descripteurs de fichiers à surveiller
+    std::vector<pollfd>& pfds = _clients.getPollfds();
 
-    // Initialise la structure hints à zéro et spécifie le type de socket et les options
-    std::memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; // IPv4 ou IPv6
-    hints.ai_socktype = SOCK_STREAM; // Socket de type flux (TCP)
-    hints.ai_flags = AI_PASSIVE; // Adresse IP locale
-
-    addrinfo* result = NULL; // Pointeur pour stocker les informations d'adresse obtenues
-    const int error = getaddrinfo(NULL, port, &hints, &result); // Obtient les informations d'adresse
-    if (error)
+    // Étape 2 : Utilisez la fonction poll pour attendre des événements sur les descripteurs de fichiers
+    if (::poll(pfds.data(), pfds.size(), 1000) == -1)
     {
-        freeaddrinfo(result); // Libère la mémoire allouée
-        throw std::runtime_error(gai_strerror(error)); // Génère une exception en cas d'erreur
+        // Gestion des erreurs en cas d'échec de la fonction poll
+        // if (errno != EINTR)
+        //     Log::error() << "poll(): " << std::strerror(errno) << '\n';
+
+        return 1; // Code d'erreur
     }
 
-    addrinfo* tmp = NULL; // Pointeur temporaire pour parcourir les informations d'adresse
-    for (tmp = result; tmp != NULL; tmp = tmp->ai_next)
+    // Étape 3 : Parcourez la liste des descripteurs surveillés
+    for (size_t i = 0; i < pfds.size(); ++i)
     {
-        // Crée un socket en utilisant les informations d'adresse actuelles
-        sock_fd = socket(tmp->ai_family, tmp->ai_socktype, tmp->ai_protocol);
-        if (sock_fd < 0)
-            continue; // Passe à l'adresse suivante en cas d'erreur
-
-        // Configure le socket pour éviter l'erreur "address already in use"
-        if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)))
+        // Étape 4 : Vérifiez si un événement d'entrée est prêt à être lu
+        if (pfds[i].revents & POLLIN)
         {
-            freeaddrinfo(result); // Libère la mémoire allouée
-            throw std::runtime_error(std::strerror(errno)); // Génère une exception en cas d'erreur
-        }
+            // Étape 5 : Gestion des nouvelles connexions entrantes
+            if (pfds[i].fd == pfds[0].fd)
+            {
+                sockaddr_storage addr;
+                socklen_t addrlen = sizeof(addr);
 
-        // Lie le socket à l'adresse actuelle
-        if (bind(sock_fd, tmp->ai_addr, tmp->ai_addrlen) < 0)
-        {
-            close(sock_fd); // Ferme le socket en cas d'erreur
-            continue; // Passe à l'adresse suivante
-        }
+                const int newFd = accept(pfds[i].fd, (sockaddr*)&addr, &addrlen);
+                if (newFd == -1)
+                {
+                    // Log::error() << "accept(): " << std::strerror(errno) << '\n';
+                    return 2; // Code d'erreur en cas d'échec de l'acceptation de la connexion
+                }
 
-        break;
+                void* inAddr = NULL;
+                if (addr.ss_family == AF_INET)
+                    inAddr = &((sockaddr_in*)&addr)->sin_addr;
+                else
+                    inAddr = &((sockaddr_in6*)&addr)->sin6_addr;
+
+                char IPStr[INET_ADDRSTRLEN];
+                inet_ntop(addr.ss_family, inAddr, IPStr, sizeof(IPStr));
+
+                // Log::info() << "New connection on fd " << newFd << " from " << IPStr
+                //             << '\n';
+
+                _clients.addPollFd(newFd);
+                // _clients.get(newFd).second.setHost(IPStr);
+
+                // // Si l'utilisateur est le premier à rejoindre le serveur, faites-en un opérateur réseau
+                // if (_clients.size() == 1)
+                //     _clients.get(newFd).second.isNetworkOperator = true;
+            }
+            // else
+            // {
+            //     // Étape 6 : Gestion de la communication avec les clients existants
+            //     Client& client = _clients.get(pfds[i].fd).second;
+            //     std::string packet = client.receive(pfds[i].fd, _clients, m_channels);
+            //     while (!packet.empty())
+            //     {
+            //         const Message message(packet);
+            //         logReceivedMessage(message, pfds[i].fd);
+
+            //         const int code = Exec::exec(
+            //             message, _clients, pfds[i].fd, m_channels, _password
+            //         );
+
+            //         if (code == -2)
+            //             break;
+
+            //         packet = client.receive(pfds[i].fd, _clients, m_channels, false);
+            //     }
+            // }
+        }
     }
 
-    freeaddrinfo(result); // Libère la mémoire allouée par getaddrinfo
+    return 0; // Succès
+}
 
-    if (tmp == NULL)
-        throw std::runtime_error("Server can't bind to any port"); // Génère une exception si le serveur ne peut pas se lier à un port
-
-    if (listen(sock_fd, 10) == -1)
-        throw std::runtime_error(std::strerror(errno)); // Génère une exception en cas d'erreur lors de la mise en écoute du socket
-
-    // m_clients.addListener(sock_fd); // Ajoute le socket au gestionnaire de clients
-
-    std::cout << "Server started and listening on port " << port << '\n'; // Affiche un message de démarrage
-
-	
+std::vector<pollfd>& Server::getPollfds(void)
+{
+	return (_fds);
 }
 
 void Server::stop()
 {
 	// Log::info() << "Server stopped\n";
 }
-
-Server::~Server() {}
-

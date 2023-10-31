@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/30 16:00:40 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/10/31 00:06:04 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,24 @@
 #include <map>
 #include <vector>
 
-#include "Message.hpp"
-
-extern bool g_isRunning;
-
 class Server
 {
   public:
 	Server(const char* port, const char* password);
 	~Server();
 
+	int createSocket(const char* port);
 	int poll();
 	void stop();
+	
+	void addPollFd(int fd);
+	std::vector<pollfd>& getPollfds();
+	
 
   private:
-	const char* m_password;
+	const char* _password;
+	std::vector<pollfd> _fds;
+	std::map<int, std::string> _clients;
 };
 
 #endif
