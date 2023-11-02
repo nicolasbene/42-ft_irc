@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/31 13:30:10 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:26:48 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@ class	Server {
 		int		    start();
 		int		    poll();
 		void		write_logo() const;
+		
+		int			create_client();
+		int 		receive_message(int i);
+
 
 		// -- Public static functions --
 		static bool		is_valid_port(const std::string& port);
@@ -57,6 +61,9 @@ class	Server {
 		std::string 				    _name;
 		struct addrinfo			        _hints;
 		struct addrinfo*				_servinfo;
+		
+		std::vector<pollfd>				_client_pfds;
+
 };
 
 #endif
