@@ -2,7 +2,7 @@ PROJECT	= ircserver
 
 ### COMPILATION ###
 CC		= c++
-CFLAGS	= -Wall -Wextra -std=c++98
+CFLAGS	= -Wall -Wextra -std=c++98 -g3
 CFLAGS	+= -MMD -MP
 INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
 

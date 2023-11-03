@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/02 20:26:48 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:15:00 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,12 @@
 # include <map>
 # include <iomanip>
 # include <fstream>
+# include <sys/epoll.h>
+
 
 # define SERVER_NAME "ft_irc"
 # define MAX_CONNEXIONS 10
+# define MAX_EVENTS 10
 
 class	Server {
 	public:
@@ -61,6 +64,9 @@ class	Server {
 		std::string 				    _name;
 		struct addrinfo			        _hints;
 		struct addrinfo*				_servinfo;
+
+		int								_epoll_fd;
+		epoll_event						_events[MAX_CONNEXIONS];
 		
 		std::vector<pollfd>				_client_pfds;
 
