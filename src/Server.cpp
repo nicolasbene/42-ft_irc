@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/02 20:30:02 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/03 13:37:14 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,12 @@ int	Server::create_client()
         new_client_pfd.revents = 0;
         _client_pfds.push_back(new_client_pfd);
         ++_nb_clients;
-        Log::info() << "Client connected" << '\n';
+        Log::info() << "Client connected : " << _sockfd << '\n';
+
+        //         // Envoi du code RPL 001 au client
+        std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
+        send(client_fd, rpl001.c_str(), rpl001.size(), 0);
+        
     } else {
         Log::info() << "Client connection refused: Too many clients" << '\n';
     }
