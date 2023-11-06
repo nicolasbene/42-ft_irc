@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/03 15:40:25 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:49:23 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "Log.hpp"
 
 Server::Server(const std::string& port, const std::string& password) :
-    _sockfd(-1), _nb_clients(0), _port(port),
+    socket_serveur(-1), _nb_clients(0), _port(port),
     _password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
     // Affiche les informations sur le port et le mot de passe
@@ -44,24 +44,24 @@ Server::Server(const std::string& port, const std::string& password) :
 Server::~Server()
 {
     freeaddrinfo(_servinfo);
-    close(_sockfd);
+    close(socket_serveur);
     Log::info() << "Server stopped" << '\n';
 }
 
 int Server::start()
 {
     // Création, liaison et écoute du socket du serveur
-    _sockfd = socket(_servinfo->ai_family, _servinfo->ai_socktype,
+    socket_serveur = socket(_servinfo->ai_family, _servinfo->ai_socktype,
         _servinfo->ai_protocol);
-    if (_sockfd == -1) {
+    if (socket_serveur == -1) {
         Log::error() << "Could not create server socket" << '\n';
         exit(1);
     }
-    if (bind(_sockfd, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
+    if (bind(socket_serveur, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
         Log::error() << "Could not bind server socket" << '\n';
         exit(1);
     }
-    if (listen(_sockfd, MAX_CONNEXIONS) == -1) {
+    if (listen(socket_serveur, MAX_CONNEXIONS) == -1) {
         Log::error() << "Could not listen on server socket" << '\n';
         exit(1);
     }
@@ -80,8 +80,8 @@ int Server::poll()
         exit(1);
     }
     server_event.events = EPOLLIN;
-    server_event.data.fd = _sockfd;
-    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _sockfd, &server_event) == -1) {
+    server_event.data.fd = socket_serveur;
+    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, socket_serveur, &server_event) == -1) {
         Log::error() << "Could not add server fd to epoll" << '\n';
         exit(1);
     }
@@ -96,7 +96,7 @@ int Server::poll()
 
         for (int i = 0; i < num_events; i++) {
             int fd = _events[i].data.fd;
-            if (fd == _sockfd) {
+            if (fd == socket_serveur) {
                 create_client();
             } else {
                 receive_message(fd);
@@ -111,7 +111,7 @@ int Server::create_client()
     {
         struct sockaddr_storage client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
-        int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
+        int client_fd = accept(socket_serveur, (struct sockaddr *)&client_addr, &client_addr_size);
 
         if (client_fd == -1)
         {
@@ -177,199 +177,6 @@ int Server::receive_message(int fd)
 
     return 0;
 }
-
-
-// int Server::poll()
-// {
-//     // Crée une structure pour le socket du serveur
-    
-//     // pollfd server_pfd;
-//     // server_pfd.fd = _sockfd;
-//     // server_pfd.events = POLLIN;
-//     // server_pfd.revents = 0;
-    
-//     epoll_event server_event;
-//     _epoll_fd = epoll_create(0);
-//     if (_epoll_fd == -1) {
-//         Log::error() << "Could not create epoll fd" << '\n';
-//         exit(1);
-//     }
-//     server_event.events = EPOLLIN;
-//     server_event.data.fd = _sockfd;
-//     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _sockfd, &server_event) == -1) {
-//         Log::error() << "Could not add server fd to epoll" << '\n';
-//         exit(1);
-//     }
-
-// // Vous n'avez pas besoin de gérer _events ici, car vous avez déjà ajouté le descripteur de fichier du serveur à epoll.
-// // Commentez simplement le code suivant :
-// // _events.push_back(server_event);
-
-
-//     // Crée un vecteur de structures pour les sockets clients
-    
-//     // _client_pfds.reserve(MAX_CONNEXIONS);
-
-//     // // Ajoute le socket du serveur au vecteur
-//     // _events.push_back(server_event);
-//     ++_nb_clients;
-
-//     std::cout << "Server is now waiting for connections on port: " << _port << std::endl;
-
-//     // Boucle infinie pour surveiller les sockets
-//     // while (true) {
-//     //     if (::poll(&_client_pfds[0], _nb_clients, 200) == -1) {
-//     //         Log::error() << "Could not poll the server socket" << '\n';
-//     //         exit(1);
-//     //     }
-
-//     //     // Parcourt tous les sockets clients pour vérifier les événements d'entrée
-//     //     for (int i = 0; i < _nb_clients; i++) {
-//     //         if (_client_pfds[i].revents & POLLIN) {
-//     //             int fd = _client_pfds[i].fd;
-//     //             if (fd == _sockfd) {
-//     //                 create_client();
-//     //             } else {
-//     //                 receive_message(i);
-//     //             }
-//     //         }
-//     //     }
-//     // }
-
-    
-//     while (true) {
-//         int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
-//         if (num_events == -1) {
-//             Log::error() << "Could not poll the server socket" << '\n';
-//             exit(1);
-//         }
-
-//         for (int i = 0; i < num_events; i++) {
-//             int fd = _events[i].data.fd;
-//             if (fd == _sockfd) {
-//                 create_client();
-//             } else {
-//                 receive_message(fd);
-//             }
-//         }
-//     }
-
-// }
-
-// int Server::create_client()
-// {
-//     if (_nb_clients < MAX_CONNEXIONS)
-//     {
-//         struct sockaddr_storage client_addr;
-//         socklen_t client_addr_size = sizeof(client_addr);
-//         int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
-
-//         if (client_fd == -1)
-//         {
-//             Log::error() << "Could not accept the client connection" << '\n';
-//             exit(1);
-//         }
-
-//         // Vous devez créer une nouvelle structure epoll_event pour le nouveau client.
-//         struct epoll_event client_event;
-//         client_event.data.fd = client_fd;
-//         client_event.events = EPOLLIN;
-
-//         if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1)
-//         {
-//             perror("epoll_ctl");
-//             exit(1);
-//         }
-
-//         ++_nb_clients;
-//         Log::info() << "Client connected : " << client_fd << '\n';
-
-//         // Envoi du code RPL 001 au client
-//         // std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
-//         // send(client_fd, rpl001.c_str(), rpl001.size(), 0);
-//     }
-//     else
-//     {
-//         Log::info() << "Client connection refused: Too many clients" << '\n';
-//     }
-//     return 0;
-// }
-
-// int Server::receive_message(int i)
-// {
-//     int fd = _epoll_fd[i].fd;
-//     char buffer[1024];
-//     memset(buffer, 0, sizeof(buffer));
-
-//     // Ne bloquez pas ici. Utilisez epoll_wait pour gérer les événements.
-//     // struct epoll_event events[MAX_EVENTS];
-//     int num_events = epoll_wait(_epoll_fd, _events, MAX_EVENTS, -1);
-
-//     if (num_events == -1)
-//     {
-//         perror("epoll_wait");
-//         exit(1);
-//     }
-
-//     for (int i = 0; i < num_events; i++)
-//     {
-//         if (_events[i].data.fd == fd)
-//         {
-//             // L'événement EPOLLIN est déclenché, ce qui signifie que des données sont disponibles pour la lecture.
-//             int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
-
-//             if (num_bytes == -1)
-//             {
-//                 Log::error() << "Could not receive data from the client" << '\n';
-//                 exit(1);
-//             }
-
-//             if (num_bytes == 0)
-//             {
-//                 // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-//                 if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-//                 {
-//                     perror("epoll_ctl");
-//                     exit(1);
-//                 }
-
-//                 close(fd);
-//                 Log::info() << "Client disconnected" << '\n';
-//             }
-//             else
-//             {
-//                 std::cout << "Received: " << buffer << std::endl;
-//             }
-//         }
-//     }
-
-//     return 0;
-// }
-
-
-// // int	Server::receive_message(int i)
-// // {
-// //     int fd = _client_pfds[i].fd;
-// //     char buffer[1024];
-// //     memset(buffer, 0, sizeof(buffer));
-
-// //     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
-
-// //     if (num_bytes == -1) {
-// //         Log::error() << "Could not receive data from the client" << '\n';
-// //         exit(1);
-// //     }
-
-// //     if (num_bytes == 0) {
-// //         close(fd);
-// //         _client_pfds.erase(_client_pfds.begin() + i);
-// //         --_nb_clients;
-// //         Log::info() << "Client disconnected" << '\n';
-// //     } else {
-// //         std::cout << "Received: " << buffer << std::endl;
-// //     }
-// // 	return (0);
-// // }
 
 bool Server::is_valid_port(const std::string& port)
 {

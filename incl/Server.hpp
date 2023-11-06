@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/03 15:15:00 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 16:39:09 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class	Server {
 
 	private:
 		// -- Private attributes --
-		int						        _sockfd;
+		int						        socket_serveur;
 		int						        _nb_clients;
 		std::string				        _port;
 		std::string				        _password;
