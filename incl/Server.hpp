@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/03 15:15:00 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:31:27 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,13 @@
 # include <fstream>
 # include <sys/epoll.h>
 
+//# include "User.hpp"
 
 # define SERVER_NAME "ft_irc"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
+
+//class User;
 
 class	Server {
 	public:
@@ -54,6 +57,10 @@ class	Server {
 		// -- Public static functions --
 		static bool		is_valid_port(const std::string& port);
 		static bool		is_valid_password(const std::string& password);
+
+		// -- Users 
+		//std::vector<User> users;
+		//void addUser(int sockId);
 
 	private:
 		// -- Private attributes --

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/03 15:40:25 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:31:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,13 @@ int Server::receive_message(int fd)
 }
 
 
+//void Server::addUser(int sockId)
+//{
+//    static int i = 1;
+//    users.push_back(User(sockId, "user " + std::to_string(i++)));
+//    return;
+//}
+//
 // int Server::poll()
 // {
 //     // Crée une structure pour le socket du serveur
