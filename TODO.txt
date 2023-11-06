@@ -1,1 +1,2 @@
-sheesh
+change int _sockfd to int socketServer
+understand commands and how manage clients
