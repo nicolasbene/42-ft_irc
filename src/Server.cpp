@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 18:51:30 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 20:00:02 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int Server::start()
         Log::error() << "Could not listen on server socket" << '\n';
         exit(1);
     }
-    Log::info() << "Server started" << '\n';
+    Log::info() << "Server started on port " << _port << '\n';
 
     return (0);
 }
@@ -82,7 +82,7 @@ int Server::poll()
     server_event.events = EPOLLIN;
     server_event.data.fd = _socket_serveur;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _socket_serveur, &server_event) == -1) {
-        Log::error() << "Could not add server fd to epoll" << '\n';
+        perror("epoll_ctl_add1");
         exit(1);
     }
 
@@ -126,12 +126,12 @@ int Server::create_client()
 
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1)
         {
-            perror("epoll_ctl");
+            perror("epoll_ctl_add2");
             exit(1);
         }
 
         ++_nb_clients;
-        Log::info() << "Client connected : " << client_fd << '\n';
+        Log::info() << "Client connected on fd: " << client_fd << " from " << inet_ntoa(((struct sockaddr_in *)&client_addr)->sin_addr) << '\n';
 
         // Envoi du code RPL 001 au client
         std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
@@ -163,7 +163,7 @@ int Server::receive_message(int fd)
         // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
         {
-            perror("epoll_ctl");
+            perror("epoll_ctl_del");
             exit(1);
         }
 
