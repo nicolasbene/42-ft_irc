@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 18:49:23 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:51:30 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "Log.hpp"
 
 Server::Server(const std::string& port, const std::string& password) :
-    socket_serveur(-1), _nb_clients(0), _port(port),
+    _socket_serveur(-1), _nb_clients(0), _port(port),
     _password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
     // Affiche les informations sur le port et le mot de passe
@@ -44,24 +44,24 @@ Server::Server(const std::string& port, const std::string& password) :
 Server::~Server()
 {
     freeaddrinfo(_servinfo);
-    close(socket_serveur);
+    close(_socket_serveur);
     Log::info() << "Server stopped" << '\n';
 }
 
 int Server::start()
 {
     // Création, liaison et écoute du socket du serveur
-    socket_serveur = socket(_servinfo->ai_family, _servinfo->ai_socktype,
+    _socket_serveur = socket(_servinfo->ai_family, _servinfo->ai_socktype,
         _servinfo->ai_protocol);
-    if (socket_serveur == -1) {
+    if (_socket_serveur == -1) {
         Log::error() << "Could not create server socket" << '\n';
         exit(1);
     }
-    if (bind(socket_serveur, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
+    if (bind(_socket_serveur, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
         Log::error() << "Could not bind server socket" << '\n';
         exit(1);
     }
-    if (listen(socket_serveur, MAX_CONNEXIONS) == -1) {
+    if (listen(_socket_serveur, MAX_CONNEXIONS) == -1) {
         Log::error() << "Could not listen on server socket" << '\n';
         exit(1);
     }
@@ -80,8 +80,8 @@ int Server::poll()
         exit(1);
     }
     server_event.events = EPOLLIN;
-    server_event.data.fd = socket_serveur;
-    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, socket_serveur, &server_event) == -1) {
+    server_event.data.fd = _socket_serveur;
+    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _socket_serveur, &server_event) == -1) {
         Log::error() << "Could not add server fd to epoll" << '\n';
         exit(1);
     }
@@ -96,7 +96,7 @@ int Server::poll()
 
         for (int i = 0; i < num_events; i++) {
             int fd = _events[i].data.fd;
-            if (fd == socket_serveur) {
+            if (fd == _socket_serveur) {
                 create_client();
             } else {
                 receive_message(fd);
@@ -111,7 +111,7 @@ int Server::create_client()
     {
         struct sockaddr_storage client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
-        int client_fd = accept(socket_serveur, (struct sockaddr *)&client_addr, &client_addr_size);
+        int client_fd = accept(_socket_serveur, (struct sockaddr *)&client_addr, &client_addr_size);
 
         if (client_fd == -1)
         {

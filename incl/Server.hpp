@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 16:39:09 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:52:17 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,18 @@ class	Server {
 
 	private:
 		// -- Private attributes --
-		int						        socket_serveur;
+		int						        _socket_serveur;
 		int						        _nb_clients;
 		std::string				        _port;
 		std::string				        _password;
 		std::string 				    _name;
+		
+		
 		struct addrinfo			        _hints;
 		struct addrinfo*				_servinfo;
 
 		int								_epoll_fd;
 		epoll_event						_events[MAX_CONNEXIONS];
-		
-		std::vector<pollfd>				_client_pfds;
-
 };
 
 #endif
