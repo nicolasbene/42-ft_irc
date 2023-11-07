@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 20:00:02 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/07 18:35:20 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,18 @@ int Server::poll()
 
     while (true) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
-        int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
-        if (num_events == -1) {
+        int nb_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
+        if (nb_events == -1) {
             perror("epoll_wait");
             exit(1);
         }
 
-        for (int i = 0; i < num_events; i++) {
+        for (int i = 0; i < nb_events; i++) {
             int fd = _events[i].data.fd;
             if (fd == _socket_serveur) {
                 create_client();
             } else {
-                receive_message(fd);
+                processClientData(fd);
             }
         }
     }
@@ -136,6 +136,15 @@ int Server::create_client()
         // Envoi du code RPL 001 au client
         std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
         send(client_fd, rpl001.c_str(), rpl001.size(), 0);
+
+        // Créez une instance de Client
+        Client newClient(client_fd);
+
+        // Ajoutez cette instance en tant que référence
+        _client_manager.addClient(newClient);
+        
+        // // Maintenant, ajoutez le client au gestionnaire de clients
+        // _client_manager.addClient(new Client(client_fd));
     }
     else
     {
@@ -144,13 +153,21 @@ int Server::create_client()
     return 0;
 }
 
-int Server::receive_message(int fd)
+int Server::processClientData(int fd)
 {
+    Client& client = _client_manager.getClient(fd);
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+    
+
+    Message message(buffer);
+    logReceivedMessage(message, fd);
+
+    
+    
 
     if (num_bytes == -1)
     {
@@ -170,13 +187,53 @@ int Server::receive_message(int fd)
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
-    else
-    {
-        std::cout << "Received: " << buffer << std::endl;
-    }
 
     return 0;
+    
 }
+
+void Server::logReceivedMessage(const Message& message, const int fd)
+{
+    std::string verb = message.getVerb();
+    std::vector<std::string> params = message.getParameters();
+    std::string logMessage = "Received: " + verb;
+    for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+    {
+        logMessage += " " + *it;
+    }
+    Log::debug() << logMessage << '\n';
+}
+
+    // char buffer[1024];
+    // memset(buffer, 0, sizeof(buffer));
+
+    // // Lire les données du socket
+    // int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+
+    // if (num_bytes == -1)
+    // {
+    //     perror("recv");
+    //     exit(1);
+    // }
+
+    // if (num_bytes == 0)
+    // {
+    //     // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+    //     if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+    //     {
+    //         perror("epoll_ctl_del");
+    //         exit(1);
+    //     }
+
+    //     close(fd);
+    //     Log::info() << "Client disconnected" << '\n';
+    // }
+    // else
+    // {
+    //     std::cout << "Received: " << buffer << std::endl;
+    // }
+
+    // return 0;
 
 bool Server::is_valid_port(const std::string& port)
 {

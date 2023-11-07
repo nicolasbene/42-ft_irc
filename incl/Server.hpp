@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 18:52:17 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/07 18:29:54 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
 
+# include "ClientManager.hpp"
+# include "Message.hpp"
+
 class	Server {
 	public:
 		// -- Constructors --
@@ -43,12 +46,13 @@ class	Server {
 		~Server();
 
 		// -- Public Functions --
-		int		    start();
-		int		    poll();
-		void		write_logo() const;
+		int		start();
+		int		poll();
+		void	write_logo() const;
 		
-		int			create_client();
-		int 		receive_message(int i);
+		int		create_client();
+		int 	processClientData(int i);
+		void	logReceivedMessage(const Message& message, const int fd);
 
 
 		// -- Public static functions --
@@ -69,6 +73,9 @@ class	Server {
 
 		int								_epoll_fd;
 		epoll_event						_events[MAX_CONNEXIONS];
+
+		ClientManager					_client_manager;
+		// std::vector<Channel*>			_channels;
 };
 
 #endif

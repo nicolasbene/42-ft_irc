@@ -1,17 +1,25 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/25 22:52:47 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/10/27 17:56:29 by nibenoit         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MESSAGE_HPP
-#define MESSAGE_HPP 
+#define MESSAGE_HPP
 
+#include <string>
+#include <vector>
+
+class Message {
+private:
+	std::string rawMessage;
+	std::string verb;
+	std::vector<std::string> parameters;
+
+public:
+	Message(const std::string& raw);
+
+	std::string getVerb() const {
+		return verb;
+	}
+
+	std::vector<std::string> getParameters() const {
+		return parameters;
+	}
+};
 
 #endif
