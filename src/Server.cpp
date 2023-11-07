@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 18:31:25 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/07 17:53:57 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "Log.hpp"
 
 Server::Server(const std::string& port, const std::string& password) :
@@ -130,11 +131,12 @@ int Server::create_client()
             exit(1);
         }
 
+        addUser(client_fd);
         ++_nb_clients;
         Log::info() << "Client connected : " << client_fd << '\n';
 
         // Envoi du code RPL 001 au client
-        std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
+        std::string rpl001 = "001 : Welcome to the Internet Relay Network\r\n";
         send(client_fd, rpl001.c_str(), rpl001.size(), 0);
     }
     else
@@ -173,19 +175,44 @@ int Server::receive_message(int fd)
     else
     {
         std::cout << "Received: " << buffer << std::endl;
+        executeCommand(&buffer[0], fd);
     }
 
     return 0;
 }
 
+std::vector<std::string> mySplit(const std::string& s, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::istringstream iss(s);
+    std::string token;
+    while (std::getline(iss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
 
-//void Server::addUser(int sockId)
-//{
-//    static int i = 1;
-//    users.push_back(User(sockId, "user " + std::to_string(i++)));
-//    return;
-//}
-//
+int Server::executeCommand(char* buffer, int fd)
+{
+    std::string str(buffer);
+    char delimiter = ' ';
+    
+    std::vector<std::string> result = mySplit(buffer, delimiter);
+    if (result[0] == "NICK")
+        std::cout << "Lundi" << fd << std::endl;
+    else
+        std::cout << "Valeur incorrecte pour l'input" << std::endl;
+    return (0);
+}
+
+
+void Server::addUser(int sockId)
+{
+    //static int i = 1;
+    users.push_back(User(sockId, "userTest"));
+    return;
+}
+
 // int Server::poll()
 // {
 //     // Crée une structure pour le socket du serveur

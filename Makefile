@@ -34,6 +34,7 @@ H_DIR		= incl
 SRCS	=	main.cpp \
 			Server.cpp \
 			Log.cpp \
+			User.cpp \
 			utils/min.cpp
 
 T_SRCS	=	tests/main.cpp \

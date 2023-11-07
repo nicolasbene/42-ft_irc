@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/06 18:31:27 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/07 17:50:58 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,16 @@
 # include <iomanip>
 # include <fstream>
 # include <sys/epoll.h>
+# include <sstream>
 
-//# include "User.hpp"
+# include "utils.h"
+# include "User.hpp"
 
 # define SERVER_NAME "ft_irc"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
 
-//class User;
+class User;
 
 class	Server {
 	public:
@@ -59,8 +61,11 @@ class	Server {
 		static bool		is_valid_password(const std::string& password);
 
 		// -- Users 
-		//std::vector<User> users;
-		//void addUser(int sockId);
+		std::vector<User> users;
+		void addUser(int sockId);
+
+		// -- Execution
+		int executeCommand(char* buffer, int fd);
 
 	private:
 		// -- Private attributes --

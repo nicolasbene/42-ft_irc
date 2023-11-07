@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/06 17:48:42 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/07 17:46:47 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 
 # include <string>
 # include <iostream>
-# include <Server.hpp>
-# include <Channel.hpp>
-
-class Channel;
+//# include "Channel.hpp"
 
 class User
 {
@@ -29,13 +26,14 @@ class User
 
 		void setUserName(const std::string userName);
 		void setUserNickName(const std::string userNickName);
+		void addChannelList(const std::string userNickName);
 
 	private:
 	int	_userSockId;
 	std::string _userName;
 	std::string _nickName;
 	bool	_isConnected;
-	std::vector<Channel> _channelList;
+	//std::vector<Channel> _channelList;
 
 };
 
