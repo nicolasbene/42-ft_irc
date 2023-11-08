@@ -1,13 +1,14 @@
 #ifndef CHANNEL_HPP
-#define CHANNEL_HPP
+# define CHANNEL_HPP
 
-#include <string>
-#include <vector>
-#include "Client.hpp"
+# include <string>
+# include <vector>
+# include "Client.hpp"
 
 class Channel {
 public:
-	Channel(const std::string& name);
+	Channel(void);
+	Channel(const std::string& name, Client& operator);
 	~Channel();
 
 	void addClient(Client* client);
@@ -19,6 +20,7 @@ public:
 private:
 	std::string m_name;
 	std::vector<Client*> m_clients;
+	std::vector<Client*> m_operator;
 };
 
 #endif
