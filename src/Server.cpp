@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/08 13:38:48 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/08 17:32:20 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,13 +203,39 @@ int Server::executeCommand(char* buffer, int fd)
     else if (result[0] == "PRIVMSG")
         sendPrivateMessage(result, fd);
     else
-        std::cout << "Valeur incorrecte pour l'input" << std::endl;
+        std::cout << "-------" << std::endl;
     return (0);
 }
 
 void Server::sendPrivateMessage(const std::vector<std::string>& result, int fd)
 {
-    
+    int i = 0;
+    int j = 0;
+    std::string sender;
+    while (j < _nb_clients)
+    {
+        if (users[j].getUserSockId() == fd)
+        {
+            sender = users[j].getUserNickName();
+            sender.resize(sender.size() - 2);
+            break;
+        }
+        j++;
+    }
+    while (i < _nb_clients)
+    {
+        if (users[i].getUserName() == result[1] + "\r\n" || users[i].getUserNickName() == result[1] + "\r\n")
+        {
+            std::string buffer = "[" + sender + "]";
+            for (unsigned long int k = 2; k < result.size(); k++)
+                buffer = buffer + " " + result[k];
+            send(users[i].getUserSockId(), buffer.c_str(), buffer.size(), 0);
+            return;
+        }
+        i++;
+    }
+    std::string error = "Error: the user you're trying to reach doesn't exist\r\n";
+    send(fd, error.c_str(), error.size(), 0);
 }
 
 void Server::setUserNickName(const std::vector<std::string>& result, int fd)
@@ -218,7 +244,7 @@ void Server::setUserNickName(const std::vector<std::string>& result, int fd)
     int j = 0;
     while (i < _nb_clients) // utiliser des maps c est mieux
     {
-        if (users[i].getUserNickName() == result[1])
+        if (users[i].getUserNickName() == result[1] + "\r\n")
         {
             std::string error = "Nickname already used by another user\r\n Please choose another one\r\n";
             send(fd, error.c_str(), error.size(), 0);
@@ -229,7 +255,7 @@ void Server::setUserNickName(const std::vector<std::string>& result, int fd)
         i++;
     }
     users[j].setUserNickName(result[1]);
-    std::cout << "Nickname of user " << users[i].getUserSockId() << " updated to " << users[i].getUserNickName() << std::endl;
+    std::cout << "Nickname of user " << users[j].getUserSockId() << " updated to " << users[j].getUserNickName() << std::endl;
     std::string action = "Nickname well updated in serv\r\n";
     send(fd, action.c_str(), action.size(), 0);
 }
