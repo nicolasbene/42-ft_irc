@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/06 15:53:25 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/08 12:54:51 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,19 @@ void User::setUserNickName(const std::string userNickName)
 {
 	_nickName = userNickName;
 	return;
+}
+
+std::string User::getUserName(void)
+{
+	return (this->_userName);
+}
+
+std::string User::getUserNickName(void)
+{
+	return (this->_nickName);
+}
+
+int User::getUserSockId(void)
+{
+	return(this->_userSockId);
 }

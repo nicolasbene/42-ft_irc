@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/07 17:50:58 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/08 13:37:02 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,9 @@ class	Server {
 
 		// -- Execution
 		int executeCommand(char* buffer, int fd);
+		void setUserNickName(const std::vector<std::string>& result, int fd);
+		void sendPrivateMessage(const std::vector<std::string>& result, int fd);
+
 
 	private:
 		// -- Private attributes --

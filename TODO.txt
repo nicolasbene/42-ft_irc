@@ -1,1 +1,1 @@
-sheesh
+- Possible probleme avec la creation d un nickname commencant par # a gerer
