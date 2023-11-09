@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/08 13:37:02 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/09 17:53:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,14 @@
 
 # include "utils.h"
 # include "User.hpp"
+# include "Channel.hpp"
 
 # define SERVER_NAME "ft_irc"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
 
 class User;
+class Channel;
 
 class	Server {
 	public:
@@ -61,13 +63,18 @@ class	Server {
 		static bool		is_valid_password(const std::string& password);
 
 		// -- Users 
-		std::vector<User> users;
+		std::map<int, User> users;
 		void addUser(int sockId);
+
+		// -- Channels
+		std::map<std::string, Channel> channels;
+		void addChannel(const std::string& name, User& channelOperator); 
 
 		// -- Execution
 		int executeCommand(char* buffer, int fd);
 		void setUserNickName(const std::vector<std::string>& result, int fd);
 		void sendPrivateMessage(const std::vector<std::string>& result, int fd);
+		void executeJoinOrder(const std::vector<std::string>& result, int fd);
 
 
 	private:

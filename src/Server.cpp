@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/08 17:32:20 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/09 17:44:08 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,37 +202,50 @@ int Server::executeCommand(char* buffer, int fd)
         setUserNickName(result, fd);
     else if (result[0] == "PRIVMSG")
         sendPrivateMessage(result, fd);
+    else if (result[0] == "JOIN")
+        executeJoinOrder(result, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
 }
 
+void Server::executeJoinOrder(const std::vector<std::string>& result, int fd)
+{
+    std::map<std::string, Channel>::iterator it;
+    for (it = channels.begin(); it != channels.end(); it++)
+    {
+        if (it->second.getName() == result[1])
+        {
+            it->second.addUser(users[fd]);
+            users[fd].addChannelList(it->second);
+            std::string chan = "You entered channel : [" + it->second.getName() + "]";
+            send(fd, chan.c_str(), chan.size(), 0);
+            return;
+        }
+    }
+    addChannel(result[1], users[fd]);
+    channels[result[1]].addUser(users[fd]);
+    users[fd].addChannelList(channels[result[1]]);
+    std::string createchan = "You created channel : [" + result[1] + "] and entered as operator";
+    send(fd, createchan.c_str(), createchan.size(), 0);
+}
+
 void Server::sendPrivateMessage(const std::vector<std::string>& result, int fd)
 {
-    int i = 0;
-    int j = 0;
-    std::string sender;
-    while (j < _nb_clients)
+    std::string sender = users[fd].getUserNickName();
+    sender.resize(sender.size() - 2);
+
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); ++it)
     {
-        if (users[j].getUserSockId() == fd)
-        {
-            sender = users[j].getUserNickName();
-            sender.resize(sender.size() - 2);
-            break;
-        }
-        j++;
-    }
-    while (i < _nb_clients)
-    {
-        if (users[i].getUserName() == result[1] + "\r\n" || users[i].getUserNickName() == result[1] + "\r\n")
+        if (it->second.getUserName() == result[1] + "\r\n" || it->second.getUserNickName() == result[1] + "\r\n")
         {
             std::string buffer = "[" + sender + "]";
             for (unsigned long int k = 2; k < result.size(); k++)
                 buffer = buffer + " " + result[k];
-            send(users[i].getUserSockId(), buffer.c_str(), buffer.size(), 0);
+            send(it->second.getUserSockId(), buffer.c_str(), buffer.size(), 0);
             return;
         }
-        i++;
     }
     std::string error = "Error: the user you're trying to reach doesn't exist\r\n";
     send(fd, error.c_str(), error.size(), 0);
@@ -240,30 +253,32 @@ void Server::sendPrivateMessage(const std::vector<std::string>& result, int fd)
 
 void Server::setUserNickName(const std::vector<std::string>& result, int fd)
 {
-    int i = 0;
-    int j = 0;
-    while (i < _nb_clients) // utiliser des maps c est mieux
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); ++it)
     {
-        if (users[i].getUserNickName() == result[1] + "\r\n")
+        if (it->second.getUserNickName() == result[1] + "\r\n")
         {
             std::string error = "Nickname already used by another user\r\n Please choose another one\r\n";
             send(fd, error.c_str(), error.size(), 0);
             return;
         }
-        if (users[i].getUserSockId() == fd)
-            j = i;
-        i++;
     }
-    users[j].setUserNickName(result[1]);
-    std::cout << "Nickname of user " << users[j].getUserSockId() << " updated to " << users[j].getUserNickName() << std::endl;
+    users[fd].setUserNickName(result[1]);
+    std::cout << "Nickname of user " << users[fd].getUserSockId() << " updated to " << users[fd].getUserNickName() << std::endl;
     std::string action = "Nickname well updated in serv\r\n";
     send(fd, action.c_str(), action.size(), 0);
 }
 
-void Server::addUser(int sockId)
+void Server::addUser(int sockId) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
-    users.push_back(User(sockId, "userTest"));
+    users.insert(std::make_pair(sockId, User(sockId, "userTest")));
+    return;
+}
+
+void Server::addChannel(const std::string& name, User& channelOperator)
+{
+    channels.insert(std::make_pair(name, Channel(name, channelOperator)));
     return;
 }
 
