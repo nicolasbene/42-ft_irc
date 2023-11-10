@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/09 17:54:16 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 16:21:51 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ class User
 		bool operator==(User& other) {return (this->_userSockId == other.getUserSockId());}
 
 		void setUserName(const std::string userName);
+		void setOldNickName(const std::string userNickName);
 		void setUserNickName(const std::string userNickName);
 		int getUserSockId(void);
 		std::string getUserName(void);
+		std::string getOldNickName(void);
 		std::string getUserNickName(void);
 		void addChannelList(Channel channel);
 
@@ -40,6 +42,7 @@ class User
 	int	_userSockId;
 	std::string _userName;
 	std::string _nickName;
+	std::string _oldNickName;
 	bool	_isConnected;
 	std::vector<Channel*> _channelList;
 

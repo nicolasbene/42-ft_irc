@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/09 17:44:08 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 15:52:58 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,6 @@ int Server::receive_message(int fd)
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
-
     if (num_bytes == -1)
     {
         perror("recv");
@@ -181,17 +180,6 @@ int Server::receive_message(int fd)
     return 0;
 }
 
-std::vector<std::string> mySplit(const std::string& s, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::istringstream iss(s);
-    std::string token;
-    while (std::getline(iss, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
 int Server::executeCommand(char* buffer, int fd)
 {
     std::string str(buffer);
@@ -209,66 +197,6 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-void Server::executeJoinOrder(const std::vector<std::string>& result, int fd)
-{
-    std::map<std::string, Channel>::iterator it;
-    for (it = channels.begin(); it != channels.end(); it++)
-    {
-        if (it->second.getName() == result[1])
-        {
-            it->second.addUser(users[fd]);
-            users[fd].addChannelList(it->second);
-            std::string chan = "You entered channel : [" + it->second.getName() + "]";
-            send(fd, chan.c_str(), chan.size(), 0);
-            return;
-        }
-    }
-    addChannel(result[1], users[fd]);
-    channels[result[1]].addUser(users[fd]);
-    users[fd].addChannelList(channels[result[1]]);
-    std::string createchan = "You created channel : [" + result[1] + "] and entered as operator";
-    send(fd, createchan.c_str(), createchan.size(), 0);
-}
-
-void Server::sendPrivateMessage(const std::vector<std::string>& result, int fd)
-{
-    std::string sender = users[fd].getUserNickName();
-    sender.resize(sender.size() - 2);
-
-    std::map<int, User>::iterator it;
-    for (it = users.begin(); it != users.end(); ++it)
-    {
-        if (it->second.getUserName() == result[1] + "\r\n" || it->second.getUserNickName() == result[1] + "\r\n")
-        {
-            std::string buffer = "[" + sender + "]";
-            for (unsigned long int k = 2; k < result.size(); k++)
-                buffer = buffer + " " + result[k];
-            send(it->second.getUserSockId(), buffer.c_str(), buffer.size(), 0);
-            return;
-        }
-    }
-    std::string error = "Error: the user you're trying to reach doesn't exist\r\n";
-    send(fd, error.c_str(), error.size(), 0);
-}
-
-void Server::setUserNickName(const std::vector<std::string>& result, int fd)
-{
-    std::map<int, User>::iterator it;
-    for (it = users.begin(); it != users.end(); ++it)
-    {
-        if (it->second.getUserNickName() == result[1] + "\r\n")
-        {
-            std::string error = "Nickname already used by another user\r\n Please choose another one\r\n";
-            send(fd, error.c_str(), error.size(), 0);
-            return;
-        }
-    }
-    users[fd].setUserNickName(result[1]);
-    std::cout << "Nickname of user " << users[fd].getUserSockId() << " updated to " << users[fd].getUserNickName() << std::endl;
-    std::string action = "Nickname well updated in serv\r\n";
-    send(fd, action.c_str(), action.size(), 0);
-}
-
 void Server::addUser(int sockId) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
@@ -282,6 +210,17 @@ void Server::addChannel(const std::string& name, User& channelOperator)
     return;
 }
 
+void Server::sendServerRpl(int const fd, std::string reply)
+{
+	std::istringstream	buf(reply);
+	std::string			sended;
+	
+	send(fd, reply.c_str(), reply.size(), 0);
+	while (getline(buf, sended))
+	{
+		std::cout << "[Server] Message sent to client " << fd << "       >> " << GREEN << sended << RESET << std::endl;
+	}
+}
 
 bool Server::is_valid_port(const std::string& port)
 {

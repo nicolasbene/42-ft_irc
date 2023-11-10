@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/09 17:56:15 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 16:22:21 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ User::User(void)
 }
 
 User::User(int sockId, const std::string& userName) : 
-		_userSockId(sockId), _userName(userName), _nickName(userName), _isConnected(false)
+		_userSockId(sockId), _userName(userName), _nickName(userName), _oldNickName(userName), _isConnected(false)
 {
 	return;
 }
@@ -31,6 +31,12 @@ User::~User()
 void User::setUserName(const std::string userName)
 {
 	_userName = userName;
+	return;
+}
+
+void User::setOldNickName(const std::string userNickName)
+{
+	_oldNickName = userNickName;
 	return;
 }
 
@@ -48,6 +54,11 @@ std::string User::getUserName(void)
 std::string User::getUserNickName(void)
 {
 	return (this->_nickName);
+}
+
+std::string User::getOldNickName(void)
+{
+	return (this->_oldNickName);
 }
 
 void User::addChannelList(Channel channel)

@@ -36,7 +36,11 @@ SRCS	=	main.cpp \
 			Log.cpp \
 			User.cpp \
 			Channel.cpp \
-			utils/min.cpp
+			utils/min.cpp \
+			utils/Utils.cpp \
+			Commands/Join.cpp \
+			Commands/Nick.cpp \
+			Commands/Privmsg.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \
