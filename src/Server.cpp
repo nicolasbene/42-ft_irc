@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 15:52:58 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 18:12:04 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,15 +183,15 @@ int Server::receive_message(int fd)
 int Server::executeCommand(char* buffer, int fd)
 {
     std::string str(buffer);
-    char delimiter = ' ';
+
     
-    std::vector<std::string> result = mySplit(buffer, delimiter);
-    if (result[0] == "NICK")
-        setUserNickName(result, fd);
-    else if (result[0] == "PRIVMSG")
-        sendPrivateMessage(result, fd);
-    else if (result[0] == "JOIN")
-        executeJoinOrder(result, fd);
+    Message message(str);
+    if (message.getCommande() == "NICK")
+        setUserNickName(message, fd);
+    else if (message.getCommande() == "PRIVMSG")
+        sendPrivateMessage(message, fd);
+    else if (message.getCommande() == "JOIN")
+        executeJoinOrder(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);

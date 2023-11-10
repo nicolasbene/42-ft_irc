@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 15:13:45 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 18:18:49 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
 #include <sstream>
 #include "Log.hpp"
 
-void Server::executeJoinOrder(const std::vector<std::string>& result, int fd)
+void Server::executeJoinOrder(Message message, int fd)
 {
     std::map<std::string, Channel>::iterator it;
     for (it = channels.begin(); it != channels.end(); it++)
     {
-        if (it->second.getName() == result[1])
+        if (it->second.getName() == message.getParameters()[0])
         {
             it->second.addUser(users[fd]);
             users[fd].addChannelList(it->second);
@@ -37,9 +37,9 @@ void Server::executeJoinOrder(const std::vector<std::string>& result, int fd)
             return;
         }
     }
-    addChannel(result[1], users[fd]);
-    channels[result[1]].addUser(users[fd]);
-    users[fd].addChannelList(channels[result[1]]);
-    std::string createchan = "You created channel : [" + result[1] + "] and entered as operator";
+    addChannel(message.getParameters()[0], users[fd]);
+    channels[message.getParameters()[0]].addUser(users[fd]);
+    users[fd].addChannelList(channels[message.getParameters()[0]]);
+    std::string createchan = "You created channel : [" + message.getParameters()[0] + "] and entered as operator";
     send(fd, createchan.c_str(), createchan.size(), 0);
 }

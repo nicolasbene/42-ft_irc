@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 18:01:25 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 18:12:59 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ class	Server {
 
 		// -- Execution
 		int executeCommand(char* buffer, int fd);
-		void setUserNickName(const std::vector<std::string>& result, int fd);
-		void sendPrivateMessage(const std::vector<std::string>& result, int fd);
-		void executeJoinOrder(const std::vector<std::string>& result, int fd);
+		void setUserNickName(Message message, int fd);
+		void sendPrivateMessage(Message message, int fd);
+		void executeJoinOrder(Message message, int fd);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
