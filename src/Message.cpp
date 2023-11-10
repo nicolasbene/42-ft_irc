@@ -1,17 +1,35 @@
-#include "Message.hpp"
+#include "../incl/Message.hpp"
 
-Message::Message(const std::string& raw) : rawMessage(raw) {
-	std::string::size_type pos = raw.find(' ');
-	if (pos != std::string::npos) {
-		verb = raw.substr(0, pos);
-		std::string::size_type pos2 = raw.find(' ', pos + 1);
-		if (pos2 != std::string::npos) {
-			parameters.push_back(raw.substr(pos + 1, pos2 - pos - 1));
-			parameters.push_back(raw.substr(pos2 + 1));
-		} else {
-			parameters.push_back(raw.substr(pos + 1));
+Message::Message(const std::string& raw) : rawMessage(raw)
+{
+    std::istringstream stream(rawMessage);
+    std::istringstream tmp(stream.str());//seul solution pour choper le trailing proprement
+	
+	if (rawMessage.empty())
+		return ;
+    if (rawMessage[0] == ':') 
+	{
+        std::getline(stream, prefixe, ' ');
+        std::getline(tmp, prefixe, ' ');
+        prefixe = prefixe.substr(1);
+    }
+    std::getline(stream, commande, ' ');
+    std::getline(tmp, commande, ' ');
+    std::string parametre;
+    while (std::getline(stream, parametre, ' ')) 
+	{
+		if (parametre[0] == ':')
+		{
+			std::getline(tmp, trailing, '\n');
+        	trailing = trailing.substr(1);
+			break ;
 		}
-	} else {
-		verb = raw;
-	}
+        parameters.push_back(parametre);
+		std::getline(tmp, parametre, ' ');
+    }
+}
+
+Message::~Message()
+{
+
 }
