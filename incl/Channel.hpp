@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/09 17:50:15 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 17:29:04 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,16 @@ class Channel
 		Channel(const std::string& name, User& channelOperator);
 		~Channel();
 	
-		void addUser(User& User);
-		void removeUser(User& User);
-		bool hasUser(User& User) const;
-		const std::vector<User*> getUsers() const;
+		void addUser(User& user);
+		void removeUser(User& user);
+		void addBannedUser(User& user);
+		void removeBannedUser(User& user);
+		void addKickedUser(User& user);
+		void removeKickedUser(User& user);
+		bool hasUser(User& user) const;
+		const std::vector<User*> getChannelMembers() const;
+		const std::vector<User*> getBannedUsers() const;
+		const std::vector<User*> getKickedUsers() const;
 		const std::string getName() const;
 
 
@@ -39,8 +45,8 @@ class Channel
 		std::string _channelTopic;
 		std::vector<User*> _channelMembers;
 		std::vector<User*> _channelOperators;
-		int _usercount;
-		int _userlimit;
+		std::vector<User*> _bannedUsers;
+		std::vector<User*> _kickedUsers;
 };
 
 #endif

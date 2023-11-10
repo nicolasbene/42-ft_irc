@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 17:02:03 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 18:01:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "utils.h"
 # include "User.hpp"
 # include "Channel.hpp"
+# include "Message.hpp"
 
 # include "Numerical_reply.hpp"
 

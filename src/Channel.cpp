@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/09 17:57:44 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/10 17:28:52 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,20 @@ Channel::~Channel()
 	return;
 }
 
-const std::vector<User*> Channel::getUsers() const
+// -- Getter
+const std::vector<User*> Channel::getChannelMembers() const
 {
 	return (this->_channelMembers);
+}
+
+const std::vector<User*> Channel::getBannedUsers() const
+{
+	return (this->_bannedUsers);
+}
+
+const std::vector<User*> Channel::getKickedUsers() const
+{
+	return (this->_kickedUsers);
 }
 
 const std::string Channel::getName() const
@@ -39,17 +50,18 @@ const std::string Channel::getName() const
 	return (this->_channelName);
 }
 
+// -- Add/Remove
 void Channel::addUser(User& user)
 {
     _channelMembers.push_back(&user);
 }
 
-void Channel::removeUser(User& User)
+void Channel::removeUser(User& user)
 {
 	unsigned long int i = 0;
 	while (i < _channelMembers.size())
 	{
-		if (_channelMembers[i] == &User)
+		if (_channelMembers[i] == &user)
 		{
 			_channelMembers.erase(_channelMembers.begin() + i);
 			return;
@@ -58,12 +70,48 @@ void Channel::removeUser(User& User)
 	}
 }
 
-bool Channel::hasUser(User& User) const
+void Channel::addBannedUser(User& user)
+{
+	_bannedUsers.push_back(&user);
+}
+void Channel::removeBannedUser(User& user)
+{
+	unsigned long int i = 0;
+	while (i < _bannedUsers.size())
+	{
+		if (_bannedUsers[i] == &user)
+		{
+			_bannedUsers.erase(_bannedUsers.begin() + i);
+			return;
+		}
+		i++;
+	}
+}
+
+void Channel::addKickedUser(User& user)
+{
+	_kickedUsers.push_back(&user);
+}
+void Channel::removeKickedUser(User& user)
+{
+	unsigned long int i = 0;
+	while (i < _kickedUsers.size())
+	{
+		if (_kickedUsers[i] == &user)
+		{
+			_kickedUsers.erase(_kickedUsers.begin() + i);
+			return;
+		}
+		i++;
+	}
+}
+
+bool Channel::hasUser(User& user) const
 {
 	unsigned long int i = 0;
 	while (i < _channelMembers.size())
 	{
-		if (_channelMembers[i] == &User)
+		if (_channelMembers[i] == &user)
 		{
 			return (true);
 		}

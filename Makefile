@@ -36,6 +36,7 @@ SRCS	=	main.cpp \
 			Log.cpp \
 			User.cpp \
 			Channel.cpp \
+			Message.cpp \
 			utils/min.cpp \
 			utils/Utils.cpp \
 			Commands/Join.cpp \
