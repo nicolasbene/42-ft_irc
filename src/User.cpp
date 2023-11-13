@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 16:22:21 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 16:49:18 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ User::User(void)
 	return;
 }
 
-User::User(int sockId, const std::string& userName) : 
-		_userSockId(sockId), _userName(userName), _nickName(userName), _oldNickName(userName), _isConnected(false)
+User::User(int sockId, const std::string& userName, struct sockaddr_in addrClient) : 
+		_userSockId(sockId), _userName(userName), _nickName(userName), _oldNickName(userName), _addrClient(addrClient), _isConnected(false) 
 {
+	_IPchar = std::string(inet_ntoa(addrClient.sin_addr));
+	_userID = _nickName + "!~" + _userName + "@" + _IPchar;
 	return;
 }
 

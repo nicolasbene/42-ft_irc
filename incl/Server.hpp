@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 18:12:59 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 15:47:41 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class	Server {
 
 		// -- Users 
 		std::map<int, User> users;
-		void addUser(int sockId);
+		void addUser(int sockId, struct sockaddr_in addrClient);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
@@ -83,6 +83,7 @@ class	Server {
 		void setUserNickName(Message message, int fd);
 		void sendPrivateMessage(Message message, int fd);
 		void executeJoinOrder(Message message, int fd);
+		void	executePart(Message message, int fd);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);

@@ -1,0 +1,72 @@
+<< CAP LS
+<< NICK jgautier
+<< USER jgautier jgautier irc.dal.net :Jean-Baptiste GAUTIER
+>> :atw.hu.eu.dal.net NOTICE AUTH :*** Looking up your hostname...
+>> :atw.hu.eu.dal.net NOTICE AUTH :*** Checking Ident
+>> :atw.hu.eu.dal.net NOTICE AUTH :*** Found your hostname
+>> :atw.hu.eu.dal.net NOTICE AUTH :*** No Ident response
+>> :atw.hu.eu.dal.net 001 jgautier :Welcome to the DALnet IRC Network jgautier!~jgautier@62.210.33.10
+<< MODE jgautier +i
+>> :atw.hu.eu.dal.net 002 jgautier :Your host is atw.hu.eu.dal.net, running version bahamut-2.2.2
+>> :atw.hu.eu.dal.net 003 jgautier :This server was created Sat 08 Oct CEST at 2022 02:30:58 PM
+>> :atw.hu.eu.dal.net 004 jgautier atw.hu.eu.dal.net bahamut-2.2.2 aAbcCdefFghHiIjkKmnoOPrRsSwxXy AbceiIjklLmMnoOpPrRsStv beIjklov
+>> :atw.hu.eu.dal.net 005 jgautier NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=50 CHANNELLEN=32 KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:50 PREFIX=(ohv)@%+ STATUSMSG=@%+ :are available on this server
+>> :atw.hu.eu.dal.net 005 jgautier CASEMAPPING=ascii WATCH=128 SILENCE=10 ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,ciPAmMnOprRsSt MAXLIST=b:200,e:100,I:100 TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS: :are available on this server
+>> :atw.hu.eu.dal.net 251 jgautier :There are 84 users and 7697 invisible on 37 servers
+>> :atw.hu.eu.dal.net 252 jgautier 78 :IRC Operators online
+>> :atw.hu.eu.dal.net 254 jgautier 3843 :channels formed
+>> :atw.hu.eu.dal.net 255 jgautier :I have 1155 clients and 1 servers
+>> :atw.hu.eu.dal.net 265 jgautier :Current local users: 1155 Max: 2113
+>> :atw.hu.eu.dal.net 266 jgautier :Current global users: 7781 Max: 12060
+>> :atw.hu.eu.dal.net NOTICE jgautier :*** Notice -- motd was last changed at 20/1/2021 6:02
+>> :atw.hu.eu.dal.net 375 jgautier :- atw.hu.eu.dal.net Message of the Day - 
+>> :atw.hu.eu.dal.net 372 jgautier :-20/1/2021 6:02
+>> :atw.hu.eu.dal.net 372 jgautier :- Welcome to DALnet!  By connecting to this network, you agree to abide
+>> :atw.hu.eu.dal.net 372 jgautier :- by its acceptable use policy, available here: http://www.dal.net/aup
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :- Server Policies:
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   We reserve the right to deny access to this server without
+>> :atw.hu.eu.dal.net 372 jgautier :-        warning or explanation
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   No malicious bots, including flood and nick/channel chasers
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   No channel filler bots/clients/psybncs
+>> :atw.hu.eu.dal.net 372 jgautier :-          - A channel filler is a client, bnc, or bot which is
+>> :atw.hu.eu.dal.net 372 jgautier :-            connected just to fill a channel and make it look
+>> :atw.hu.eu.dal.net 372 jgautier :-            bigger
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   Operator impersonation, spamming, or any other abuse will
+>> :atw.hu.eu.dal.net 372 jgautier :-        cause you to be banned from this server
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   Abide by DALnet's AUP (www.dal.net/aup)
+>> :atw.hu.eu.dal.net 372 jgautier :-    *   Please have fun and enjoy DALnet!
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :-      ///admins////////////////////////////////////////
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             //
+>> :atw.hu.eu.dal.net 372 jgautier :-      //  [ Hidden  - administrator             ]    //
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             // 
+>> :atw.hu.eu.dal.net 372 jgautier :-      //  [ koszik  - assistant administrator   ]    //
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             //
+>> :atw.hu.eu.dal.net 372 jgautier :-      ///operators/////////////////////////////////////
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             //
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             //
+>> :atw.hu.eu.dal.net 372 jgautier :-      //                                             //
+>> :atw.hu.eu.dal.net 372 jgautier :-      /////////////////////////////////////////////////
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :- For IRCop assistance, please /join #operhelp or message one of our
+>> :atw.hu.eu.dal.net 372 jgautier :- friendly server staff listed above.
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :- For multilingual information:  <http://docs.dal.net/>
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 372 jgautier :- Thank you for using DALnet!  We hope you have a pleasant day.
+>> :atw.hu.eu.dal.net 372 jgautier :- 
+>> :atw.hu.eu.dal.net 376 jgautier :End of /MOTD command.
+>> :jgautier MODE jgautier :+iH
+<< PING atw.hu.eu.dal.net
+>> :atw.hu.eu.dal.net PONG atw.hu.eu.dal.net :jgautier
+--> lag pong
+<< PING atw.hu.eu.dal.net
+>> :atw.hu.eu.dal.net PONG atw.hu.eu.dal.net :jgautier
+--> lag pong
+<< PING atw.hu.eu.dal.net
+>> :atw.hu.eu.dal.net PONG atw.hu.eu.dal.net :jgautier
+--> lag pong
+<< QUIT :leaving

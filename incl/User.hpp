@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 16:21:51 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 17:54:39 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <string>
 # include <iostream>
 # include "Channel.hpp"
+# include "Server.hpp"
 
 class Channel;
 
@@ -24,7 +25,7 @@ class User
 	public:
 
 		User(void);
-		User(int sockId, const std::string& userName);
+		User(int sockId, const std::string& userName, struct sockaddr_in addrClient);
 		~User();
 		bool operator!=(User& other) {return (this->_userSockId != other.getUserSockId());}
 		bool operator==(User& other) {return (this->_userSockId == other.getUserSockId());}
@@ -36,6 +37,7 @@ class User
 		std::string getUserName(void);
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
+		std::string getUserID(void) const {return _userID;}
 		void addChannelList(Channel channel);
 
 	private:
@@ -43,6 +45,9 @@ class User
 	std::string _userName;
 	std::string _nickName;
 	std::string _oldNickName;
+	struct sockaddr_in _addrClient;
+	std::string			_userID;
+	std::string 			_IPchar;
 	bool	_isConnected;
 	std::vector<Channel*> _channelList;
 

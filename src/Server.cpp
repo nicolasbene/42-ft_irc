@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 18:12:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 16:42:18 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ int Server::create_client()
 {
     if (_nb_clients < MAX_CONNEXIONS)
     {
-        struct sockaddr_storage client_addr;
+        // struct sockaddr_storage client_addr;
+        struct sockaddr_in client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
         int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
 
@@ -131,7 +132,7 @@ int Server::create_client()
             exit(1);
         }
 
-        addUser(client_fd);
+        addUser(client_fd, client_addr);
         ++_nb_clients;
         Log::info() << "Client connected : " << client_fd << '\n';
 
@@ -192,15 +193,17 @@ int Server::executeCommand(char* buffer, int fd)
         sendPrivateMessage(message, fd);
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
+    else if (message.getCommande() == "PART")
+        executePart(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
 }
 
-void Server::addUser(int sockId) // ici pas satisfait avec le name par defaut
+void Server::addUser(int sockId, struct sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
-    users.insert(std::make_pair(sockId, User(sockId, "userTest")));
+    users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
     return;
 }
 
@@ -215,6 +218,7 @@ void Server::sendServerRpl(int const fd, std::string reply)
 	std::istringstream	buf(reply);
 	std::string			sended;
 	
+    std::cout << "Send: " << reply << std::endl;
 	send(fd, reply.c_str(), reply.size(), 0);
 	while (getline(buf, sended))
 	{
