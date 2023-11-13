@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 18:12:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 17:30:30 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,10 @@ int Server::create_client()
             exit(1);
         }
 
-        addUser(client_fd);
+        //addUser(client_fd);
         ++_nb_clients;
         Log::info() << "Client connected : " << client_fd << '\n';
+        message_creation(client_fd);
 
         // Envoi du code RPL 001 au client
         std::string rpl001 = "001 : Welcome to the Internet Relay Network\r\n";
@@ -143,6 +144,40 @@ int Server::create_client()
     {
         Log::info() << "Client connection refused: Too many clients" << '\n';
     }
+    return 0;
+}
+
+int Server::message_creation(int fd)
+{
+    char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
+
+    // Lire les données du socket
+    int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+    if (num_bytes == -1)
+    {
+        perror("recv");
+        exit(1);
+    }
+
+    if (num_bytes == 0)
+    {
+        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+        {
+            perror("epoll_ctl");
+            exit(1);
+        }
+
+        close(fd);
+        Log::info() << "Client disconnected" << '\n';
+    }
+    else
+    {
+        std::cout << "Received: " << buffer << std::endl;
+        addUser(fd, &buffer[0]);
+    }
+
     return 0;
 }
 
@@ -197,10 +232,12 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId) // ici pas satisfait avec le name par defaut
+void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
-    users.insert(std::make_pair(sockId, User(sockId, "userTest")));
+    std::string str(buffer);
+    std::string name = extractNextWord(str, "NICK");
+    users.insert(std::make_pair(sockId, User(sockId, name)));
     return;
 }
 

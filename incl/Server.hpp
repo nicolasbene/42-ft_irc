@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/10 18:12:59 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/13 17:17:06 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ class	Server {
 		void		write_logo() const;
 		
 		int			create_client();
-		int 		receive_message(int i);
+		int 		receive_message(int fd);
+		int			message_creation(int fd);
 
 
 		// -- Public static functions --
@@ -72,7 +73,7 @@ class	Server {
 
 		// -- Users 
 		std::map<int, User> users;
-		void addUser(int sockId);
+		void addUser(int sockId, char *buffer);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
@@ -82,6 +83,7 @@ class	Server {
 		int executeCommand(char* buffer, int fd);
 		void setUserNickName(Message message, int fd);
 		void sendPrivateMessage(Message message, int fd);
+		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
 
 		// -- SendText
@@ -106,5 +108,6 @@ class	Server {
 
 //utils
 std::vector<std::string> mySplit(const std::string& s, char delimiter);
+std::string extractNextWord(const std::string& input, const std::string& keyword);
 
 #endif
