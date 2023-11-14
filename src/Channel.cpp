@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 17:28:52 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 17:25:39 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void Channel::addBannedUser(User& user)
 {
 	_bannedUsers.push_back(&user);
 }
+
 void Channel::removeBannedUser(User& user)
 {
 	unsigned long int i = 0;
@@ -92,6 +93,7 @@ void Channel::addKickedUser(User& user)
 {
 	_kickedUsers.push_back(&user);
 }
+
 void Channel::removeKickedUser(User& user)
 {
 	unsigned long int i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 17:29:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 17:22:45 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ class Channel
 
 
 	private:
-		std::string _channelName;
-		std::string _channelTopic;
-		std::vector<User*> _channelMembers;
-		std::vector<User*> _channelOperators;
-		std::vector<User*> _bannedUsers;
-		std::vector<User*> _kickedUsers;
+		std::string			_channelName;
+		std::string			_channelTopic;
+		std::vector<User*>	_channelMembers;
+		std::vector<User*>	_channelOperators;
+		std::vector<User*>	_bannedUsers;
+		std::vector<User*>	_kickedUsers;
 };
 
 #endif
