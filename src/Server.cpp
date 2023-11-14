@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/13 17:30:30 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 16:59:37 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ Server::Server(const std::string& port, const std::string& password) :
     _sockfd(-1), _nb_clients(0), _port(port),
     _password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
+    //setup date de creation
+    time_t      rawtime = time(NULL);
+    struct tm   *timeinfo;
+    timeinfo = localtime(&rawtime);
+	_date = std::string(asctime(timeinfo));
+
     // Affiche les informations sur le port et le mot de passe
     Log::info() << "Using port: " << port << '\n';
     Log::info() << "Using password: '" << password << "'" << '\n';
@@ -90,7 +96,8 @@ int Server::poll()
     while (true) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
         int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
-        if (num_events == -1) {
+        if (num_events == -1) 
+        {
             perror("epoll_wait");
             exit(1);
         }
@@ -136,9 +143,12 @@ int Server::create_client()
         Log::info() << "Client connected : " << client_fd << '\n';
         message_creation(client_fd);
 
-        // Envoi du code RPL 001 au client
-        std::string rpl001 = "001 : Welcome to the Internet Relay Network\r\n";
-        send(client_fd, rpl001.c_str(), rpl001.size(), 0);
+        // Envoi du code RPL au client
+        sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
+        sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
+        sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
+        sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
+        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=9 TOPICLEN=307"));
     }
     else
     {
@@ -174,7 +184,7 @@ int Server::message_creation(int fd)
     }
     else
     {
-        std::cout << "Received: " << buffer << std::endl;
+        std::cout << "-Received << " << buffer << std::endl;
         addUser(fd, &buffer[0]);
     }
 
@@ -208,7 +218,7 @@ int Server::receive_message(int fd)
     }
     else
     {
-        std::cout << "Received: " << buffer << std::endl;
+        std::cout << "Received << " << buffer << std::endl;
         executeCommand(&buffer[0], fd);
     }
 
@@ -236,8 +246,9 @@ void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name
 {
     //static int i = 1;
     std::string str(buffer);
-    std::string name = extractNextWord(str, "NICK");
-    users.insert(std::make_pair(sockId, User(sockId, name)));
+    std::string nickName = extractNextWord(str, "NICK");
+    std::string userName = extractNextWord(str, "USER");
+    users.insert(std::make_pair(sockId, User(sockId, nickName, userName)));
     return;
 }
 
@@ -290,4 +301,9 @@ void Server::write_logo() const
     {
         std::cout << line << std::endl;
     }
+}
+
+std::string Server::getDate() const
+{
+    return (this->_date);
 }

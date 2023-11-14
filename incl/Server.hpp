@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/13 17:17:06 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 16:19:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 # include "Numerical_reply.hpp"
 
 # define SERVER_NAME "ft_irc"
+# define SERVER_VERSION "1.1"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
 
@@ -56,6 +57,9 @@ class	Server {
 
 		// -- Destructor --
 		~Server();
+
+		// -- getter --
+		std::string getDate() const;
 
 		// -- Public Functions --
 		int		    start();
@@ -96,6 +100,7 @@ class	Server {
 		std::string				        _port;
 		std::string				        _password;
 		std::string 				    _name;
+		std::string						_date;
 		struct addrinfo			        _hints;
 		struct addrinfo*				_servinfo;
 

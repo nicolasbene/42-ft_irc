@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 16:21:51 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 13:02:28 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ class User
 	public:
 
 		User(void);
-		User(int sockId, const std::string& userName);
+		User(int sockId, const std::string& userNickName, const std::string& userName);
 		~User();
 		bool operator!=(User& other) {return (this->_userSockId != other.getUserSockId());}
 		bool operator==(User& other) {return (this->_userSockId == other.getUserSockId());}
 
 		void setUserName(const std::string userName);
 		void setOldNickName(const std::string userNickName);
-		void setUserNickName(const std::string userNickName);
+		void setNickName(const std::string userNickName);
 		int getUserSockId(void);
 		std::string getUserName(void);
 		std::string getOldNickName(void);
