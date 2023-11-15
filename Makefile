@@ -34,10 +34,21 @@ H_DIR		= incl
 SRCS	=	main.cpp \
 			Server.cpp \
 			Log.cpp \
+<<<<<<< HEAD
+			User.cpp \
+			Channel.cpp \
+			Message.cpp \
+			utils/min.cpp \
+			utils/Utils.cpp \
+			Commands/Join.cpp \
+			Commands/Nick.cpp \
+			Commands/Privmsg.cpp \
+=======
 			Client.cpp \
 			ClientManager.cpp \
 			Message.cpp \
 			utils/min.cpp
+>>>>>>> 898ec0aaf1bcc24955684886eb1502f2a4e8af50
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \

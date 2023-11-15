@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+- Possible probleme avec la creation d un nickname commencant par # a gerer
+=======
 gerer les operateur(client avec des droits supplementaires)
 
 sujet
@@ -7,3 +10,4 @@ canaux.
 ◦ KICK - Ejecter un client du channel
 ◦ INVITE - Inviter un client au channel
 ◦ TOPIC - Modifier ou afficher le thème du channel
+>>>>>>> 898ec0aaf1bcc24955684886eb1502f2a4e8af50

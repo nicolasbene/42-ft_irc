@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/07 18:35:20 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/15 14:47:32 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,19 @@
 #include <errno.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "Log.hpp"
 
 Server::Server(const std::string& port, const std::string& password) :
-    _socket_serveur(-1), _nb_clients(0), _port(port),
+    _sockfd(-1), _nb_clients(0), _port(port),
     _password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
+    //setup date de creation
+    time_t      rawtime = time(NULL);
+    struct tm   *timeinfo;
+    timeinfo = localtime(&rawtime);
+	_date = std::string(asctime(timeinfo));
+
     // Affiche les informations sur le port et le mot de passe
     Log::info() << "Using port: " << port << '\n';
     Log::info() << "Using password: '" << password << "'" << '\n';
@@ -44,28 +51,28 @@ Server::Server(const std::string& port, const std::string& password) :
 Server::~Server()
 {
     freeaddrinfo(_servinfo);
-    close(_socket_serveur);
+    close(_sockfd);
     Log::info() << "Server stopped" << '\n';
 }
 
 int Server::start()
 {
     // Création, liaison et écoute du socket du serveur
-    _socket_serveur = socket(_servinfo->ai_family, _servinfo->ai_socktype,
+    _sockfd = socket(_servinfo->ai_family, _servinfo->ai_socktype,
         _servinfo->ai_protocol);
-    if (_socket_serveur == -1) {
+    if (_sockfd == -1) {
         Log::error() << "Could not create server socket" << '\n';
         exit(1);
     }
-    if (bind(_socket_serveur, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
+    if (bind(_sockfd, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
         Log::error() << "Could not bind server socket" << '\n';
         exit(1);
     }
-    if (listen(_socket_serveur, MAX_CONNEXIONS) == -1) {
+    if (listen(_sockfd, MAX_CONNEXIONS) == -1) {
         Log::error() << "Could not listen on server socket" << '\n';
         exit(1);
     }
-    Log::info() << "Server started on port " << _port << '\n';
+    Log::info() << "Server started" << '\n';
 
     return (0);
 }
@@ -80,26 +87,27 @@ int Server::poll()
         exit(1);
     }
     server_event.events = EPOLLIN;
-    server_event.data.fd = _socket_serveur;
-    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _socket_serveur, &server_event) == -1) {
-        perror("epoll_ctl_add1");
+    server_event.data.fd = _sockfd;
+    if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _sockfd, &server_event) == -1) {
+        Log::error() << "Could not add server fd to epoll" << '\n';
         exit(1);
     }
 
     while (true) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
-        int nb_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
-        if (nb_events == -1) {
+        int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
+        if (num_events == -1) 
+        {
             perror("epoll_wait");
             exit(1);
         }
 
-        for (int i = 0; i < nb_events; i++) {
+        for (int i = 0; i < num_events; i++) {
             int fd = _events[i].data.fd;
-            if (fd == _socket_serveur) {
+            if (fd == _sockfd) {
                 create_client();
             } else {
-                processClientData(fd);
+                receive_message(fd);
             }
         }
     }
@@ -111,7 +119,7 @@ int Server::create_client()
     {
         struct sockaddr_storage client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
-        int client_fd = accept(_socket_serveur, (struct sockaddr *)&client_addr, &client_addr_size);
+        int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
 
         if (client_fd == -1)
         {
@@ -126,25 +134,22 @@ int Server::create_client()
 
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1)
         {
-            perror("epoll_ctl_add2");
+            perror("epoll_ctl");
             exit(1);
         }
 
+        //addUser(client_fd);
         ++_nb_clients;
-        Log::info() << "Client connected on fd: " << client_fd << " from " << inet_ntoa(((struct sockaddr_in *)&client_addr)->sin_addr) << '\n';
+        sleep(1); // ici test
+        Log::info() << "Client connected : " << client_fd << '\n';
+        message_creation(client_fd);
 
-        // Envoi du code RPL 001 au client
-        std::string rpl001 = "001 :Welcome to the Internet Relay Network\r\n";
-        send(client_fd, rpl001.c_str(), rpl001.size(), 0);
-
-        // Créez une instance de Client
-        Client newClient(client_fd);
-
-        // Ajoutez cette instance en tant que référence
-        _client_manager.addClient(newClient);
-        
-        // // Maintenant, ajoutez le client au gestionnaire de clients
-        // _client_manager.addClient(new Client(client_fd));
+        // Envoi du code RPL au client
+        sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
+        sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
+        sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
+        sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
+        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=30 TOPICLEN=307"));
     }
     else
     {
@@ -153,22 +158,13 @@ int Server::create_client()
     return 0;
 }
 
-int Server::processClientData(int fd)
+int Server::message_creation(int fd)
 {
-    Client& client = _client_manager.getClient(fd);
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
-    
-
-    Message message(buffer);
-    logReceivedMessage(message, fd);
-
-    
-    
-
     if (num_bytes == -1)
     {
         perror("recv");
@@ -180,60 +176,100 @@ int Server::processClientData(int fd)
         // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
         {
-            perror("epoll_ctl_del");
+            perror("epoll_ctl");
             exit(1);
         }
 
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
+    else
+    {
+        std::cout << "-Received << " << buffer << std::endl;
+        addUser(fd, &buffer[0]);
+    }
 
     return 0;
-    
 }
 
-void Server::logReceivedMessage(const Message& message, const int fd)
+int Server::receive_message(int fd)
 {
-    std::string verb = message.getVerb();
-    std::vector<std::string> params = message.getParameters();
-    std::string logMessage = "Received: " + verb;
-    for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+    char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
+
+    // Lire les données du socket
+    int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+    if (num_bytes == -1)
     {
-        logMessage += " " + *it;
+        perror("recv");
+        exit(1);
     }
-    Log::debug() << logMessage << '\n';
+
+    if (num_bytes == 0)
+    {
+        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+        {
+            perror("epoll_ctl");
+            exit(1);
+        }
+
+        close(fd);
+        Log::info() << "Client disconnected" << '\n';
+    }
+    else
+    {
+        std::cout << "Received << " << buffer << std::endl;
+        executeCommand(&buffer[0], fd);
+    }
+
+    return 0;
 }
 
-    // char buffer[1024];
-    // memset(buffer, 0, sizeof(buffer));
+int Server::executeCommand(char* buffer, int fd)
+{
+    std::string str(buffer);
 
-    // // Lire les données du socket
-    // int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+    
+    Message message(str);
+    if (message.getCommande() == "NICK")
+        setUserNickName(message, fd);
+    else if (message.getCommande() == "PRIVMSG")
+        sendPrivateMessage(message, fd);
+    else if (message.getCommande() == "JOIN")
+        executeJoinOrder(message, fd);
+    else
+        std::cout << "-------" << std::endl;
+    return (0);
+}
 
-    // if (num_bytes == -1)
-    // {
-    //     perror("recv");
-    //     exit(1);
-    // }
+void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
+{
+    //static int i = 1;
+    std::string str(buffer);
+    std::string nickName = extractNextWord(str, "NICK");
+    std::string userName = extractNextWord(str, "USER");
+    users.insert(std::make_pair(sockId, User(sockId, nickName, userName)));
+    return;
+}
 
-    // if (num_bytes == 0)
-    // {
-    //     // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-    //     if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-    //     {
-    //         perror("epoll_ctl_del");
-    //         exit(1);
-    //     }
+void Server::addChannel(const std::string& name, User& channelOperator)
+{
+    channels.insert(std::make_pair(name, Channel(name, channelOperator)));
+    return;
+}
 
-    //     close(fd);
-    //     Log::info() << "Client disconnected" << '\n';
-    // }
-    // else
-    // {
-    //     std::cout << "Received: " << buffer << std::endl;
-    // }
-
-    // return 0;
+void Server::sendServerRpl(int const fd, std::string reply)
+{
+	std::istringstream	buf(reply);
+	std::string			sended;
+	
+	send(fd, reply.c_str(), reply.size(), 0);
+	while (getline(buf, sended))
+	{
+		std::cout << "[Server] Message sent to client " << fd << "       >> " << GREEN << sended << RESET << std::endl;
+	}
+}
 
 bool Server::is_valid_port(const std::string& port)
 {
@@ -266,4 +302,9 @@ void Server::write_logo() const
     {
         std::cout << line << std::endl;
     }
+}
+
+std::string Server::getDate() const
+{
+    return (this->_date);
 }

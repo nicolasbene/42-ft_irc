@@ -1,24 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Channel.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
+/*   Updated: 2023/11/15 14:33:52 by nwyseur          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
-#include <string>
-#include <vector>
-#include "Client.hpp"
+# include <string>
+# include <iostream>
+# include "Server.hpp"
+# include "User.hpp"
 
-class Channel {
-public:
-	Channel(const std::string& name);
-	~Channel();
+class User;
 
-	void addClient(Client* client);
-	void removeClient(Client* client);
-	bool hasClient(Client* client) const;
-	const std::vector<Client*>& getClients() const;
-	const std::string& getName() const;
+class Channel
+{
+	public:
+		Channel(void);
+		Channel(const std::string& name, User& channelOperator);
+		~Channel();
+	
+		void addUser(User& user);
+		void removeUser(User& user);
+		void addBannedUser(User& user);
+		void removeBannedUser(User& user);
+		void addKickedUser(User& user);
+		void removeKickedUser(User& user);
+		bool hasUser(User& user) const;
 
-private:
-	std::string m_name;
-	std::vector<Client*> m_clients;
+		const std::vector<User*> getChannelMembers() const;
+		const std::vector<User*> getBannedUsers() const;
+		const std::vector<User*> getKickedUsers() const;
+		const std::string getName() const;
+		const std::string getPassword() const;
+
+		void	setPassword(std::string pass);
+
+
+	private:
+		std::string _channelName;
+		std::string _channelTopic;
+		std::vector<User*>	_channelMembers;
+		std::vector<User*>	_channelOperators;
+		std::vector<User*>	_bannedUsers;
+		std::vector<User*>	_kickedUsers;
+		std::string			_channelPassword;
 };
 
 #endif
