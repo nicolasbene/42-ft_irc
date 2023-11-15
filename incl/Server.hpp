@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/13 15:47:41 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:19:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ class	Server {
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
+		bool isChannel(const std::string& name);
 		void addChannel(const std::string& name, User& channelOperator); 
 
 		// -- Execution

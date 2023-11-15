@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/13 16:42:18 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:21:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,14 @@ void Server::addChannel(const std::string& name, User& channelOperator)
 {
     channels.insert(std::make_pair(name, Channel(name, channelOperator)));
     return;
+}
+
+bool Server::isChannel(const std::string& name)
+{
+    std::map<std::string, Channel>::iterator it = channels.find(name);
+    if (it != channels.end()) 
+        return true;
+    return false;
 }
 
 void Server::sendServerRpl(int const fd, std::string reply)

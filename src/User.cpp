@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/13 16:49:18 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:37:41 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,12 @@ void User::addChannelList(Channel channel)
 int User::getUserSockId(void)
 {
 	return(this->_userSockId);
+}
+
+bool Server::isChannel(const std::string& name)
+{
+    std::map<std::string, Channel>::iterator it = channels.find(name);
+    if (it != channels.end()) 
+        return true;
+    return false;
 }

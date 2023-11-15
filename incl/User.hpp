@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/13 17:54:39 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:28:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class User
 		std::string getUserNickName(void);
 		std::string getUserID(void) const {return _userID;}
 		void addChannelList(Channel channel);
+		bool isChannel(const std::string& name);
 
 	private:
 	int	_userSockId;
@@ -49,7 +50,8 @@ class User
 	std::string			_userID;
 	std::string 			_IPchar;
 	bool	_isConnected;
-	std::vector<Channel*> _channelList;
+	//std::vector<Channel*> _channelList;
+	std::map<std::string, Channel> channels;
 
 };
 
