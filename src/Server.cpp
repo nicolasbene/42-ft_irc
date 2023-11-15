@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/14 16:59:37 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 14:09:42 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int Server::create_client()
 
         //addUser(client_fd);
         ++_nb_clients;
+        sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
         message_creation(client_fd);
 
@@ -148,7 +149,7 @@ int Server::create_client()
         sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
         sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
         sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
-        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=9 TOPICLEN=307"));
+        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=30 TOPICLEN=307"));
     }
     else
     {

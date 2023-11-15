@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/13 16:23:32 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 17:14:05 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void Server::sendPrivateMessage(Message message, int fd)
         std::map<int, User>::iterator itu;
         for (itu = users.begin(); itu != users.end(); ++itu)
         {
-            if (itu->second.getUserName() == target + "\r\n" || itu->second.getUserNickName() == target + "\r\n")
+            if (itu->second.getUserName() == target || itu->second.getUserNickName() == target)
             {
                 sendServerRpl(fd, RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
                 return;

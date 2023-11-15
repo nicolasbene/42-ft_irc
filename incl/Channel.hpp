@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 17:29:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 12:29:41 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,24 @@ class Channel
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
 		bool hasUser(User& user) const;
+
 		const std::vector<User*> getChannelMembers() const;
 		const std::vector<User*> getBannedUsers() const;
 		const std::vector<User*> getKickedUsers() const;
 		const std::string getName() const;
+		const std::string getPassword() const;
+
+		void	setPassword(std::string pass);
 
 
 	private:
 		std::string _channelName;
 		std::string _channelTopic;
-		std::vector<User*> _channelMembers;
-		std::vector<User*> _channelOperators;
-		std::vector<User*> _bannedUsers;
-		std::vector<User*> _kickedUsers;
+		std::vector<User*>	_channelMembers;
+		std::vector<User*>	_channelOperators;
+		std::vector<User*>	_bannedUsers;
+		std::vector<User*>	_kickedUsers;
+		std::string			_channelPassword;
 };
 
 #endif

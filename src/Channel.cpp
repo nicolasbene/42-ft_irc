@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 17:28:52 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 12:11:08 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,19 @@ const std::string Channel::getName() const
 {
 	return (this->_channelName);
 }
+
+const std::string Channel::getPassword() const
+{
+	return (this->_channelPassword);
+}
+
+// -- Setter
+
+void	Channel::setPassword(std::string pass)
+{
+	_channelPassword = pass;
+}
+
 
 // -- Add/Remove
 void Channel::addUser(User& user)
