@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 17:37:41 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/15 19:12:23 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,16 @@ void User::addChannelList(Channel channel)
 int User::getUserSockId(void)
 {
 	return(this->_userSockId);
+}
+
+bool User::getIsConnected(void)
+{
+	return _isConnected;
+}
+
+void User::setIsConnected(bool value)
+{
+	_isConnected = value;
 }
 
 bool Server::isChannel(const std::string& name)

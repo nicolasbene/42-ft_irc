@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 17:28:26 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/15 19:14:20 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ class User
 		std::string getUserID(void) const {return _userID;}
 		void addChannelList(Channel channel);
 		bool isChannel(const std::string& name);
+		bool getIsConnected(void) const;
+		void setIsConnected(bool value);
+	
 
 	private:
 	int	_userSockId;
