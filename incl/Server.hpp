@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 14:37:02 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 16:19:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ class	Server {
 		std::string getDate() const;
 
 		// -- Public Functions --
-		int		start();
-		int		poll();
-		void	write_logo() const;
+		int		    start();
+		int		    poll();
+		void		write_logo() const;
 		
 		int			create_client();
 		int 		receive_message(int fd);
@@ -95,7 +95,7 @@ class	Server {
 
 	private:
 		// -- Private attributes --
-		int						        _socket_serveur;
+		int						        _sockfd;
 		int						        _nb_clients;
 		std::string				        _port;
 		std::string				        _password;
@@ -106,9 +106,9 @@ class	Server {
 
 		int								_epoll_fd;
 		epoll_event						_events[MAX_CONNEXIONS];
+		
+		std::vector<pollfd>				_client_pfds;
 
-		ClientManager					_client_manager;
-		// std::vector<Channel*>			_channels;
 };
 
 //utils
