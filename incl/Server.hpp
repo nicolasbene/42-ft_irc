@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/14 16:19:25 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 20:52:14 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 
 # include "Numerical_reply.hpp"
 
-# define SERVER_NAME "ft_irc"
+# define SERVER_NAME "ircserv"
 # define SERVER_VERSION "1.1"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
@@ -89,9 +89,16 @@ class	Server {
 		void sendPrivateMessage(Message message, int fd);
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
+		
+		void handleWhoisCommand(Message message, int fd);
+
+		
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
+		void	sendToClient(int const fd, std::string reply);
+
+		void	logReceivedMessage(int fd, Message& message);
 
 	private:
 		// -- Private attributes --

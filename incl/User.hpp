@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 13:02:28 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 17:49:58 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,15 @@ class User
 		void setUserName(const std::string userName);
 		void setOldNickName(const std::string userNickName);
 		void setNickName(const std::string userNickName);
+		void setHostName(const std::string hostName);
+		void setRealName(const std::string realName);
 		int getUserSockId(void);
 		std::string getUserName(void);
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
+		std::string getHostName(void);
+		std::string getRealName(void);
+		
 		void addChannelList(Channel channel);
 
 	private:
@@ -43,6 +48,9 @@ class User
 	std::string _userName;
 	std::string _nickName;
 	std::string _oldNickName;
+	std::string _hostName;
+	std::string _realName;
+	
 	bool	_isConnected;
 	std::vector<Channel*> _channelList;
 

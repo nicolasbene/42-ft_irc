@@ -1,1 +1,1 @@
-- Possible probleme avec la creation d un nickname commencant par # a gerer
+Verifier lors de la connexion du client que le mdp est le bon et que le client a bien tous les parametres 

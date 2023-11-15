@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 13:01:26 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 17:49:28 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,16 @@ void User::setNickName(const std::string userNickName)
 	return;
 }
 
+void User::setHostName(const std::string hostName)
+{
+	_hostName = hostName;
+}
+
+void User::setRealName(const std::string realName)
+{
+	_realName = realName;
+}
+
 std::string User::getUserName(void)
 {
 	return (this->_userName);
@@ -66,6 +76,16 @@ std::string User::getUserNickName(void)
 std::string User::getOldNickName(void)
 {
 	return (this->_oldNickName);
+}
+
+std::string User::getHostName(void)
+{
+	return ("localhost");
+}
+
+std::string User::getRealName(void)
+{
+	return ("realname");
 }
 
 void User::addChannelList(Channel channel)

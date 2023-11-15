@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 14:09:42 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 20:55:14 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,12 @@ int Server::create_client()
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
         message_creation(client_fd);
+        
+        //setHostName
+        std::string hostName = extractNextWord(users[client_fd].getUserName(), "@");
+        users[client_fd].setHostName(hostName);
+        
+        
 
         // Envoi du code RPL au client
         sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
@@ -187,6 +193,7 @@ int Server::message_creation(int fd)
     {
         std::cout << "-Received << " << buffer << std::endl;
         addUser(fd, &buffer[0]);
+        
     }
 
     return 0;
@@ -219,12 +226,13 @@ int Server::receive_message(int fd)
     }
     else
     {
-        std::cout << "Received << " << buffer << std::endl;
         executeCommand(&buffer[0], fd);
     }
 
     return 0;
 }
+
+
 
 int Server::executeCommand(char* buffer, int fd)
 {
@@ -232,15 +240,31 @@ int Server::executeCommand(char* buffer, int fd)
 
     
     Message message(str);
+    logReceivedMessage(fd, message);
+    
     if (message.getCommande() == "NICK")
         setUserNickName(message, fd);
     else if (message.getCommande() == "PRIVMSG")
         sendPrivateMessage(message, fd);
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
+    else if (message.getCommande() == "WHOIS")
+        handleWhoisCommand(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
+}
+
+void Server::logReceivedMessage(int fd, Message& message)
+{
+    std::stringstream stream;
+	stream << "Received (fd=" << fd << "): " << message.getCommande(); 
+
+	for (size_t i = 0; i < message.getParameters().size(); ++i)
+		stream << " [" << message.getParameters()[i] << "]";
+
+	stream << std::endl; // NOLINT
+	Log::debug() << stream.str();
 }
 
 void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
@@ -265,11 +289,34 @@ void Server::sendServerRpl(int const fd, std::string reply)
 	std::string			sended;
 	
 	send(fd, reply.c_str(), reply.size(), 0);
-	while (getline(buf, sended))
-	{
-		std::cout << "[Server] Message sent to client " << fd << "       >> " << GREEN << sended << RESET << std::endl;
-	}
+	// while (getline(buf, sended))
+	// {
+	// 	std::cout << "[Server] Message sent to client " << fd << "       >> " << GREEN << sended << RESET << std::endl;
+	// }
+
+    Log::debug() << "Sent (fd=" << fd << "): " << reply << '\n';
 }
+
+void Server::sendToClient(int const fd, std::string reply)
+{
+    size_t bytesSent = 0;
+	const std::string data = reply + "\r\n";
+
+    while (bytesSent < data.size())
+    {
+        ssize_t ret = send(fd, data.c_str() + bytesSent, data.size() - bytesSent, 0);
+        if (ret == -1)
+        {
+            perror("send");
+            exit(1);
+        }
+        bytesSent += ret;
+    }
+    Log::debug() << "Sent (fd=" << fd << "): " << reply << '\n';
+    
+}
+
+
 
 bool Server::is_valid_port(const std::string& port)
 {
