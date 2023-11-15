@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 12:11:08 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/15 18:29:54 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelName = name;
     _channelOperators.push_back(&channelOperator);
     _channelMembers.push_back(&channelOperator);
+	_channelCapacity = -1;
 }
 
 Channel::~Channel()
@@ -55,11 +56,21 @@ const std::string Channel::getPassword() const
 	return (this->_channelPassword);
 }
 
+const int Channel::getChannelCap() const
+{
+	return (this->_channelCapacity);
+}
+
 // -- Setter
 
 void	Channel::setPassword(std::string pass)
 {
 	_channelPassword = pass;
+}
+
+void	Channel::setChannelCap(int cap)
+{
+	_channelCapacity = cap;
 }
 
 
