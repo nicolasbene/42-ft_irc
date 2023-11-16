@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 15:41:43 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 16:58:46 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ User::User(void)
 User::User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient) : 
 		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
 {
-	_IPchar = std::string(inet_ntoa(addrClient.sin_addr));
+	_IPchar = std::string(inet_ntoa(_addrClient.sin_addr));
 	_userID = _nickName + "!~" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
 	return;
 }
@@ -95,7 +95,7 @@ bool User::isChannel(const std::string& name)
 {
 	for ( std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
     {
-        if (*it->getName() == name)
+        if ((*it)->getName() == name)
         	return true;
         else
             ++it;

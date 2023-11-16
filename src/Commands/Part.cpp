@@ -1,8 +1,9 @@
 #include "Server.hpp"
+#include "utils.hpp"
 #include "Log.hpp"
 
 
-static void Server::unregisterClientToChannel(std::string unregisterChannnel, int fd)
+void Server::unregisterClientToChannel(std::string unregisterChannnel, int fd)
 {
 	channels[unregisterChannnel].removeUser(users[fd]);
 	// users[fd]._channelList.erase(unregisterChannnel);
@@ -15,7 +16,7 @@ void Server::executePart(Message message, int fd)
 	if (message.getParameters().empty())
 		sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), "PART"));
 	User client = users[fd];
-	std::vector<std::string> argChannels = utils::mySplit(message.getParameters()[0], ",");
+	std::vector<std::string> argChannels = mySplit(message.getParameters()[0], ',');
 	for (size_t i = 0; i < argChannels.size(); i++)
 	{
 		if (!isChannel(argChannels[i].substr(1))) 

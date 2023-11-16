@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 14:54:02 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:06:54 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <sys/epoll.h>
 # include <sstream>
 
-# include "utils.h"
+# include "utils.hpp"
 # include "User.hpp"
 # include "Channel.hpp"
 # include "Message.hpp"
@@ -95,6 +95,9 @@ class	Server {
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
+
+		// -- unregister Client in channel
+		void unregisterClientToChannel(std::string unregisterChannnel, int fd);
 
 	private:
 		// -- Private attributes --

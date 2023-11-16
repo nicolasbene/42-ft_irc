@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 14:55:02 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 16:55:23 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ int Server::create_client()
 {
     if (_nb_clients < MAX_CONNEXIONS)
     {
-        // struct sockaddr_storage client_addr;
         struct sockaddr_in client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
         int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
