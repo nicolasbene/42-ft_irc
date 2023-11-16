@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 18:29:54 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/16 16:01:15 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelName = name;
     _channelOperators.push_back(&channelOperator);
     _channelMembers.push_back(&channelOperator);
-	_channelCapacity = -1;
+	_channelCapacity = 0;
+	_channelSymbol = "#";
 }
 
 Channel::~Channel()
@@ -56,10 +57,16 @@ const std::string Channel::getPassword() const
 	return (this->_channelPassword);
 }
 
-const int Channel::getChannelCap() const
+size_t Channel::getChannelCap() const
 {
 	return (this->_channelCapacity);
 }
+
+const std::string Channel::getSymbol() const
+{
+	return (this->_channelSymbol);
+}
+
 
 // -- Setter
 
@@ -142,4 +149,22 @@ bool Channel::hasUser(User& user) const
 		i++;
 	}
 	return (false);
+}
+
+std::string Channel::listOfMember() const
+{
+	std::string toReturn;
+
+	toReturn += '[';
+	std::vector<User*>::const_iterator it = _channelMembers.begin();
+	for (it = _channelMembers.begin(); it + 1 != _channelMembers.end(); it++)
+	{
+		toReturn += (*it)->getUserNickName();
+		toReturn += "] [";
+	}
+	it++;
+	toReturn += (*it)->getUserNickName();
+	toReturn += "]\n";
+
+	return(toReturn);
 }

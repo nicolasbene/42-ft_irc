@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 17:23:52 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/16 13:05:45 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,6 @@ int Server::executeCommand(char* buffer, int fd)
 {
     std::string str(buffer);
 
-    
     Message message(str);
     if (message.getCommande() == "NICK")
         setUserNickName(message, fd);

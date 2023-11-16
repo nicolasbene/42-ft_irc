@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 18:46:14 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/16 16:31:16 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@
 #include <fstream>
 #include <sstream>
 #include "Log.hpp"
+
+void sendChanInfo(Channel& channel, User& user);
+bool atLeastOneAlphaNum(std::string toTest);
+void addClientToChannel(Channel& channel, User& client);
+std::string getChannelName(std::string strToPars);
 
 void Server::executeJoinOrder(Message message, int fd)
 {
@@ -46,7 +51,7 @@ void Server::executeJoinOrder(Message message, int fd)
         {
             addChannel(channel, users[fd]);
         }
-        if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != -1)
+        if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
         {
             sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
             continue;
@@ -69,10 +74,37 @@ void Server::executeJoinOrder(Message message, int fd)
                 continue;
             }
         }
+        std::vector<User*>::const_iterator iti;
+        iti = channels[channel].getChannelMembers().begin();
+        while (iti != channels[channel].getChannelMembers().end())
+        {
+            if (*(*iti) == users[fd])
+                break;
+            iti++;
+        }
+        if (iti == channels[channel].getChannelMembers().end())
+        {
+            addClientToChannel(channels[channel], users[fd]);
+        }
+        else
+		    std::cout << YELLOW << users[fd].getUserNickName() << "already in the channel\n" << RESET;
+        sendChanInfo(channels[channel], users[fd]);
     }
 }
 
+void Server::sendChanInfo(Channel& channel, User& user)
+{
+    std::vector<User*>::const_iterator member;
+    member = channel.getChannelMembers().begin();
 
+    while (member != channel.getChannelMembers().end())
+    {
+        sendServerRpl((*member)->getUserSockId(), RPL_JOIN(user_id(user.getUserNickName(), user.getUserName()), channel.getName()));
+        sendServerRpl((*member)->getUserSockId(), RPL_NAMREPLY(user.getUserNickName(), channel.getSymbol(), channel.getName(), channel.listOfMember()));
+        sendServerRpl((*member)->getUserSockId(), RPL_ENDOFNAMES(user.getUserNickName(), channel.getName()));
+        member++;
+    }
+}
 
 bool atLeastOneAlphaNum(std::string toTest)
 {
@@ -82,6 +114,11 @@ bool atLeastOneAlphaNum(std::string toTest)
             return(true);
     }
     return (false);
+}
+
+void addClientToChannel(Channel& channel, User& client)
+{
+    channel.addUser(client);
 }
 
 std::string getChannelName(std::string strToPars)
