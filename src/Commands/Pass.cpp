@@ -10,5 +10,8 @@ void Server::PassAuthentification(Message msg, int fd)
     else if(msg.getParameters()[0] != _password)
         // renvoi ERR_WRONGPASSWORD
     else if(msg.getParameters()[0] == _password)
+    {
         users[fd].setIsConnected(true);
+        //renvoi welcome dans le server
+    }
 }

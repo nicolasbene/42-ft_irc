@@ -7,6 +7,7 @@ void Server::executePart(Message message, int fd)
 {
 	if (message.getParameters().empty())
 		// renvoi ERR_NEEDMOREPARAM
+		sendServerRpl(fd, ERR_NONICKNAMEGIVEN(users[fd].getUserNickName()));
 	User client = users[fd];
 	std::vector<std::string> argChannels = utils::mySplit(message.getParameters()[0], ",");
 	for (size_t i = 0; i < argChannels.size(); i++)

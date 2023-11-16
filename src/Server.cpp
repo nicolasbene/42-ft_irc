@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 17:21:54 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/16 12:47:04 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ Server::Server(const std::string& port, const std::string& password) :
     _sockfd(-1), _nb_clients(0), _port(port),
     _password(password), _name(SERVER_NAME), _hints(), _servinfo(NULL)
 {
+    //setup date de creation
+    time_t      rawtime = time(NULL);
+    struct tm   *timeinfo;
+    timeinfo = localtime(&rawtime);
+	_date = std::string(asctime(timeinfo));
+
     // Affiche les informations sur le port et le mot de passe
     Log::info() << "Using port: " << port << '\n';
     Log::info() << "Using password: '" << password << "'" << '\n';
@@ -90,7 +96,8 @@ int Server::poll()
     while (true) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
         int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
-        if (num_events == -1) {
+        if (num_events == -1) 
+        {
             perror("epoll_wait");
             exit(1);
         }
@@ -132,18 +139,58 @@ int Server::create_client()
             exit(1);
         }
 
-        addUser(client_fd, client_addr);
+        // addUser(client_fd, client_addr);
+        // addUser(client_fd);
         ++_nb_clients;
+        sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
+        message_creation(client_fd);
 
-        // Envoi du code RPL 001 au client
-        std::string rpl001 = "001 : Welcome to the Internet Relay Network\r\n";
-        send(client_fd, rpl001.c_str(), rpl001.size(), 0);
+        // Envoi du code RPL au client
+        sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
+        sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
+        sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
+        sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
+        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=30 TOPICLEN=307"));
     }
     else
     {
         Log::info() << "Client connection refused: Too many clients" << '\n';
     }
+    return 0;
+}
+
+int Server::message_creation(int fd)
+{
+    char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
+
+    // Lire les données du socket
+    int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
+    if (num_bytes == -1)
+    {
+        perror("recv");
+        exit(1);
+    }
+
+    if (num_bytes == 0)
+    {
+        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+        {
+            perror("epoll_ctl");
+            exit(1);
+        }
+
+        close(fd);
+        Log::info() << "Client disconnected" << '\n';
+    }
+    else
+    {
+        std::cout << "-Received << " << buffer << std::endl;
+        addUser(fd, &buffer[0]);
+    }
+
     return 0;
 }
 
@@ -174,7 +221,7 @@ int Server::receive_message(int fd)
     }
     else
     {
-        std::cout << "Received: " << buffer << std::endl;
+        std::cout << "Received << " << buffer << std::endl;
         executeCommand(&buffer[0], fd);
     }
 
@@ -200,10 +247,18 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, struct sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
+// void Server::addUser(int sockId, struct sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
+// {
+    //static int i = 1;
+    // users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
+
+void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
-    users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
+    std::string str(buffer);
+    std::string nickName = extractNextWord(str, "NICK");
+    std::string userName = extractNextWord(str, "USER");
+    users.insert(std::make_pair(sockId, User(sockId, nickName, userName)));
     return;
 }
 
@@ -265,4 +320,9 @@ void Server::write_logo() const
     {
         std::cout << line << std::endl;
     }
+}
+
+std::string Server::getDate() const
+{
+    return (this->_date);
 }

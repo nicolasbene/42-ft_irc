@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 19:12:23 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/16 12:34:30 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,16 @@ void User::setOldNickName(const std::string userNickName)
 	return;
 }
 
-void User::setUserNickName(const std::string userNickName)
+void User::setNickName(const std::string userNickName)
 {
-	_nickName = userNickName;
+
+	if (userNickName[userNickName.size() - 1] == '\n' && userNickName[userNickName.size() - 2] == '\r')
+	{
+		std::string substr =userNickName.substr(0, userNickName.size() - 2);
+		_nickName = substr;
+	}
+	else
+		_nickName = userNickName;
 	return;
 }
 

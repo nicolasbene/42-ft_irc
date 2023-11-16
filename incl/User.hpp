@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/15 19:14:20 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/16 12:46:43 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class User
 
 		void setUserName(const std::string userName);
 		void setOldNickName(const std::string userNickName);
-		void setUserNickName(const std::string userNickName);
+		void setNickName(const std::string userNickName);
 		int getUserSockId(void);
 		std::string getUserName(void);
 		std::string getOldNickName(void);

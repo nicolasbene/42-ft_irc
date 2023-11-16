@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 17:19:00 by marvin           ###   ########.fr       */
+/*   Updated: 2023/11/16 12:46:36 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 # include "Numerical_reply.hpp"
 
 # define SERVER_NAME "ft_irc"
+# define SERVER_VERSION "1.1"
 # define MAX_CONNEXIONS 10
 # define MAX_EVENTS 10
 
@@ -57,13 +58,17 @@ class	Server {
 		// -- Destructor --
 		~Server();
 
+		// -- getter --
+		std::string getDate() const;
+
 		// -- Public Functions --
 		int		    start();
 		int		    poll();
 		void		write_logo() const;
 		
 		int			create_client();
-		int 		receive_message(int i);
+		int 		receive_message(int fd);
+		int			message_creation(int fd);
 
 
 		// -- Public static functions --
@@ -72,7 +77,8 @@ class	Server {
 
 		// -- Users 
 		std::map<int, User> users;
-		void addUser(int sockId, struct sockaddr_in addrClient);
+		// void addUser(int sockId, struct sockaddr_in addrClient);
+		void addUser(int sockId, char *buffer);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
@@ -83,6 +89,7 @@ class	Server {
 		int executeCommand(char* buffer, int fd);
 		void setUserNickName(Message message, int fd);
 		void sendPrivateMessage(Message message, int fd);
+		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
 		void	executePart(Message message, int fd);
 
@@ -96,6 +103,7 @@ class	Server {
 		std::string				        _port;
 		std::string				        _password;
 		std::string 				    _name;
+		std::string						_date;
 		struct addrinfo			        _hints;
 		struct addrinfo*				_servinfo;
 
@@ -108,5 +116,6 @@ class	Server {
 
 //utils
 std::vector<std::string> mySplit(const std::string& s, char delimiter);
+std::string extractNextWord(const std::string& input, const std::string& keyword);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/10 18:14:55 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/14 12:46:37 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ void Server::setUserNickName(Message message, int fd)
     std::map<int, User>::iterator it;
     for (it = users.begin(); it != users.end(); ++it)
     {
-        if (it->second.getUserNickName() == message.getParameters()[0] + "\r\n")
+        if (it->second.getUserNickName() == message.getParameters()[0])
         {
             sendServerRpl(fd, ERR_NICKNAMEINUSE(users[fd].getUserNickName(), message.getParameters()[0]));
             return;
         }
     }
     users[fd].setOldNickName(users[fd].getUserNickName());
-    users[fd].setUserNickName(message.getParameters()[0]);
-    std::cout << GREEN << "Nickname of user " << users[fd].getUserSockId() << " updated to " << users[fd].getUserNickName() << RESET << std::endl;
+    users[fd].setNickName(message.getParameters()[0]);
+    std::cout << GREEN << "Nickname of user " << users[fd].getUserSockId() << " updated to -> " << users[fd].getUserNickName() << RESET << std::endl;
     sendServerRpl(fd, RPL_NICK(users[fd].getOldNickName(), users[fd].getUserName(), users[fd].getUserNickName()));
 }

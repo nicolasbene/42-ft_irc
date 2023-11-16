@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 17:25:39 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 12:46:55 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,19 @@ const std::string Channel::getName() const
 {
 	return (this->_channelName);
 }
+
+const std::string Channel::getPassword() const
+{
+	return (this->_channelPassword);
+}
+
+// -- Setter
+
+void	Channel::setPassword(std::string pass)
+{
+	_channelPassword = pass;
+}
+
 
 // -- Add/Remove
 void Channel::addUser(User& user)
