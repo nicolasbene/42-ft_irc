@@ -1,1 +1,5 @@
 Verifier lors de la connexion du client que le mdp est le bon et que le client a bien tous les parametres 
+
+Ameliorer la gestion de la creation client 
+
+Ameliorer la gestion de la reception du message
