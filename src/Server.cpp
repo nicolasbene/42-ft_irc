@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 12:47:04 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:55:02 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int Server::create_client()
         ++_nb_clients;
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
-        message_creation(client_fd);
+        message_creation(client_fd, client_addr);
 
         // Envoi du code RPL au client
         sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
@@ -160,7 +160,7 @@ int Server::create_client()
     return 0;
 }
 
-int Server::message_creation(int fd)
+int Server::message_creation(int fd, sockaddr_in addrClient)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
@@ -188,7 +188,7 @@ int Server::message_creation(int fd)
     else
     {
         std::cout << "-Received << " << buffer << std::endl;
-        addUser(fd, &buffer[0]);
+        addUser(fd, &buffer[0], addrClient);
     }
 
     return 0;
@@ -252,13 +252,13 @@ int Server::executeCommand(char* buffer, int fd)
     //static int i = 1;
     // users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
 
-void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
+void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
     std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
-    users.insert(std::make_pair(sockId, User(sockId, nickName, userName)));
+    users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
     return;
 }
 

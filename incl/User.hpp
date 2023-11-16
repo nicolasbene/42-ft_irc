@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 12:46:43 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 15:21:43 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class User
 	public:
 
 		User(void);
-		User(int sockId, const std::string& userName, struct sockaddr_in addrClient);
+		User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient);
 		~User();
 		bool operator!=(User& other) {return (this->_userSockId != other.getUserSockId());}
 		bool operator==(User& other) {return (this->_userSockId == other.getUserSockId());}
@@ -53,8 +53,8 @@ class User
 	std::string			_userID;
 	std::string 			_IPchar;
 	bool	_isConnected;
-	//std::vector<Channel*> _channelList;
-	std::map<std::string, Channel> channels;
+	std::vector<Channel*> _channelList;
+	// std::map<std::string, Channel> _channelList;
 
 };
 

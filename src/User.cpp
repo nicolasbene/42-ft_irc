@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 12:34:30 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 15:41:43 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ User::User(void)
 	return;
 }
 
-User::User(int sockId, const std::string& userName, struct sockaddr_in addrClient) : 
-		_userSockId(sockId), _userName(userName), _nickName(userName), _oldNickName(userName), _addrClient(addrClient), _isConnected(false) 
+User::User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient) : 
+		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
 {
 	_IPchar = std::string(inet_ntoa(addrClient.sin_addr));
-	_userID = _nickName + "!~" + _userName + "@" + _IPchar;
+	_userID = _nickName + "!~" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
 	return;
 }
 
@@ -81,7 +81,7 @@ int User::getUserSockId(void)
 	return(this->_userSockId);
 }
 
-bool User::getIsConnected(void)
+bool User::getIsConnected(void) const
 {
 	return _isConnected;
 }
@@ -91,10 +91,14 @@ void User::setIsConnected(bool value)
 	_isConnected = value;
 }
 
-bool Server::isChannel(const std::string& name)
+bool User::isChannel(const std::string& name)
 {
-    std::map<std::string, Channel>::iterator it = channels.find(name);
-    if (it != channels.end()) 
-        return true;
+	for ( std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
+    {
+        if (*it->getName() == name)
+        	return true;
+        else
+            ++it;
+    }
     return false;
 }

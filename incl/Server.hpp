@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 12:46:36 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:54:02 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ class	Server {
 		
 		int			create_client();
 		int 		receive_message(int fd);
-		int			message_creation(int fd);
+		int			message_creation(int fd, sockaddr_in addrClient);
 
 
 		// -- Public static functions --
@@ -78,7 +78,7 @@ class	Server {
 		// -- Users 
 		std::map<int, User> users;
 		// void addUser(int sockId, struct sockaddr_in addrClient);
-		void addUser(int sockId, char *buffer);
+		void addUser(int sockId, char *buffer, sockaddr_in addrClient);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
