@@ -42,6 +42,7 @@ SRCS	=	main.cpp \
 			Commands/Join.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
+			Commands/Mode.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \

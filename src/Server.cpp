@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 14:09:42 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 15:52:54 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,8 @@ int Server::executeCommand(char* buffer, int fd)
         sendPrivateMessage(message, fd);
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
+    else if (message.getCommande() == "MODE")
+        handleModeCommand(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
