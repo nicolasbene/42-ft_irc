@@ -43,6 +43,7 @@ SRCS	=	main.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
 			Commands/partb.cpp \
+			Commands/Mode.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \
