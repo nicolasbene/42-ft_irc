@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 18:03:14 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:57:00 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,8 @@ int Server::executeCommand(char* buffer, int fd)
         sendInvitation(message, fd);
     else if (message.getCommande() == "NOTICE")
         notice(message, fd);
+	else if (message.getCommande() == "MODE")
+		handleMode(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);

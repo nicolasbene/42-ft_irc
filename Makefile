@@ -49,6 +49,7 @@ SRCS	=	main.cpp \
 			Commands/Topic.cpp \
 			Commands/Invite.cpp \
 			Commands/Notice.cpp \
+			Commands/Mode.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \

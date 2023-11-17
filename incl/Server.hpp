@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 18:02:28 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:56:27 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ class	Server {
 		std::string changeNickname(std::string nickNameTochange, std::string NameTochange, int fd);
 		// std::string changeUserName(std::string NameTochange);
 
+		
+		void handleMode(Message message, int fd);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
