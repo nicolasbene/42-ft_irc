@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/17 16:51:30 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 19:43:24 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,4 +165,30 @@ std::string Channel::listOfMember() const
 	}
 
 	return(toReturn);
+}
+
+// -- Mode
+void Channel::addOperator(User& targetUserObject, const std::string& operatorName)
+{
+    // Vérifier si l'utilisateur existe et est un membre du canal
+    if (!hasUser(targetUserObject))
+    {
+        // Gérer le cas où l'utilisateur n'existe pas ou n'est pas un membre du canal
+        Log::warning() << "User " << operatorName << " is not a member of the channel.\n";
+        return;
+    }
+
+    // Vérifier si l'utilisateur est déjà opérateur
+    // if (isOperator(targetUserObject.getUserNickName()))
+    // {
+    //     // Gérer le cas où l'utilisateur est déjà opérateur
+    //     Log::warning() << "User " << targetUserObject.getUserNickName() << " is already an operator of the channel.\n";
+    //     return;
+    // }
+
+    // Ajouter l'utilisateur comme opérateur
+    _channelOperators.push_back(&targetUserObject);
+
+    // Enregistrer dans les journaux
+    Log::info() << "User " << targetUserObject.getUserNickName() << " is now an operator of the channel.\n";
 }

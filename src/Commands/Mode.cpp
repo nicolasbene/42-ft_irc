@@ -13,26 +13,27 @@
 
 void Server::handleModeCommand(Message message, int fd) {
     if (message.getParameters().size() < 2) {
-        sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommand()));
+        sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
         return;
     }
 
     const std::string& channelName = message.getParameters()[0];
     const std::string& modeChange = message.getParameters()[1];
 
-    if (channelName[0] != '#') {
-        sendServerRpl(fd, ERR_USERSDONTMATCH(users[fd].getUserNickName()));
-        return;
+    std::map<std::string, Channel>::iterator itChannel = channels.begin();
+    bool channelFound = false;
+
+    // Parcourir manuellement la map pour rechercher le canal
+    for (; itChannel != channels.end(); ++itChannel) {
+        if (itChannel->first == channelName) {
+            // Canal trouvé
+            channelFound = true;
+            break;
+        }
     }
 
-    std::map<std::string, Channel>::iterator it = channels.find(channelName);
-    if (it == channels.end()) {
+    if (!channelFound) {
         sendServerRpl(fd, ERR_NOSUCHCHANNEL(users[fd].getUserNickName(), channelName));
-        return;
-    }
-
-    if (!it->second.isOperator(users[fd].getUserNickName())) {
-        sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channelName));
         return;
     }
 
@@ -40,49 +41,32 @@ void Server::handleModeCommand(Message message, int fd) {
     char modeFlag = modeChange[1];
     const std::string& targetUser = message.getParameters().size() > 2 ? message.getParameters()[2] : "";
 
-    switch (modeType) {
-        case '+':
-            switch (modeFlag) {
-                case 'o':
-                    it->second.addOperator(targetUser);
-                    break;
-                case 'k':
-                    it->second.addKey(targetUser);
-                    break;
-                case 'l':
-                    it->second.addLimit(targetUser);
-                    break;
-                case 't':
-                    it->second.addTopic(targetUser);
-                    break;
-                case 'i':
-                    it->second.addInviteOnly(targetUser);
-                    break;
-            }
-            break;
-        case '-':
-            switch (modeFlag) {
-                case 'o':
-                    it->second.removeOperator(targetUser);
-                    break;
-                case 'k':
-                    it->second.removeKey(targetUser);
-                    break;
-                case 'l':
-                    it->second.removeLimit(targetUser);
-                    break;
-                case 't':
-                    it->second.removeTopic(targetUser);
-                    break;
-                case 'i':
-                    it->second.removeInviteOnly(targetUser);
-                    break;
-            }
-            break;
-        default:
-            sendServerRpl(fd, ERR_UNKNOWNMODE(users[fd].getUserNickName(), modeFlag));
-            return;
-    }
+    // Vérifier si le mode est '+o' (ajout d'un opérateur)
+    if (modeType == '+' && modeFlag == 'o') {
+        bool userFound = false;
+        User targetUserObject;
 
-    sendServerRpl(fd, RPL_MODE(users[fd].getUserNickName(), channelName, modeChange, targetUser));
+        // Parcourir manuellement la map pour rechercher l'utilisateur
+        std::map<int, User>::iterator itUser = users.begin();
+        for (; itUser != users.end(); ++itUser) {
+            if (itUser->second.getUserNickName() == targetUser) {
+                // Utilisateur trouvé
+                userFound = true;
+                targetUserObject = itUser->second;
+                break;
+            }
+        }
+
+        // Vérifiez si l'utilisateur a été trouvé
+        if (userFound) {
+            // Appeler la fonction addOperator de la classe Channel
+            itChannel->second.addOperator(targetUserObject, targetUser);
+            sendServerRpl(fd, RPL_UMODEIS(users[fd].getUserNickName(), modeChange));
+        } else {
+            sendServerRpl(fd, ERR_NOSUCHNICK(users[fd].getUserNickName(), targetUser));
+        }
+    } else {
+        // Gérer les autres cas de mode
+        sendServerRpl(fd, ERR_UNKNOWNMODE(users[fd].getUserNickName(), modeFlag));
+    }
 }

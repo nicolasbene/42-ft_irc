@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 17:03:52 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 18:51:37 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,13 +237,10 @@ int Server::executeCommand(char* buffer, int fd)
         sendPrivateMessage(message, fd);
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
-<<<<<<< HEAD
     else if (message.getCommande() == "MODE")
         handleModeCommand(message, fd);
-=======
     else if (message.getCommande() == "PART")
         partb(message, fd);
->>>>>>> 96c2f39b46e7f84d40a323d9b771df83a578d55e
     else
         std::cout << "-------" << std::endl;
     return (0);

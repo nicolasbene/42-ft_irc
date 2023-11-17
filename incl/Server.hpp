@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 17:04:53 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 18:20:51 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,9 @@ class	Server {
 		std::map<int, User> users;
 		void addUser(int sockId, char *buffer);
 
+		// -- Mode
+		User& getUser(int fd);
+		
 		// -- Channels
 		std::map<std::string, Channel> channels;
 		void addChannel(const std::string& name, User& channelOperator); 
@@ -93,7 +96,7 @@ class	Server {
 		void partb(Message message, int fd);
 
 		// -- Mode
-		void handleModeCommand(const std::string& modeParams);
+		void handleModeCommand(Message message, int fd);
 		
 
 		// -- SendText

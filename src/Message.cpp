@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:00:45 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/13 12:06:55 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 19:51:41 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,15 @@ Message::Message(const std::string& raw) : rawMessage(raw)
         parameters.push_back(parametre);
 		std::getline(tmp, parametre, ' ');
     }
+    // // Si le vecteur parameters n'est pas vide, supprime '\r\n' sur chaque parametre
+    // if (!parameters.empty())
+    // {
+    //     for (size_t i = 0; i < parameters.size(); i++)
+    //     {
+    //         if (parameters[i].find("\r\n") != std::string::npos)
+    //             parameters[i].erase(parameters[i].find("\r\n"), 2);
+    //     }
+    // }
 }
 
 Message::~Message()

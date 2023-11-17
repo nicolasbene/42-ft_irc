@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 15:54:10 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 18:56:43 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 # include <iostream>
 # include "Server.hpp"
 # include "User.hpp"
+# include "Log.hpp"
 
 class User;
+class Server;
 
 class Channel
 {
@@ -47,6 +49,22 @@ class Channel
 		void	setChannelCap(int cap);
 
 		std::string listOfMember() const;
+
+		//Mode
+		// Ajout de nouvelles fonctions nécessaires
+		void addOperator(User& targetUserObject, const std::string& targetUser);
+		
+        // bool isOperator(const std::string& userName) const;
+		
+		// void addKey(const std::string& key);
+		// void removeKey(const std::string& key);
+		// void addLimit(const std::string& limit);
+		// void removeLimit(const std::string& limit);
+		// void addTopic(const std::string& topic);
+		// void removeTopic(const std::string& topic);
+		// void addInviteOnly(const std::string& user);
+		// void removeInviteOnly(const std::string& user);
+		
 
 
 	private:
