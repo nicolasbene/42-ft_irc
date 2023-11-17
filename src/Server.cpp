@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 15:52:54 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:03:52 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ int Server::create_client()
         sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
         sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
         sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
-        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=32 NICKLEN=30 TOPICLEN=307"));
+        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=50 NICKLEN=30 TOPICLEN=307"));
     }
     else
     {
@@ -230,7 +230,6 @@ int Server::executeCommand(char* buffer, int fd)
 {
     std::string str(buffer);
 
-    
     Message message(str);
     if (message.getCommande() == "NICK")
         setUserNickName(message, fd);
@@ -238,8 +237,13 @@ int Server::executeCommand(char* buffer, int fd)
         sendPrivateMessage(message, fd);
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
+<<<<<<< HEAD
     else if (message.getCommande() == "MODE")
         handleModeCommand(message, fd);
+=======
+    else if (message.getCommande() == "PART")
+        partb(message, fd);
+>>>>>>> 96c2f39b46e7f84d40a323d9b771df83a578d55e
     else
         std::cout << "-------" << std::endl;
     return (0);

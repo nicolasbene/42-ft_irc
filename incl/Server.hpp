@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 16:44:51 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:04:53 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ class	Server {
 		void sendPrivateMessage(Message message, int fd);
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
+		void sendChanInfo(Channel& channel, User& user);
+		void partb(Message message, int fd);
 
 		// -- Mode
 		void handleModeCommand(const std::string& modeParams);
