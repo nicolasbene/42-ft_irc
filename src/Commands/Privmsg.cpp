@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/17 17:58:03 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 18:25:39 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void Server::broadcastToChannel(std::string target, std::string speech, int fd)
     {
         std::cout << RED << "TEST MSG CHANNEL - ENVOIE" << RESET << std::endl;
         std::string toSend = "#" + target;
-        sendServerRpl((*it)->getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), toSend, speech));
+        if ((*it)->getUserSockId() != fd)
+            sendServerRpl((*it)->getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), toSend, speech));
     }
 
 }
@@ -74,7 +75,15 @@ void Server::sendPrivateMessage(Message message, int fd)
         return;
     }
     else
+    {
         speech = message.getTrailing();
+        size_t posr = speech.find('\r');
+        if (posr != std::string::npos)
+            speech = speech.erase(posr, std::string::npos);
+        size_t posn = speech.find('\n');
+        if (posn != std::string::npos)
+            speech = speech.erase(posn, std::string::npos);
+    }
     
     if (target[0] == '#')
     {
