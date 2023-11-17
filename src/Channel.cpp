@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 16:01:15 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:51:30 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,16 +155,14 @@ std::string Channel::listOfMember() const
 {
 	std::string toReturn;
 
-	toReturn += '[';
-	std::vector<User*>::const_iterator it = _channelMembers.begin();
-	for (it = _channelMembers.begin(); it + 1 != _channelMembers.end(); it++)
+	for (size_t i = 0; i < _channelMembers.size() - 1; i++)
 	{
-		toReturn += (*it)->getUserNickName();
-		toReturn += "] [";
+		if (i == 0)
+			toReturn += "@";
+		else
+			toReturn += " @";
+		toReturn += _channelMembers[i]->getUserNickName();
 	}
-	it++;
-	toReturn += (*it)->getUserNickName();
-	toReturn += "]\n";
 
 	return(toReturn);
 }

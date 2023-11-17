@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 16:31:07 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 12:13:31 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ class	Server {
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
 		void sendChanInfo(Channel& channel, User& user);
+		void partb(Message message, int fd);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);

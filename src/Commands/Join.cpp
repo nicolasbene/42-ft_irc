@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 16:31:16 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 16:47:42 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,19 @@ void Server::executeJoinOrder(Message message, int fd)
     {
         channel.clear();
         channel = getChannelName(channel_list);
+        size_t posr = channel.find('\r');
+        if (posr != std::string::npos)
+            channel = channel.erase(posr, std::string::npos);
+        size_t posn = channel.find('\n');
+        if (posn != std::string::npos)
+            channel = channel.erase(posn, std::string::npos);
 
         channel_list.erase(channel_list.find(channel), channel.length());
         std::map<std::string, Channel>::iterator it;
         it = channels.find(channel);
         if (it == channels.end())
         {
+            std::cout << RED << "TEST ADD" << RESET << std::endl;
             addChannel(channel, users[fd]);
         }
         if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
@@ -74,16 +81,18 @@ void Server::executeJoinOrder(Message message, int fd)
                 continue;
             }
         }
-        std::vector<User*>::const_iterator iti;
-        iti = channels[channel].getChannelMembers().begin();
-        while (iti != channels[channel].getChannelMembers().end())
+        std::vector<User*> channelMembers = channels[channel].getChannelMembers();
+        std::vector<User*>::const_iterator iti = channelMembers.begin();
+        
+        while (iti != channelMembers.end())
         {
             if (*(*iti) == users[fd])
                 break;
             iti++;
         }
-        if (iti == channels[channel].getChannelMembers().end())
+        if (iti == channelMembers.end())
         {
+            std::cout << BLUE << "TEST ADD CLIENT" << RESET << std::endl;
             addClientToChannel(channels[channel], users[fd]);
         }
         else
@@ -94,14 +103,16 @@ void Server::executeJoinOrder(Message message, int fd)
 
 void Server::sendChanInfo(Channel& channel, User& user)
 {
-    std::vector<User*>::const_iterator member;
-    member = channel.getChannelMembers().begin();
-
-    while (member != channel.getChannelMembers().end())
+    std::vector<User*>  channelMembers = channel.getChannelMembers();
+    std::vector<User*>::const_iterator member = channelMembers.begin();
+    while (member != channelMembers.end())
     {
         sendServerRpl((*member)->getUserSockId(), RPL_JOIN(user_id(user.getUserNickName(), user.getUserName()), channel.getName()));
-        sendServerRpl((*member)->getUserSockId(), RPL_NAMREPLY(user.getUserNickName(), channel.getSymbol(), channel.getName(), channel.listOfMember()));
-        sendServerRpl((*member)->getUserSockId(), RPL_ENDOFNAMES(user.getUserNickName(), channel.getName()));
+        if ((*member) == &user)
+        {
+            sendServerRpl((*member)->getUserSockId(), RPL_NAMREPLY(user.getUserNickName(), channel.getSymbol(), channel.getName(), channel.listOfMember()));
+            sendServerRpl((*member)->getUserSockId(), RPL_ENDOFNAMES(user.getUserNickName(), channel.getName()));
+        }
         member++;
     }
 }
