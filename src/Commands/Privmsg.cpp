@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 17:14:05 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/17 17:58:03 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 void Server::broadcastToChannel(std::string target, std::string speech, int fd)
 {
     Channel broadcast = channels[target];
+    std::cout << RED << "TEST MSG CHANNEL :" << target << " testret" << RESET << std::endl;
+    std::cout << RED << "TEST MSG CHANNEL :" << channels[target].getName() << RESET << std::endl;
     std::vector<User*> banned_users = broadcast.getBannedUsers();
     for (std::vector<User *>::iterator it = banned_users.begin(); it != banned_users.end(); it++)
     {
@@ -45,9 +47,11 @@ void Server::broadcastToChannel(std::string target, std::string speech, int fd)
     }
 
     std::vector<User*> channel_users = broadcast.getChannelMembers();
-    for (std::vector<User *>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
+    for (std::vector<User*>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
     {
-        sendServerRpl((*it)->getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
+        std::cout << RED << "TEST MSG CHANNEL - ENVOIE" << RESET << std::endl;
+        std::string toSend = "#" + target;
+        sendServerRpl((*it)->getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), toSend, speech));
     }
 
 }
@@ -74,6 +78,7 @@ void Server::sendPrivateMessage(Message message, int fd)
     
     if (target[0] == '#')
     {
+        std::cout << YELLOW << "TEST MSG #" << RESET << std::endl;
         std::map<std::string, Channel>::iterator it;
         it = channels.find(target.substr(1));
         if (it == channels.end())
@@ -83,12 +88,13 @@ void Server::sendPrivateMessage(Message message, int fd)
         }
         else
         {
-            broadcastToChannel(target, speech, fd);
+            broadcastToChannel(target.substr(1), speech, fd);
             std::cout << "bonjour" << std::endl;
         }
     }
     else
     {
+        std::cout << YELLOW << "TEST MSG SOLO" << RESET << std::endl;
         std::map<int, User>::iterator itu;
         for (itu = users.begin(); itu != users.end(); ++itu)
         {
@@ -102,7 +108,7 @@ void Server::sendPrivateMessage(Message message, int fd)
         itc = channels.find(target);
         if (itc != channels.end())
         {
-            target.insert(0, "#");
+            //target.insert(0, "#");
             broadcastToChannel(target, speech, fd);
         }
         else
