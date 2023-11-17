@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 20:52:14 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 14:12:15 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ class	Server {
 
 		// -- Users 
 		std::map<int, User> users;
+		User* getUserbyId(int id) {return &users[id];}
 		void addUser(int sockId, char *buffer);
 
 		// -- Channels

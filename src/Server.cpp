@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/15 20:55:14 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/17 14:59:00 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,8 @@ int Server::create_client()
         message_creation(client_fd);
         
         //setHostName
-        std::string hostName = extractNextWord(users[client_fd].getUserName(), "@");
-        users[client_fd].setHostName(hostName);
+        // std::string hostName = extractNextWord(users[client_fd].getUserName(), "@");
+        // users[client_fd].setHostName(hostName);
         
         
 

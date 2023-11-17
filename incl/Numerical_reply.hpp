@@ -109,9 +109,8 @@ void	sendServerRpl(int const client_fd, std::string client_buffer);
 # define ERR_ALREADYREGISTERED(client) (":localhost 462 " + client + " :You may not reregister.\r\n")
 
 // WHOIS
-# define RPL_WHOISUSER(client, nick, username, host, realname) ("311 " + (client) + " " + (nick) + " " + (username) + " " + (host) + " * :" + (realname) + "\r\n")
-# define RPL_WHOISERVER(client, nick, server, serverinfo) ("312 " + (client) + " " + (nick) + " " + (server) + " :" + (serverinfo)  + "\r\n")
-# define RPL_ENDOFWHOIS(target, nick) ("318 " + (target) + " " + (nick) + " :End of /WHOIS list.\r\n")
-
+#define RPL_WHOISUSER(client, nick, username, host, realname) ("311 " + (client) + " " + (nick) + " " + (username) + " " + (host) + " * :" + (realname))
+#define RPL_WHOISERVER(client, nick, server, serverinfo) ("312 " + (client) + " " + (nick) + " " + (server) + " :" + (serverinfo))
+#define RPL_ENDOFWHOIS(client, mask) ("315 " + (client) + " " + (mask) + " :End of WHO list")
 
 #endif
