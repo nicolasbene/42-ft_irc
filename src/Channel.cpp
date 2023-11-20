@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/17 16:51:30 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:06:44 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelMembers.push_back(&channelOperator);
 	_channelCapacity = 0;
 	_channelSymbol = "#";
+	channelOperator.addChannelList(*this);
 }
 
 Channel::~Channel()
@@ -47,6 +48,11 @@ const std::vector<User*> Channel::getKickedUsers() const
 	return (this->_kickedUsers);
 }
 
+const std::vector<User*> Channel::getChannelOperators() const
+{
+	return (this->_channelOperators);
+}
+
 const std::string Channel::getName() const
 {
 	return (this->_channelName);
@@ -67,6 +73,10 @@ const std::string Channel::getSymbol() const
 	return (this->_channelSymbol);
 }
 
+const std::string Channel::getChannelTopic() const
+{
+	return (this->_channelTopic);
+}
 
 // -- Setter
 
@@ -80,6 +90,25 @@ void	Channel::setChannelCap(int cap)
 	_channelCapacity = cap;
 }
 
+void	Channel::setChannelTopic(std::string topic)
+{
+	_channelTopic = topic;
+}
+
+void Channel::setChannelOperator(User& ops)
+{
+	_channelOperators.push_back(&ops);
+}
+
+void Channel::setBannedUser(User& userb)
+{
+	_bannedUsers.push_back(&userb);
+}
+
+void Channel::setChannelOperator(User& userk)
+{
+	_kickedUsers.push_back(&userk);
+}
 
 // -- Add/Remove
 void Channel::addUser(User& user)

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 13:02:28 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 14:53:36 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class User
 		std::string getUserName(void);
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
-		void addChannelList(Channel channel);
+		void addChannelList(Channel& channel);
 
 	private:
 	int	_userSockId;

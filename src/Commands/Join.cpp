@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/17 16:47:42 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:20:50 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void Server::sendChanInfo(Channel& channel, User& user)
         sendServerRpl((*member)->getUserSockId(), RPL_JOIN(user_id(user.getUserNickName(), user.getUserName()), channel.getName()));
         if ((*member) == &user)
         {
+            //rajouter topic
             sendServerRpl((*member)->getUserSockId(), RPL_NAMREPLY(user.getUserNickName(), channel.getSymbol(), channel.getName(), channel.listOfMember()));
             sendServerRpl((*member)->getUserSockId(), RPL_ENDOFNAMES(user.getUserNickName(), channel.getName()));
         }
@@ -130,6 +131,7 @@ bool atLeastOneAlphaNum(std::string toTest)
 void addClientToChannel(Channel& channel, User& client)
 {
     channel.addUser(client);
+    client.addChannelList(channel);
 }
 
 std::string getChannelName(std::string strToPars)

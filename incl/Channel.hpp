@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 15:54:10 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:05:43 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,20 @@ class Channel
 		const std::vector<User*> getChannelMembers() const;
 		const std::vector<User*> getBannedUsers() const;
 		const std::vector<User*> getKickedUsers() const;
+		const std::vector<User*> getChannelOperators() const;
 		const std::string getName() const;
 		const std::string getPassword() const;
 		size_t getChannelCap() const;
 		const std::string getSymbol() const;
+		const std::string getChannelTopic() const;
+		
 
 		void	setPassword(std::string pass);
 		void	setChannelCap(int cap);
+		void	setChannelTopic(std::string topic);
+		void	setChannelOperator(User& ops);
+		void	setBannedUser(User& userb);
+		void	setKickedUser(User& userk);
 
 		std::string listOfMember() const;
 

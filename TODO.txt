@@ -1,1 +1,2 @@
-- Possible probleme avec la creation d un nickname commencant par # a gerer
+- rajouter topic (sendchaninfo) et password dans join
+-rajouter trailing vide dans topic + mode k;

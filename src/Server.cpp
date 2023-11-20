@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 12:28:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 12:49:27 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,6 +239,8 @@ int Server::executeCommand(char* buffer, int fd)
         executeJoinOrder(message, fd);
     else if (message.getCommande() == "PART")
         partb(message, fd);
+    else if (message.getCommande() == "TOPIC")
+        setReadTopic(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
