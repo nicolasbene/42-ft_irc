@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/17 18:25:39 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 12:04:59 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,14 @@ void Server::sendPrivateMessage(Message message, int fd)
         std::map<int, User>::iterator itu;
         for (itu = users.begin(); itu != users.end(); ++itu)
         {
+            std::cout << BLUE << "TEST MSG USER - 1" << RESET << std::endl;
+            std::cout << BLUE << "TEST MSG USER TRGT :" << target << " testret" << RESET << std::endl;
+            std::cout << BLUE << "TEST MSG USER NAME :" << itu->second.getUserName() << " testret" << RESET << std::endl;
+            std::cout << BLUE << "TEST MSG USER NICKNAME :" << itu->second.getUserNickName() << " testret" << RESET << std::endl;
             if (itu->second.getUserName() == target || itu->second.getUserNickName() == target)
             {
-                sendServerRpl(fd, RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
+                std::cout << BLUE << "TEST MSG USER - 2" << RESET << std::endl;
+                sendServerRpl(itu->second.getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
                 return;
             }
         }
@@ -117,6 +122,7 @@ void Server::sendPrivateMessage(Message message, int fd)
         itc = channels.find(target);
         if (itc != channels.end())
         {
+            std::cout << BLUE << "TEST MSG USER - 3" << RESET << std::endl;
             //target.insert(0, "#");
             broadcastToChannel(target, speech, fd);
         }
