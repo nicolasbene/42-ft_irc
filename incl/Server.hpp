@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/20 15:29:23 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:33:30 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ class	Server {
 		void executeJoinOrder(Message message, int fd);
 		void sendChanInfo(Channel& channel, User& user);
 		void setReadTopic(Message message, int fd);
-		void broadcastTopic(Channel& channel, std::string topic, int fd);
 		void partb(Message message, int fd);
 
 		// -- SendText
