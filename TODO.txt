@@ -1,2 +1,2 @@
-- rajouter topic (sendchaninfo) et password dans join
--rajouter trailing vide dans topic + mode k;
+- rajouter password dans join
+- rajouter trailing vide dans topic + mode k;

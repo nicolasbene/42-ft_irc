@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 12:31:07 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/20 15:32:07 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/21 16:31:36 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,31 @@
 void Server::setReadTopic(Message message, int fd)
 {
     std::string channel = message.getParameters()[0];
+
+    size_t posr = channel.find('\r');//ici
+    if (posr != std::string::npos)
+    {
+        channel = channel.erase(posr, std::string::npos);
+    }
+    size_t posn = channel.find('\n');
+    if (posn != std::string::npos)
+    {
+        channel = channel.erase(posn, std::string::npos);
+    }
 	if (channel.empty() || channel.find('#') == channel.npos)
     {
         sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
         return;
     }
+    channel.erase(channel.find("#"), 1); // ici
+    // std::cout << RED << "TEST CHANNEL : [" << channel << "] testret" << RESET << std::endl;
+    // std::cout << RED << "TEST CHANNEL LIST :" << channels[channel].getName() << " testret" << RESET << std::endl;
+    // std::cout << RED << "TEST CHANNEL SIZE :" << channels.size() << RESET << std::endl;
     std::map<std::string, Channel>::iterator it;
     it = channels.find(channel);
     if (it == channels.end())
     {
+        // std::cout << BLUE << "TEST find :" << RESET << std::endl;
         sendServerRpl(fd, ERR_NOSUCHCHANNEL(users[fd].getUserNickName(), channel));
         return;
     }
@@ -50,7 +66,17 @@ void Server::setReadTopic(Message message, int fd)
         return;
     }
 
-    std::string topic = message.getTrailing();
+    std::string topic = message.getTrailing(); //ici
+    size_t postr = topic.find('\r');
+    if (postr != std::string::npos)
+    {
+        topic = topic.erase(postr, std::string::npos);
+    }
+    size_t postn = topic.find('\n');
+    if (postn != std::string::npos)
+    {
+        topic = topic.erase(postn, std::string::npos);
+    }
 
     if(topic.empty())
     {

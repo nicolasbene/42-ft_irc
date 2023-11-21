@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/20 15:06:44 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/21 14:38:46 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelMembers.push_back(&channelOperator);
 	_channelCapacity = 0;
 	_channelSymbol = "#";
-	channelOperator.addChannelList(*this);
 }
 
 Channel::~Channel()
@@ -98,16 +97,6 @@ void	Channel::setChannelTopic(std::string topic)
 void Channel::setChannelOperator(User& ops)
 {
 	_channelOperators.push_back(&ops);
-}
-
-void Channel::setBannedUser(User& userb)
-{
-	_bannedUsers.push_back(&userb);
-}
-
-void Channel::setChannelOperator(User& userk)
-{
-	_kickedUsers.push_back(&userk);
 }
 
 // -- Add/Remove
