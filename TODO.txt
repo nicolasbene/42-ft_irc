@@ -1,1 +1,3 @@
-- Possible probleme avec la creation d un nickname commencant par # a gerer
+- rajouter password dans join
+- rajouter trailing vide dans topic + mode k;
+- Pour inviter une personne dans un canal en mode sur invitation (MODE +i), le client envoyant l'invitation doit être opérateur sur le canal désigné.

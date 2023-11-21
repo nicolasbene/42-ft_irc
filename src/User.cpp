@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/14 13:01:26 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 14:54:04 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ std::string User::getOldNickName(void)
 	return (this->_oldNickName);
 }
 
-void User::addChannelList(Channel channel)
+void User::addChannelList(Channel& channel)
 {
 	_channelList.push_back(&channel);
 	return;
