@@ -14,6 +14,7 @@ void	sendServerRpl(int const client_fd, std::string client_buffer);
 # define RPL_ISUPPORT(client, tokens) (":localhost 005 " + client + " " + tokens " :are supported by this server\r\n")
 
 # define ERR_UNKNOWNCOMMAND(client, command) (":localhost 421 " + client + " " + command + " :Unknown command\r\n")
+# define ERR_BADMASK(client, command) (":localhost 415 " + client + " " + command + " :Mask with an invalid syntax\r\n")
 
 // INVITE
 # define ERR_NEEDMOREPARAMS(client, command) (":localhost 461 " + client + " " + command + " :Not enough parameters.\r\n")
@@ -83,13 +84,14 @@ void	sendServerRpl(int const client_fd, std::string client_buffer);
 # define RPL_YOUREOPER(client) ("381 " + client + " :You are now an IRC operator\r\n")
 
 // PART
-# define RPL_PART(user_id, channel, reason) (user_id + " PART #" + channel + " " + (reason.empty() ? "." : reason ) + "\r\n")
+# define RPL_PART(user_id, channel) (user_id + " PART #" + channel + "\r\n")
 
 // PASS
 # define ERR_PASSWDMISMATCH(client) (":localhost 464 " + client + " :Password incorrect.\r\n")
 
 // PING
-# define RPL_PONG(user_id, token) (user_id + " PONG " + token + "\r\n")
+# define RPL_PONG(user_id, param) (user_id + " PONG :" + param + "\r\n")
+# define ERR_NOORIGIN(user_id, nickname) (user_id + " 409 " + nickname + "No origin specified\r\n")
 
 // QUIT
 # define RPL_QUIT(user_id, reason) (user_id + " QUIT :Quit: " + reason + "\r\n")

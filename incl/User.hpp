@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 15:21:43 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/21 15:22:46 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ class User
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
 		std::string getUserID(void) const {return _userID;}
-		void addChannelList(Channel channel);
+		std::vector<Channel*> getChanList(void) const {return _channelList;}
+		void addChannelList(Channel& channel);
+		void eraseChannelList(Channel& channel);
 		bool isChannel(const std::string& name);
 		bool getIsConnected(void) const;
 		void setIsConnected(bool value);

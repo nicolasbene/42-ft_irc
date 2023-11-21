@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 16:58:46 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/21 16:01:54 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ User::User(int sockId, const std::string& userNickName, const std::string& userN
 		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
 {
 	_IPchar = std::string(inet_ntoa(_addrClient.sin_addr));
-	_userID = _nickName + "!~" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
+	_userID = _nickName + "!" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
 	return;
 }
 
@@ -70,10 +70,21 @@ std::string User::getOldNickName(void)
 	return (this->_oldNickName);
 }
 
-void User::addChannelList(Channel channel)
+void User::addChannelList(Channel& channel)
 {
 	_channelList.push_back(&channel);
 	return;
+}
+
+void User::eraseChannelList(Channel& channel)
+{
+	for (std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
+    {
+        if (*it == &channel)
+            it = _channelList.erase(it);
+        else
+            ++it;
+    }
 }
 
 int User::getUserSockId(void)
@@ -95,7 +106,7 @@ bool User::isChannel(const std::string& name)
 {
 	for ( std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
     {
-        if ((*it)->getName() == name)
+   		if ((*it)->getName() == name)
         	return true;
         else
             ++it;

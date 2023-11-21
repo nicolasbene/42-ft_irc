@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 22:52:47 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/13 12:06:49 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:18:27 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ private:
 	std::string commande;
 	std::vector<std::string> parameters;
 	std::string	trailing;
+	bool		istraling;
 
 public:
 	Message(const std::string& raw);
@@ -49,6 +50,7 @@ public:
 	std::vector<std::string> getParameters() const {
 		return parameters;
 	}
+	
 };
 
 #endif

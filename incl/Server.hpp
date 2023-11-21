@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/16 17:06:54 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/21 16:30:28 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,10 @@ class	Server {
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
 		void	executePart(Message message, int fd);
+		void sendChanInfo(Channel& channel, User& user);
+		void partb(Message message, int fd);
+		void	sendPong(Message msg, int fd);
+
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
@@ -120,5 +124,8 @@ class	Server {
 //utils
 std::vector<std::string> mySplit(const std::string& s, char delimiter);
 std::string extractNextWord(const std::string& input, const std::string& keyword);
+void printVector(const std::vector<std::string>& vec);
+void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& TrimStr);
+std::string TrimString(const std::string& str, const std::string& TrimStr);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 12:46:55 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:38:47 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelName = name;
     _channelOperators.push_back(&channelOperator);
     _channelMembers.push_back(&channelOperator);
+	_channelCapacity = 0;
+	_channelSymbol = "#";
 }
 
 Channel::~Channel()
@@ -55,11 +57,27 @@ const std::string Channel::getPassword() const
 	return (this->_channelPassword);
 }
 
+size_t Channel::getChannelCap() const
+{
+	return (this->_channelCapacity);
+}
+
+const std::string Channel::getSymbol() const
+{
+	return (this->_channelSymbol);
+}
+
+
 // -- Setter
 
 void	Channel::setPassword(std::string pass)
 {
 	_channelPassword = pass;
+}
+
+void	Channel::setChannelCap(int cap)
+{
+	_channelCapacity = cap;
 }
 
 
@@ -133,4 +151,20 @@ bool Channel::hasUser(User& user) const
 		i++;
 	}
 	return (false);
+}
+
+std::string Channel::listOfMember() const
+{
+	std::string toReturn;
+
+	for (size_t i = 0; i < _channelMembers.size() - 1; i++)
+	{
+		if (i == 0)
+			toReturn += "@";
+		else
+			toReturn += " @";
+		toReturn += _channelMembers[i]->getUserNickName();
+	}
+
+	return(toReturn);
 }
