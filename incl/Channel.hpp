@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 16:21:10 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:58:42 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ class Channel
 		void removeBannedUser(User& user);
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
+		bool hasUser(User& user) const;
+		bool isUserInMap(const std::map<int, User> users, const std::string userNickName);
+
+		
+		//mode
+		bool is_operator(User& user) const;
 
 		// -- Getter
 		const std::vector<User*> getChannelMembers() const;
@@ -45,6 +51,7 @@ class Channel
 		size_t getChannelCap() const;
 		const std::string getSymbol() const;
 		const std::string getChannelTopic() const;
+		const std::string getChannelMode() const;
 		
 		// -- Setter
 		void	setPassword(std::string pass);
@@ -70,6 +77,7 @@ class Channel
 		std::string			_channelPassword;
 		size_t				_channelCapacity;
 		std::string			_channelSymbol;
+		std::string			_channelMode;
 
 };
 

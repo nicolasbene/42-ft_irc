@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 10:56:27 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:58:25 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include "User.hpp"
 # include "Channel.hpp"
 # include "Message.hpp"
+# include "Log.hpp"
 
 # include "Numerical_reply.hpp"
 
@@ -102,6 +103,14 @@ class	Server {
 		void sendInvitation(Message message, int fd);
 		void notice(Message message, int fd);
 		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
+		void partb(Message message, int fd);
+		
+		void sendInvitation(Message message, int fd);
+		
+		// -- Mode
+		void handleMode(Message message, int fd);
+		void operator_mode(Channel& target, User& user, bool operand, Message& message);
+		int getUserIdByNickName(std::string& userNickName);
 
 		// -- Utils
 		bool userExistName(std::string user);
