@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 14:41:07 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/22 17:25:24 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,24 +64,24 @@ void Server::executeJoinOrder(Message message, int fd)
             sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
             continue;
         }
-        std::vector<User*>::const_iterator itb;
-        for (itb = channels[channel].getBannedUsers().begin(); itb != channels[channel].getBannedUsers().end(); itb++)
-        {
-            if (*(*itb) == users[fd])
-            {
-                sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
-                continue;
-            }
-        }
-        std::vector<User*>::const_iterator itk;
-        for (itk = channels[channel].getKickedUsers().begin(); itk != channels[channel].getKickedUsers().end(); itk++)
-        {
-            if (*(*itk) == users[fd])
-            {
-                sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
-                continue;
-            }
-        }
+        // std::vector<User*>::const_iterator itb;
+        // for (itb = channels[channel].getBannedUsers().begin(); itb != channels[channel].getBannedUsers().end(); itb++)
+        // {
+        //     if (*(*itb) == users[fd])
+        //     {
+        //         sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
+        //         continue;
+        //     }
+        // }
+        // std::vector<User*>::const_iterator itk;
+        // for (itk = channels[channel].getKickedUsers().begin(); itk != channels[channel].getKickedUsers().end(); itk++)
+        // {
+        //     if (*(*itk) == users[fd])
+        //     {
+        //         sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
+        //         continue;
+        //     }
+        // }
         std::vector<User*> channelMembers = channels[channel].getChannelMembers();
         std::vector<User*>::const_iterator iti = channelMembers.begin();
         

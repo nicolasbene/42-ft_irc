@@ -4,7 +4,7 @@ void Server::executeKick(Message msg, int fd)
 {
 	if (msg.getParameters().empty() || msg.getParameters().size() < 2 || !msg.getParameters()[0].size() || !msg.getParameters()[1].size())
 		return(sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), "KICK")));
-
+	
 	std::string ChanToKick = msg.getParameters()[0];
 	std::string kickUser = msg.getParameters()[1];
 
@@ -23,7 +23,6 @@ void Server::executeKick(Message msg, int fd)
 
 	sendServerRpl(userfd, RPL_PART(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1)));
 	sendServerRpl(userfd, RPL_KICK(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1), users[userfd].getUserNickName()));//rajouter la raison?
-	// peut etre rajouter un message pour tout le canal comme quoi qqlq1 a ete kick
 	unregisterClientToChannel(ChanToKick.substr(1), userfd);
 	channels[ChanToKick.substr(1)].addKickedUser(users[userfd]);
 	std::vector<User*> channel_users = channels[ChanToKick.substr(1)].getChannelMembers();
