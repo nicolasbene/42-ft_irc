@@ -6,13 +6,13 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:00:45 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/13 12:06:55 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/21 14:36:52 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
 
-Message::Message(const std::string& raw) : rawMessage(raw)
+Message::Message(const std::string& raw) : rawMessage(raw), isTrailing(false)
 {
     std::istringstream stream(rawMessage);
     std::istringstream tmp(stream.str());//seul solution pour choper le trailing proprement
@@ -32,6 +32,7 @@ Message::Message(const std::string& raw) : rawMessage(raw)
 	{
 		if (parametre[0] == ':')
 		{
+            isTrailing = true;
 			std::getline(tmp, trailing, '\n');
         	trailing = trailing.substr(1);
 			break ;

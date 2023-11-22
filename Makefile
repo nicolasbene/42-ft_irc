@@ -42,6 +42,7 @@ SRCS	=	main.cpp \
 			Commands/Join.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
+			Commands/Topic.cpp \
 			Commands/partb.cpp \
 			Commands/Mode.cpp \
 

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/16 15:54:10 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/21 11:47:18 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ class Channel
 		Channel(void);
 		Channel(const std::string& name, User& channelOperator);
 		~Channel();
-	
+
+		// -- Add/Remove
 		void addUser(User& user);
 		void removeUser(User& user);
 		void addBannedUser(User& user);
@@ -35,16 +36,22 @@ class Channel
 		void removeKickedUser(User& user);
 		bool hasUser(User& user) const;
 
+		// -- Getter
 		const std::vector<User*> getChannelMembers() const;
 		const std::vector<User*> getBannedUsers() const;
 		const std::vector<User*> getKickedUsers() const;
+		const std::vector<User*> getChannelOperators() const;
 		const std::string getName() const;
 		const std::string getPassword() const;
 		size_t getChannelCap() const;
 		const std::string getSymbol() const;
-
+		const std::string getChannelTopic() const;
+		
+		// -- Setter
 		void	setPassword(std::string pass);
 		void	setChannelCap(int cap);
+		void	setChannelTopic(std::string topic);
+		void	setChannelOperator(User& ops);
 
 		std::string listOfMember() const;
 

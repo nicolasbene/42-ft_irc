@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/17 23:36:28 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:29:46 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,15 @@ class	Server {
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
 		void sendChanInfo(Channel& channel, User& user);
+		void setReadTopic(Message message, int fd);
 		void partb(Message message, int fd);
 		
 		void handleMode(Message message, int fd);
 		std::string MODE_reply(void);
+		void sendInvitation(Message message, int fd);
+
+		// -- Utils
+		bool userExistName(std::string user);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
