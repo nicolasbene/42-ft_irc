@@ -44,6 +44,7 @@ SRCS	=	main.cpp \
 			Commands/Privmsg.cpp \
 			Commands/Topic.cpp \
 			Commands/Invite.cpp \
+			Commands/Notice.cpp \
 			Commands/partb.cpp \
 
 T_SRCS	=	tests/main.cpp \
