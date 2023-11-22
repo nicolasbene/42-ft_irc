@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 14:38:47 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:10:12 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,48 @@ bool Channel::hasUser(User& user) const
 	while (i < _channelMembers.size())
 	{
 		if (_channelMembers[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasOp(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _channelOperators.size())
+	{
+		if (_channelOperators[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasBanUser(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _bannedUsers.size())
+	{
+		if (_bannedUsers[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasKickUser(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _kickedUsers.size())
+	{
+		if (_kickedUsers[i] == &user)
 		{
 			return (true);
 		}

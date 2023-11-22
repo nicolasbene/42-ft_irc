@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/20 13:41:17 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:08:41 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ class Channel
 		void removeBannedUser(User& user);
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
-		bool hasUser(User& user) const;
 
 		const std::vector<User*> getChannelMembers() const;
 		const std::vector<User*> getBannedUsers() const;
@@ -47,6 +46,11 @@ class Channel
 		void	setChannelCap(int cap);
 
 		std::string listOfMember() const;
+		
+		bool hasUser(User& user) const;
+		bool hasOp(User& user) const;
+		bool hasBanUser(User& user)const ;
+		bool hasKickUser(User& user)const ;
 
 
 	private:

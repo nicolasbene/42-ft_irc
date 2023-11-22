@@ -43,8 +43,8 @@ SRCS	=	main.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
 			Commands/Part.cpp \
-			Commands/partb.cpp \
 			Commands/Ping-Pong.cpp \
+			Commands/Kick.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \

@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/21 16:30:28 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:33:57 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class	Server {
 		std::map<int, User> users;
 		// void addUser(int sockId, struct sockaddr_in addrClient);
 		void addUser(int sockId, char *buffer, sockaddr_in addrClient);
+		int userExistName(std::string& user);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
@@ -93,8 +94,9 @@ class	Server {
 		void executeJoinOrder(Message message, int fd);
 		void	executePart(Message message, int fd);
 		void sendChanInfo(Channel& channel, User& user);
-		void partb(Message message, int fd);
 		void	sendPong(Message msg, int fd);
+		void	executeKick(Message msg, int fd);
+
 
 
 		// -- SendText

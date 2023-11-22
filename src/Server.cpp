@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/21 16:29:01 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:32:26 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,8 @@ int Server::executeCommand(char* buffer, int fd)
         executePart(message, fd);
     else if (message.getCommande() == "PING")
         sendPong(message, fd);
+    else if (message.getCommande() == "KICK")
+        executeKick(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
@@ -321,6 +323,19 @@ void Server::write_logo() const
         std::cout << line << std::endl;
     }
 }
+
+
+int Server::userExistName(std::string& user)
+{
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); it++)
+    {
+        if (it->second.getUserNickName() == user)
+            return (it->first);
+    }
+    return (-1);
+}
+
 
 std::string Server::getDate() const
 {
