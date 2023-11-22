@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/22 15:29:46 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/22 19:27:30 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include "User.hpp"
 # include "Channel.hpp"
 # include "Message.hpp"
+# include "Log.hpp"
 
 # include "Numerical_reply.hpp"
 
@@ -93,9 +94,12 @@ class	Server {
 		void setReadTopic(Message message, int fd);
 		void partb(Message message, int fd);
 		
-		void handleMode(Message message, int fd);
-		std::string MODE_reply(void);
 		void sendInvitation(Message message, int fd);
+		
+		// -- Mode
+		void handleMode(Message message, int fd);
+		void operator_mode(Channel& target, User& user, bool operand, Message& message);
+		int getUserIdByNickName(std::string& userNickName);
 
 		// -- Utils
 		bool userExistName(std::string user);

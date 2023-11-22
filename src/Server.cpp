@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/22 15:29:59 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/22 19:27:44 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,4 +312,13 @@ void Server::write_logo() const
 std::string Server::getDate() const
 {
     return (this->_date);
+}
+
+int Server::getUserIdByNickName(std::string& userNickName) {
+    for (std::map<int, User>::iterator it = users.begin(); it != users.end(); ++it) {
+        if (it->second.getUserNickName() == userNickName) {
+            return it->first; // Retourne l'ID de l'utilisateur trouvé
+        }
+    }
+    return -1; // Retourne -1 si l'utilisateur n'est pas trouvé
 }

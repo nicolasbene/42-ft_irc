@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 14:38:46 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/22 18:57:47 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ const std::string Channel::getSymbol() const
 const std::string Channel::getChannelTopic() const
 {
 	return (this->_channelTopic);
+}
+
+const std::string Channel::getChannelMode() const
+{
+	return (this->_channelMode);
 }
 
 // -- Setter
@@ -183,4 +188,31 @@ std::string Channel::listOfMember() const
 	}
 
 	return(toReturn);
+}
+
+//mode
+bool Channel::is_operator(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _channelOperators.size())
+	{
+		if (_channelOperators[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+// La fonction pour vérifier si un utilisateur avec un certain surnom fait partie de la map
+bool Channel::isUserInMap(std::map<int, User> users, std::string userNickName) {
+    for (std::map<int, User>::iterator it = users.begin(); it != users.end(); ++it) {
+        if (it->second.getUserNickName() == userNickName) {
+            // L'utilisateur avec le surnom spécifié a été trouvé dans la map
+            return true;
+        }
+    }
+    // L'utilisateur n'a pas été trouvé dans la map
+    return false;
 }
