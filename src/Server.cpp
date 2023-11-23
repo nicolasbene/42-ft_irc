@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 16:25:19 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:31:47 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,6 @@ void Server::sendServerRpl(int const fd, std::string reply)
 	std::istringstream	buf(reply);
 	std::string			sended;
 	
-    std::cout << "Send: " << reply << std::endl;
 	send(fd, reply.c_str(), reply.size(), 0);
 	while (getline(buf, sended))
 	{
