@@ -3,3 +3,11 @@
 - Pour inviter une personne dans un canal en mode sur invitation (MODE +i), le client envoyant l'invitation doit être opérateur sur le canal désigné
 - operateur qui se barrent du channel? Genre qui /quit et qui se barrent
 - Commande USER ?
+
+
+
+//mode
+AddOperator et RemoveOperator is ok a tester
+
+- Faire une reply propre
+- Faire les autres flags

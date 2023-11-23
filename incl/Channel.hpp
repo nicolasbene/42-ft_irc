@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 16:47:55 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:52:07 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ class Channel
 		bool hasOp(User& user) const;
 		bool hasBanUser(User& user)const ;
 		bool hasKickUser(User& user)const ;
+
+		void addOperatorChannel(User& user);
+		void removeChannelOperator(User& user);
 
 
 	private:

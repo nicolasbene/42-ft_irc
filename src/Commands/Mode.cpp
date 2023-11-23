@@ -54,7 +54,7 @@ void Server::handleMode(Message message, int fd)
         return;
     }
     channel.erase(channel.find("#"), 1); // ici
-	std::cout << "channelName = " << channel << std::endl;
+	Log::info() << "channel name = " << channel << std::endl;
 
 	Channel& target = channels[channel];
 	if (target.getName().empty())
@@ -75,7 +75,7 @@ void Server::handleMode(Message message, int fd)
 	Log::info() << "mode = " << mode << std::endl;
 	if (mode[0] != '+' && mode[0] != '-')
 	{
-		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command " << command << " with an invalid mode" << std::endl;
+		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command " << command << " with an invalid mode + OU - INEXISTANT" << std::endl;
 		sendServerRpl(fd, ERR_UNKNOWNMODE(user.getUserNickName(), mode));
 		return ;
 	}
@@ -98,14 +98,15 @@ void Server::handleMode(Message message, int fd)
 	// 	return ;
 	// }
 
-	bool operand;
-
+	bool operand = 1; // +o = 1, -o = 0
 	//mode = +o
 
-	for (std::string::const_iterator it = mode.begin() + 1; it != mode.end(); ++it)
+	for (std::string::const_iterator it = mode.begin(); it != mode.end(); ++it)
 	{
-		if (*it == '+' || *it == '-')
-			operand = (*it == '+');
+		if (*it == '+') // +o
+			operand = 1;
+		else if (*it == '-') // -o
+			operand = 0;
 		else if (*it == 'o')
 			operator_mode(target, user, operand, message);
 		else
@@ -118,17 +119,17 @@ void Server::handleMode(Message message, int fd)
 	return ;
 }
 
-// std::string Server::MODE_reply()
-// {
-// 	std::string reply;
-// 	reply += "MODE " + _target->getName() + " ";
-// 	reply += _target->getMode() + " ";
-
-// 	return reply;
-// }
 
 void Server::operator_mode(Channel& channel, User& user, bool operand, Message& message)
 {
+	Log::info() << "Operand = " << operand << std::endl;
+	Log::info() << "les operateurs du chanel : ";
+		std::vector<User*> operators = channel.getChannelOperators();
+		for (std::vector<User*>::const_iterator it = operators.begin(); it != operators.end(); ++it)
+		{
+			std::cout << (*it)->getUserNickName() << " ";
+		}
+		std::cout << std::endl;
 	Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << std::endl;
 
 	// Vérifiez que message.getParameters() a au moins 3 éléments avant d'accéder à l'index 2
@@ -148,44 +149,49 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 		return ;
 	}
 
-
+	// TargetUser n'est pas dans le channel
 	else if (!channel.isUserInMap(users, targetUserNickName))
 	{
 		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " but target user " << targetUserNickName << " is not in channel" << std::endl;
-
 		sendServerRpl(user.getUserSockId(), ERR_USERNOTINCHANNEL(user.getUserNickName(), targetUserNickName, channel.getName()));
 		return ;
 	}
 
+	// Operand = "+" et TargetUser n'est pas operateur
 	else if (operand && !channel.is_operator(users[getUserIdByNickName(targetUserNickName)]))
 	{
+		
 		Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
-		channel.setChannelOperator(users[getUserIdByNickName(targetUserNickName)]);
+		channel.addOperatorChannel(users[getUserIdByNickName(targetUserNickName)]);
 		sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), targetUserNickName, "+o"));
 		return ;
 	}
 
-	// else if (operand && channel.is_operator(users[users[targetUserNickName].getUserSockId()]))
-	// {
-	// 	Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
-	// 	channel.setChannelOperator(users[users[targetUserNickName].getUserSockId()]);
-	// 	sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), targetUserNickName, "+o"));
-	// 	return ;
-	// }
-	
-	// // else if (!operand && channel.is_operator(users[users[targetUserNickName].getUserSockId()]))
-	// // {
-	// // 	Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
-	// // 	channel.removeChannelOperator(users[users[targetUserNickName].getUserSockId()]);
-	// // 	sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), targetUserNickName, "-o"));
-	// // 	return ;
-	// // }
-
-	else
+	// Operand = "+" et TargetUser est deja un operateur
+	else if (operand && channel.is_operator(users[getUserIdByNickName(targetUserNickName)]))
 	{
-		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
+		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << " but target user is already operator" << std::endl;
 		sendServerRpl(user.getUserSockId(), ERR_CHANOPRIVSNEEDED(user.getUserNickName(), channel.getName()));
 		return ;
 	}
+
+	// Operand = "-" et TargetUser est operateur
+	else if (!operand && channel.is_operator(users[getUserIdByNickName(targetUserNickName)]))
+	{
+		Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
+		channel.removeChannelOperator(users[getUserIdByNickName(targetUserNickName)]);
+		sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), targetUserNickName, "-o"));
+		//a redifinir la reply
+		return ;
+	}
+
+	else
+	{
+		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << " but target user is not operator" << std::endl;
+		sendServerRpl(user.getUserSockId(), ERR_CHANOPRIVSNEEDED(user.getUserNickName(), channel.getName()));
+		return ;
+	}
+
+
 }
 
