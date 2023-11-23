@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/20 14:54:04 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:24:54 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ User::User(void)
 	return;
 }
 
-User::User(int sockId, const std::string& userNickName, const std::string& userName) : 
-		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _isConnected(false)
+User::User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient) : 
+		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
 {
+	_IPchar = std::string(inet_ntoa(_addrClient.sin_addr));
+	_userID = _nickName + "!" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
 	return;
 }
 
@@ -74,7 +76,40 @@ void User::addChannelList(Channel& channel)
 	return;
 }
 
+void User::eraseChannelList(Channel& channel)
+{
+	for (std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
+    {
+        if (*it == &channel)
+            it = _channelList.erase(it);
+        else
+            ++it;
+    }
+}
+
 int User::getUserSockId(void)
 {
 	return(this->_userSockId);
+}
+
+bool User::getIsConnected(void) const
+{
+	return _isConnected;
+}
+
+void User::setIsConnected(bool value)
+{
+	_isConnected = value;
+}
+
+bool User::isChannel(const std::string& name)
+{
+	for ( std::vector<Channel*>::iterator it = _channelList.begin(); it != _channelList.end();)
+    {
+   		if ((*it)->getName() == name)
+        	return true;
+        else
+            ++it;
+    }
+    return false;
 }

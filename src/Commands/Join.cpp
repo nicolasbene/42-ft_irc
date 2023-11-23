@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 16:32:16 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:22:08 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,31 +64,34 @@ void Server::executeJoinOrder(Message message, int fd)
             sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
             continue;
         }
-        std::vector<User*>::const_iterator itb;
-        for (itb = channels[channel].getBannedUsers().begin(); itb != channels[channel].getBannedUsers().end(); itb++)
-        {
-            if (*(*itb) == users[fd])
-            {
-                sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
-                continue;
-            }
-        }
-        std::vector<User*>::const_iterator itk;
-        for (itk = channels[channel].getKickedUsers().begin(); itk != channels[channel].getKickedUsers().end(); itk++)
-        {
-            if (*(*itk) == users[fd])
-            {
-                sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
-                continue;
-            }
-        }
+        // std::vector<User*>::const_iterator itb;
+        // for (itb = channels[channel].getBannedUsers().begin(); itb != channels[channel].getBannedUsers().end(); itb++)
+        // {
+        //     if (*(*itb) == users[fd])
+        //     {
+        //         sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
+        //         continue;
+        //     }
+        // }
+        // std::vector<User*>::const_iterator itk;
+        // for (itk = channels[channel].getKickedUsers().begin(); itk != channels[channel].getKickedUsers().end(); itk++)
+        // {
+        //     // std::cout << *itk.getUserName() << std::endl;
+        //     if (*(*itk) == users[fd])
+        //     {
+        //         sendServerRpl(fd, ERR_BANNEDFROMCHAN(users[fd].getUserNickName(), '#' + channel));
+        //         continue;
+        //     }
+        // }
         std::vector<User*> channelMembers = channels[channel].getChannelMembers();
         std::vector<User*>::const_iterator iti = channelMembers.begin();
         
         while (iti != channelMembers.end())
         {
             if (*(*iti) == users[fd])
+            {
                 break;
+            }
             iti++;
         }
         if (iti == channelMembers.end())

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 11:47:18 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:21:10 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ class Channel
 		void removeBannedUser(User& user);
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
-		bool hasUser(User& user) const;
 
 		// -- Getter
 		const std::vector<User*> getChannelMembers() const;
@@ -54,6 +53,11 @@ class Channel
 		void	setChannelOperator(User& ops);
 
 		std::string listOfMember() const;
+		
+		bool hasUser(User& user) const;
+		bool hasOp(User& user) const;
+		bool hasBanUser(User& user)const ;
+		bool hasKickUser(User& user)const ;
 
 
 	private:

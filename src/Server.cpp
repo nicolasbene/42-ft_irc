@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/22 15:21:56 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:25:19 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int Server::create_client()
 {
     if (_nb_clients < MAX_CONNEXIONS)
     {
-        struct sockaddr_storage client_addr;
+        struct sockaddr_in client_addr;
         socklen_t client_addr_size = sizeof(client_addr);
         int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
 
@@ -138,11 +138,12 @@ int Server::create_client()
             exit(1);
         }
 
-        //addUser(client_fd);
+        // addUser(client_fd, client_addr);
+        // addUser(client_fd);
         ++_nb_clients;
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
-        message_creation(client_fd);
+        message_creation(client_fd, client_addr);
 
         // Envoi du code RPL au client
         sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
@@ -158,7 +159,7 @@ int Server::create_client()
     return 0;
 }
 
-int Server::message_creation(int fd)
+int Server::message_creation(int fd, sockaddr_in addrClient)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
@@ -186,7 +187,7 @@ int Server::message_creation(int fd)
     else
     {
         std::cout << "-Received << " << buffer << std::endl;
-        addUser(fd, &buffer[0]);
+        addUser(fd, &buffer[0], addrClient);
     }
 
     return 0;
@@ -238,7 +239,11 @@ int Server::executeCommand(char* buffer, int fd)
     else if (message.getCommande() == "JOIN")
         executeJoinOrder(message, fd);
     else if (message.getCommande() == "PART")
-        partb(message, fd);
+        executePart(message, fd);
+    else if (message.getCommande() == "PING")
+        sendPong(message, fd);
+    else if (message.getCommande() == "KICK")
+        executeKick(message, fd);
     else if (message.getCommande() == "TOPIC")
         setReadTopic(message, fd);
     else if (message.getCommande() == "INVITE")
@@ -250,13 +255,18 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, char *buffer) // ici pas satisfait avec le name par defaut
+// void Server::addUser(int sockId, struct sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
+// {
+    //static int i = 1;
+    // users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
+
+void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
 {
     //static int i = 1;
     std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
-    users.insert(std::make_pair(sockId, User(sockId, nickName, userName)));
+    users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
     return;
 }
 
@@ -266,11 +276,20 @@ void Server::addChannel(const std::string& name, User& channelOperator)
     return;
 }
 
+bool Server::isChannel(const std::string& name)
+{
+    std::map<std::string, Channel>::iterator it = channels.find(name);
+    if (it != channels.end()) 
+        return true;
+    return false;
+}
+
 void Server::sendServerRpl(int const fd, std::string reply)
 {
 	std::istringstream	buf(reply);
 	std::string			sended;
 	
+    std::cout << "Send: " << reply << std::endl;
 	send(fd, reply.c_str(), reply.size(), 0);
 	while (getline(buf, sended))
 	{
@@ -310,6 +329,19 @@ void Server::write_logo() const
         std::cout << line << std::endl;
     }
 }
+
+
+int Server::userNameToFd(std::string& user)
+{
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); it++)
+    {
+        if (it->second.getUserNickName() == user)
+            return (it->first);
+    }
+    return (-1);
+}
+
 
 std::string Server::getDate() const
 {

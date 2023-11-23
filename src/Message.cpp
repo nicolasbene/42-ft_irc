@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:00:45 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 14:36:52 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:27:40 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+#include "Server.hpp"
 
-Message::Message(const std::string& raw) : rawMessage(raw), isTrailing(false)
+Message::Message(const std::string& raw) : rawMessage(raw), istrailing(false)
 {
-    std::istringstream stream(rawMessage);
+    istrailing = false;
+    std::istringstream stream(TrimString(rawMessage, "\n\r"));//est ce que je trim ici
     std::istringstream tmp(stream.str());//seul solution pour choper le trailing proprement
 	
 	if (rawMessage.empty())
@@ -32,7 +34,7 @@ Message::Message(const std::string& raw) : rawMessage(raw), isTrailing(false)
 	{
 		if (parametre[0] == ':')
 		{
-            isTrailing = true;
+            istrailing = true;
 			std::getline(tmp, trailing, '\n');
         	trailing = trailing.substr(1);
 			break ;

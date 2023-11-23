@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/22 15:51:23 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:27:07 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <sys/epoll.h>
 # include <sstream>
 
-# include "utils.h"
+# include "utils.hpp"
 # include "User.hpp"
 # include "Channel.hpp"
 # include "Message.hpp"
@@ -68,7 +68,7 @@ class	Server {
 		
 		int			create_client();
 		int 		receive_message(int fd);
-		int			message_creation(int fd);
+		int			message_creation(int fd, sockaddr_in addrClient);
 
 
 		// -- Public static functions --
@@ -77,10 +77,13 @@ class	Server {
 
 		// -- Users 
 		std::map<int, User> users;
-		void addUser(int sockId, char *buffer);
+		// void addUser(int sockId, struct sockaddr_in addrClient);
+		void addUser(int sockId, char *buffer, sockaddr_in addrClient);
+		int userNameToFd(std::string& user);
 
 		// -- Channels
 		std::map<std::string, Channel> channels;
+		bool isChannel(const std::string& name);
 		void addChannel(const std::string& name, User& channelOperator); 
 
 		// -- Execution
@@ -89,9 +92,13 @@ class	Server {
 		void sendPrivateMessage(Message message, int fd);
 		void broadcastToChannel(std::string target, std::string speech, int fd);
 		void executeJoinOrder(Message message, int fd);
+		void	executePart(Message message, int fd);
 		void sendChanInfo(Channel& channel, User& user);
+		void	sendPong(Message msg, int fd);
+		void	executeKick(Message msg, int fd);
+
+
 		void setReadTopic(Message message, int fd);
-		void partb(Message message, int fd);
 		void sendInvitation(Message message, int fd);
 		void notice(Message message, int fd);
 		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
@@ -101,6 +108,9 @@ class	Server {
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
+
+		// -- unregister Client in channel
+		void unregisterClientToChannel(std::string unregisterChannnel, int fd);
 
 	private:
 		// -- Private attributes --
@@ -123,5 +133,8 @@ class	Server {
 //utils
 std::vector<std::string> mySplit(const std::string& s, char delimiter);
 std::string extractNextWord(const std::string& input, const std::string& keyword);
+void printVector(const std::vector<std::string>& vec);
+void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& TrimStr);
+std::string TrimString(const std::string& str, const std::string& TrimStr);
 
 #endif
