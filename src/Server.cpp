@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/22 15:32:26 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 14:57:29 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,7 +325,7 @@ void Server::write_logo() const
 }
 
 
-int Server::userExistName(std::string& user)
+int Server::userNameToFd(std::string& user)
 {
     std::map<int, User>::iterator it;
     for (it = users.begin(); it != users.end(); it++)

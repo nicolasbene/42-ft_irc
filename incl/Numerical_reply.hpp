@@ -32,7 +32,8 @@ void	sendServerRpl(int const client_fd, std::string client_buffer);
 // KICK
 # define ERR_USERNOTINCHANNEL(client, nickname, channel) ("441 " + client + " " + nickname + " #" + channel + " :They aren't on that channel\r\n")
 // # define ERR_CHANOPRIVSNEEDED(client, channel) ("482 " + client + " #" +  channel + " :You're not channel operator\r\n")
-# define RPL_KICK(user_id, channel, kicked) (user_id + " KICK #" + channel + " " + kicked + "\r\n")
+# define RPL_KICK(user_id, channel, kicked, reason) (user_id + " KICK #" + channel + " " + kicked + (reason.empty() ? "\r\n" : (reason + "\r\n")))
+# define ERR_CANOTAUTOKICK(client, channel) ("503 " + client + " #" + channel + " :You can not kick yourself\r\n")
 
 // KILL
 # define ERR_NOPRIVILEGES(client) ("481 " + client + " :Permission Denied- You're not an IRC operator\r\n")
@@ -84,7 +85,8 @@ void	sendServerRpl(int const client_fd, std::string client_buffer);
 # define RPL_YOUREOPER(client) ("381 " + client + " :You are now an IRC operator\r\n")
 
 // PART
-# define RPL_PART(user_id, channel) (user_id + " PART #" + channel + "\r\n")
+// # define RPL_PART(user_id, channel) (user_id + " PART #" + channel + "\r\n")
+# define RPL_PART(user_id, channel, reason) (user_id + " PART #" + channel + (reason.empty() ? "\r\n" : (reason + "\r\n")))
 
 // PASS
 # define ERR_PASSWDMISMATCH(client) (":localhost 464 " + client + " :Password incorrect.\r\n")

@@ -14,21 +14,24 @@ void Server::executeKick(Message msg, int fd)
 	if (!isChannel(ChanToKick.substr(1))) 
 		return (sendServerRpl(fd, ERR_NOSUCHCHANNEL(users[fd].getUserNickName(), ChanToKick.substr(1))));
 
-	int userfd = userExistName(kickUser);
+	int userfd = userNameToFd(kickUser);
 	if (!userfd || !channels[ChanToKick.substr(1)].hasUser(users[userfd]))
 		return (sendServerRpl(fd, ERR_USERNOTINCHANNEL(users[fd].getUserNickName(), kickUser, ChanToKick.substr(1))));
 	
 	if (!channels[ChanToKick.substr(1)].hasOp(users[fd]))
 		return(sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), ChanToKick.substr(1))));
 
-	sendServerRpl(userfd, RPL_PART(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1)));
-	sendServerRpl(userfd, RPL_KICK(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1), users[userfd].getUserNickName()));//rajouter la raison?
+	if (userfd == fd)
+		return (sendServerRpl(fd, ERR_CANOTAUTOKICK(users[fd].getUserName(), ChanToKick.substr(1))));
+
+	sendServerRpl(userfd, RPL_PART(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1), msg.getTrailing()));
+	sendServerRpl(userfd, RPL_KICK(user_id(users[userfd].getUserNickName(), users[userfd].getUserName()), ChanToKick.substr(1), users[userfd].getUserNickName(), msg.getTrailing()));
 	unregisterClientToChannel(ChanToKick.substr(1), userfd);
 	channels[ChanToKick.substr(1)].addKickedUser(users[userfd]);
 	std::vector<User*> channel_users = channels[ChanToKick.substr(1)].getChannelMembers();
     for (std::vector<User*>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
     {
         if ((*it)->getUserSockId() != userfd)
-            sendServerRpl((*it)->getUserSockId(), RPL_KICK(user_id(users[fd].getUserNickName(), users[fd].getUserName()), ChanToKick.substr(1), users[userfd].getUserNickName()));
+            sendServerRpl((*it)->getUserSockId(), RPL_KICK(user_id(users[fd].getUserNickName(), users[fd].getUserName()), ChanToKick.substr(1), users[userfd].getUserNickName(), msg.getTrailing()));
     }
 }

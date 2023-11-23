@@ -27,7 +27,7 @@ void Server::executePart(Message message, int fd)
 				sendServerRpl(fd, ERR_NOTONCHANNEL(users[fd].getUserNickName(), argChannels[i].substr(1)));
 			else
 			{
-				sendServerRpl(fd, RPL_PART(user_id(users[fd].getUserNickName(), users[fd].getUserName()), argChannels[i].substr(1)));//rajouter la raison
+				sendServerRpl(fd, RPL_PART(user_id(users[fd].getUserNickName(), users[fd].getUserName()), argChannels[i].substr(1), message.getTrailing()));
 				unregisterClientToChannel(argChannels[i].substr(1), fd);
 			}
 		}
