@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 10:59:05 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:00:12 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,6 +277,7 @@ void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pa
 void Server::addChannel(const std::string& name, User& channelOperator)
 {
     channels.insert(std::make_pair(name, Channel(name, channelOperator)));
+    
     return;
 }
 
