@@ -6,16 +6,16 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:00:45 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 16:38:54 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:27:40 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
 #include "Server.hpp"
 
-Message::Message(const std::string& raw) : rawMessage(raw)
+Message::Message(const std::string& raw) : rawMessage(raw), istrailing(false)
 {
-    istraling = false;
+    istrailing = false;
     std::istringstream stream(TrimString(rawMessage, "\n\r"));//est ce que je trim ici
     std::istringstream tmp(stream.str());//seul solution pour choper le trailing proprement
 	
@@ -34,7 +34,7 @@ Message::Message(const std::string& raw) : rawMessage(raw)
 	{
 		if (parametre[0] == ':')
 		{
-            istraling = true;
+            istrailing = true;
 			std::getline(tmp, trailing, '\n');
         	trailing = trailing.substr(1);
 			break ;

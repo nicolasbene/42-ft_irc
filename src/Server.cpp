@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 14:57:29 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:25:19 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,12 @@ int Server::executeCommand(char* buffer, int fd)
         sendPong(message, fd);
     else if (message.getCommande() == "KICK")
         executeKick(message, fd);
+    else if (message.getCommande() == "TOPIC")
+        setReadTopic(message, fd);
+    else if (message.getCommande() == "INVITE")
+        sendInvitation(message, fd);
+    else if (message.getCommande() == "NOTICE")
+        notice(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);

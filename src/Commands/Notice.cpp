@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Privmsg.cpp                                        :+:      :+:    :+:   */
+/*   Notice.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 16:33:09 by nwyseur          ###   ########.fr       */
+/*   Created: 2023/11/22 14:39:00 by nwyseur           #+#    #+#             */
+/*   Updated: 2023/11/22 15:50:52 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <sstream>
 #include "Log.hpp"
 
-void Server::broadcastToChannel(std::string target, std::string speech, int fd)
+void Server::broadcastToChannelNotice(std::string target, std::string speech, int fd)
 {
     Channel broadcast = channels[target];
     // std::cout << RED << "TEST MSG CHANNEL :" << target << " testret" << RESET << std::endl;
@@ -31,7 +31,7 @@ void Server::broadcastToChannel(std::string target, std::string speech, int fd)
     {
         if (*it == &users[fd])
         {
-            std::cout << RED << "[Server] User " << users[fd].getUserNickName() << " is banned from channel " << RESET << broadcast.getName();
+            //std::cout << RED << "[Server] User " << users[fd].getUserNickName() << " is banned from channel " << RESET << broadcast.getName();
             return; 
         }
     }
@@ -41,7 +41,7 @@ void Server::broadcastToChannel(std::string target, std::string speech, int fd)
     {
         if (*it == &users[fd])
         {
-            std::cout << RED << "[Server] User " << users[fd].getUserNickName() << " is kicked from channel " << RESET << broadcast.getName();
+            //std::cout << RED << "[Server] User " << users[fd].getUserNickName() << " is kicked from channel " << RESET << broadcast.getName();
             return; 
         }
     }
@@ -52,26 +52,26 @@ void Server::broadcastToChannel(std::string target, std::string speech, int fd)
         // std::cout << RED << "TEST MSG CHANNEL - ENVOIE" << RESET << std::endl;
         std::string toSend = "#" + target;
         if ((*it)->getUserSockId() != fd)
-            sendServerRpl((*it)->getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), toSend, speech));
+            sendServerRpl((*it)->getUserSockId(), RPL_NOTICE(users[fd].getUserNickName(), users[fd].getUserName(), toSend, speech));
     }
 
 }
 
-void Server::sendPrivateMessage(Message message, int fd)
+void Server::notice(Message message, int fd)
 {
     std::string target;
     std::string speech;
 
     if (message.getParameters().empty())
     {
-        sendServerRpl(fd, ERR_NORECIPIENT(users[fd].getUserNickName()));
+        //sendServerRpl(fd, ERR_NORECIPIENT(users[fd].getUserNickName()));
         return;
     }
     else
         target = message.getParameters()[0];
     if (message.getTrailing().empty())
     {
-        sendServerRpl(fd, ERR_NOTEXTTOSEND(users[fd].getUserNickName()));
+        //sendServerRpl(fd, ERR_NOTEXTTOSEND(users[fd].getUserNickName()));
         return;
     }
     else
@@ -92,7 +92,7 @@ void Server::sendPrivateMessage(Message message, int fd)
         it = channels.find(target.substr(1));
         if (it == channels.end())
         {
-            sendServerRpl(fd, ERR_NOSUCHNICK(users[fd].getUserNickName(), target));
+            //sendServerRpl(fd, ERR_NOSUCHNICK(users[fd].getUserNickName(), target));
             return;
         }
         else
@@ -114,7 +114,7 @@ void Server::sendPrivateMessage(Message message, int fd)
             if (itu->second.getUserName() == target || itu->second.getUserNickName() == target)
             {
                 // std::cout << BLUE << "TEST MSG USER - 2" << RESET << std::endl;
-                sendServerRpl(itu->second.getUserSockId(), RPL_PRIVMSG(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
+                sendServerRpl(itu->second.getUserSockId(), RPL_NOTICE(users[fd].getUserNickName(), users[fd].getUserName(), target, speech));
                 return;
             }
         }
@@ -128,36 +128,9 @@ void Server::sendPrivateMessage(Message message, int fd)
         }
         else
         {
-            sendServerRpl(fd, ERR_NOSUCHNICK(users[fd].getUserNickName(), target));
+            //sendServerRpl(fd, ERR_NOSUCHNICK(users[fd].getUserNickName(), target));
             return;
         }
     }
 
 }
-
-
-
-
-
-
-//void Server::sendPrivateMessage(Message message, int fd)
-//{
-//    std::string sender = users[fd].getUserNickName();
-//    sender.resize(sender.size() - 2);
-//
-//    std::map<int, User>::iterator it;
-//    for (it = users.begin(); it != users.end(); ++it)
-//    {
-//        if (it->second.getUserName() == message.getParameters()[0] + "\r\n" || it->second.getUserNickName() == message.getParameters()[0] + "\r\n")
-//        {
-//            std::string buffer = "[" + sender + "]";
-//            for (unsigned long int k = 2; k < message.getParameters().size(); k++)
-//                buffer = buffer + " " + message.getParameters()[k];
-//            send(it->second.getUserSockId(), buffer.c_str(), buffer.size(), 0);
-//            return;
-//        }
-//    }
-//    std::string error = "Error: the user you're trying to reach doesn't exist\r\n";
-//    send(fd, error.c_str(), error.size(), 0);
-//}
- 

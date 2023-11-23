@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 22:52:47 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/20 15:18:27 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:27:26 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ private:
 	std::string commande;
 	std::vector<std::string> parameters;
 	std::string	trailing;
-	bool		istraling;
+	bool istrailing;
 
 public:
 	Message(const std::string& raw);

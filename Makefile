@@ -45,6 +45,9 @@ SRCS	=	main.cpp \
 			Commands/Part.cpp \
 			Commands/Ping-Pong.cpp \
 			Commands/Kick.cpp \
+			Commands/Topic.cpp \
+			Commands/Invite.cpp \
+			Commands/Notice.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \

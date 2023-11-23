@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/22 14:10:12 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:22:16 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ const std::vector<User*> Channel::getKickedUsers() const
 	return (this->_kickedUsers);
 }
 
+const std::vector<User*> Channel::getChannelOperators() const
+{
+	return (this->_channelOperators);
+}
+
 const std::string Channel::getName() const
 {
 	return (this->_channelName);
@@ -67,6 +72,10 @@ const std::string Channel::getSymbol() const
 	return (this->_channelSymbol);
 }
 
+const std::string Channel::getChannelTopic() const
+{
+	return (this->_channelTopic);
+}
 
 // -- Setter
 
@@ -80,6 +89,15 @@ void	Channel::setChannelCap(int cap)
 	_channelCapacity = cap;
 }
 
+void	Channel::setChannelTopic(std::string topic)
+{
+	_channelTopic = topic;
+}
+
+void Channel::setChannelOperator(User& ops)
+{
+	_channelOperators.push_back(&ops);
+}
 
 // -- Add/Remove
 void Channel::addUser(User& user)

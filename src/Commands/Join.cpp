@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 15:36:04 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:22:08 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void Server::executeJoinOrder(Message message, int fd)
         it = channels.find(channel);
         if (it == channels.end())
         {
-            std::cout << RED << "TEST ADD" << RESET << std::endl;
+            // std::cout << RED << "TEST ADD" << RESET << std::endl;
             addChannel(channel, users[fd]);
             users[fd].addChannelList(channels[channel]);
         }
@@ -96,7 +96,7 @@ void Server::executeJoinOrder(Message message, int fd)
         }
         if (iti == channelMembers.end())
         {
-            std::cout << BLUE << "TEST ADD CLIENT" << RESET << std::endl;
+            // std::cout << BLUE << "TEST ADD CLIENT" << RESET << std::endl;
             addClientToChannel(channels[channel], users[fd]);
         }
         else
@@ -114,6 +114,7 @@ void Server::sendChanInfo(Channel& channel, User& user)
         sendServerRpl((*member)->getUserSockId(), RPL_JOIN(user_id(user.getUserNickName(), user.getUserName()), channel.getName()));
         if ((*member) == &user)
         {
+            sendServerRpl((*member)->getUserSockId(),RPL_TOPIC(user.getUserNickName(), channel.getName(), channel.getChannelTopic()));//rajouter topic
             sendServerRpl((*member)->getUserSockId(), RPL_NAMREPLY(user.getUserNickName(), channel.getSymbol(), channel.getName(), channel.listOfMember()));
             sendServerRpl((*member)->getUserSockId(), RPL_ENDOFNAMES(user.getUserNickName(), channel.getName()));
         }

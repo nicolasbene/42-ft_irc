@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 14:57:50 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:27:07 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,13 @@ class	Server {
 		void	executeKick(Message msg, int fd);
 
 
+		void setReadTopic(Message message, int fd);
+		void sendInvitation(Message message, int fd);
+		void notice(Message message, int fd);
+		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
+
+		// -- Utils
+		bool userExistName(std::string user);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
