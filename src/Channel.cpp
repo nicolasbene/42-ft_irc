@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 15:49:22 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/23 16:44:27 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void Channel::addBannedUser(User& user)
 {
 	_bannedUsers.push_back(&user);
 }
+
 void Channel::removeBannedUser(User& user)
 {
 	unsigned long int i = 0;
@@ -147,6 +148,7 @@ void Channel::addKickedUser(User& user)
 {
 	_kickedUsers.push_back(&user);
 }
+
 void Channel::removeKickedUser(User& user)
 {
 	unsigned long int i = 0;
@@ -167,6 +169,48 @@ bool Channel::hasUser(User& user) const
 	while (i < _channelMembers.size())
 	{
 		if (_channelMembers[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasOp(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _channelOperators.size())
+	{
+		if (_channelOperators[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasBanUser(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _bannedUsers.size())
+	{
+		if (_bannedUsers[i] == &user)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool Channel::hasKickUser(User& user) const
+{
+	unsigned long int i = 0;
+	while (i < _kickedUsers.size())
+	{
+		if (_kickedUsers[i] == &user)
 		{
 			return (true);
 		}

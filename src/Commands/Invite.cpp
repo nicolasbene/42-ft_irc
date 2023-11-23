@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 16:58:53 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 18:32:46 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/22 12:00:44 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,14 @@ void Server::sendInvitation(Message message, int fd)
 		}
 
 		std::vector<User*> userInvited = channels[channel].getChannelMembers();
-		size_t i = 0;
-		while (i < userInvited.size())
+		size_t j = 0;
+		while (j < userInvited.size())
 		{
-			if ((userInvited)[i]->getUserNickName() == client)
+			if ((userInvited)[j]->getUserNickName() == client)
 				break;
-			i++;
+			j++;
 		}
-		if (i == userInvited.size())
+		if (j == userInvited.size())
 		{
 			sendServerRpl(fd, ERR_USERONCHANNEL(users[fd].getUserNickName(), client, channel));
 			return;
@@ -82,6 +82,15 @@ void Server::sendInvitation(Message message, int fd)
 	}
 
 	sendServerRpl(fd, RPL_INVITING(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName(), client, channel));
+	std::map<int, User>::iterator itu;
+	for (itu = users.begin(); itu != users.end(); itu++)
+	{
+		if (itu->second.getUserNickName() == client)
+		{
+			sendServerRpl(itu->second.getUserSockId(), RPL_INVITE(user_id(users[fd].getUserNickName(), users[fd].getUserName()), itu->second.getUserNickName(), channel));
+			return;
+		}
+	}
 }
 
 

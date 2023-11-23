@@ -44,9 +44,13 @@ SRCS	=	main.cpp \
 			Commands/Join.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
+			Commands/Part.cpp \
+			Commands/Ping-Pong.cpp \
+			Commands/Kick.cpp \
 			Commands/Topic.cpp \
-			Commands/partb.cpp \
 			Commands/Mode.cpp \
+			Commands/Invite.cpp \
+			Commands/Notice.cpp \
 
 T_SRCS	=	tests/main.cpp \
 			tests/core/Test.cpp \
