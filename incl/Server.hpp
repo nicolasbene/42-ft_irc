@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/21 18:21:39 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/22 15:51:23 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ class	Server {
 		void setReadTopic(Message message, int fd);
 		void partb(Message message, int fd);
 		void sendInvitation(Message message, int fd);
+		void notice(Message message, int fd);
+		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
 
 		// -- Utils
 		bool userExistName(std::string user);
