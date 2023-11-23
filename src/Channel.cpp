@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:00:08 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:01:37 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,4 +260,23 @@ bool Channel::isUserInMap(std::map<int, User> users, std::string userNickName) {
     }
     // L'utilisateur n'a pas été trouvé dans la map
     return false;
+}
+
+void Channel::addOperatorChannel(User& user)
+{
+	_channelOperators.push_back(&user);
+}
+
+void Channel::removeChannelOperator(User& user)
+{
+	unsigned long int i = 0;
+	while (i < _channelOperators.size())
+	{
+		if (_channelOperators[i] == &user)
+		{
+			_channelOperators.erase(_channelOperators.begin() + i);
+			return;
+		}
+		i++;
+	}
 }

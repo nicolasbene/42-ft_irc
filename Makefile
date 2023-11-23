@@ -9,7 +9,7 @@ INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
 ### EXECUTABLE ###
 NAME	= $(PROJECT)
 
-PORT	= 6668
+PORT	= 6667
 
 
 PASSWD	= password
