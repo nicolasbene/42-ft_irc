@@ -131,6 +131,14 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 {
 	Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << std::endl;
 
+	// Vérifiez que message.getParameters() a au moins 3 éléments avant d'accéder à l'index 2
+    if (message.getParameters().size() < 3)
+    {
+        Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " but without target user" << std::endl;
+        sendServerRpl(user.getUserSockId(), ERR_NEEDMOREPARAMS(user.getUserNickName(), message.getCommande()));
+        return ;
+    }
+
 	std::string targetUserNickName = message.getParameters()[2];
 	Log::info() << "targetUserNickName = " << targetUserNickName << std::endl;
 	if (targetUserNickName.empty())
@@ -144,24 +152,6 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 	else if (!channel.isUserInMap(users, targetUserNickName))
 	{
 		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " but target user " << targetUserNickName << " is not in channel" << std::endl;
-
-		//push un operateur dans le channel
-
-		Log::info() << "voici les operateurs du chanel : " << std::endl;
-		for (std::vector<User*>::const_iterator it = channel.getChannelOperators().begin(); it != channel.getChannelOperators().end(); ++it)
-		{
-			if (*it != NULL) {
-				try {
-					std::cout << (*it)->getUserNickName() << std::endl;
-				} catch (const std::exception& e) {
-					std::cout << "Exception caught: " << e.what() << std::endl;
-				}
-			} else {
-				std::cout << "Null pointer in channel operators list." << std::endl;
-			}
-		}
-
-
 
 		sendServerRpl(user.getUserSockId(), ERR_USERNOTINCHANNEL(user.getUserNickName(), targetUserNickName, channel.getName()));
 		return ;

@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/22 18:57:47 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:49:22 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ const std::vector<User*> Channel::getChannelOperators() const
 {
 	return (this->_channelOperators);
 }
+
 
 const std::string Channel::getName() const
 {
