@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 16:25:19 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/23 18:03:14 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,6 @@ int Server::create_client()
             exit(1);
         }
 
-        // addUser(client_fd, client_addr);
-        // addUser(client_fd);
         ++_nb_clients;
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
@@ -266,6 +264,10 @@ void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pa
     std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
+    if (userExistName(nickName))
+        nickName = changeNickname(nickName, userName, sockId);
+    // if (userExistUserName(userName))
+        // changeUserName(nickName, sockId);
     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
     return;
 }

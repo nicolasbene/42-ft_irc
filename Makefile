@@ -39,6 +39,7 @@ SRCS	=	main.cpp \
 			Message.cpp \
 			utils/min.cpp \
 			utils/Utils.cpp \
+			utils/changeName.cpp \
 			Commands/Join.cpp \
 			Commands/Nick.cpp \
 			Commands/Privmsg.cpp \
