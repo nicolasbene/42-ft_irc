@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 18:03:14 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:23:39 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,12 +137,25 @@ int Server::create_client()
             perror("epoll_ctl");
             exit(1);
         }
-
+        
+        message_creation(client_fd, client_addr);
+        
+        if (!users[client_fd].getIsConnected())
+        {
+            if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, &client_event) == -1)
+            {
+                perror("epoll_ctl_del");
+                exit(1);
+            }
+            else 
+            {
+                close(client_fd);
+                return 0;
+            }
+        }
         ++_nb_clients;
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
-        message_creation(client_fd, client_addr);
-
         // Envoi du code RPL au client
         sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
         sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
@@ -269,7 +282,18 @@ void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pa
     // if (userExistUserName(userName))
         // changeUserName(nickName, sockId);
     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
-    return;
+    if (!users[sockId].getIsConnected())
+		return (sendServerRpl(sockId, ERR_ALREADYREGISTERED(users[sockId].getUserNickName())));
+    if (str.find("PASS") != std::string::npos)
+    {
+        if (extractNextWord(str, "PASS") == _password)
+            return (users[sockId].setIsConnected(true));
+    }
+    else 
+		return (sendServerRpl(sockId, ERR_NEEDMOREPARAMS(users[sockId].getUserNickName(), "PASS")));
+	sendServerRpl(sockId, ERR_PASSWDMISMATCH(users[sockId].getUserNickName()));
+    users.erase(sockId);
+    return ;
 }
 
 void Server::addChannel(const std::string& name, User& channelOperator)
