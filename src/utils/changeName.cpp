@@ -21,6 +21,7 @@
 //         tmp = incrementString(NameTochange, i);
 //         i++;
 //     }
+//     trouver la requete a envoi
 //     return (tmp)
 // }
 
