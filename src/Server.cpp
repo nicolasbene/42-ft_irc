@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/27 15:32:01 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:54:54 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
             perror("epoll_ctl");
             exit(1);
         }
-
+        
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
@@ -231,7 +231,7 @@ int Server::receive_message(int fd)
             perror("epoll_ctl");
             exit(1);
         }
-
+        users.erase(fd);
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
