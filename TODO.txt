@@ -7,7 +7,4 @@
 
 
 //mode
-AddOperator et RemoveOperator is ok a tester
-
-- Faire une reply propre
-- Faire les autres flags
+AddOperator et RemoveOperator mettre un Log::info() §au moment du push et du erase
