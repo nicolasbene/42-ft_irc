@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 18:02:28 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:33:26 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ class	Server {
 		int			create_client();
 		int 		receive_message(int fd);
 		int			message_creation(int fd, sockaddr_in addrClient);
+		int 		WrongPassWord(char* buffer, int fd);
+
 
 
 		// -- Public static functions --
