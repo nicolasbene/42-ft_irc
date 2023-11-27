@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 16:22:08 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/27 12:36:02 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void sendChanInfo(Channel& channel, User& user);
 bool atLeastOneAlphaNum(std::string toTest);
 void addClientToChannel(Channel& channel, User& client);
 std::string getChannelName(std::string strToPars);
+std::string	getChannelKeyword(std::string strToPars);
 
 void Server::executeJoinOrder(Message message, int fd)
 {
@@ -59,6 +60,16 @@ void Server::executeJoinOrder(Message message, int fd)
             addChannel(channel, users[fd]);
             users[fd].addChannelList(channels[channel]);
         }
+        else if (it->second.getMode().find('k') != std::string::npos) // Si channel en mode +k
+		{
+			std::string key = getChannelKeyword(keyword_list);
+			keyword_list.erase(keyword_list.find(key), key.length()); // on erase la key de la string
+			if (key != it->second.getChannelPassword())
+			{
+				sendServerRpl(fd, ERR_BADCHANNELKEY(users[fd].getUserNickName(), channel));
+				continue; // on passe la suite, au prochain channel à ajouter síl y en a un
+			}
+		}
         if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
         {
             sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
@@ -151,6 +162,20 @@ std::string getChannelName(std::string strToPars)
     }
     return (toReturn);
     
+}
+
+std::string	getChannelKeyword(std::string strToPars)
+{
+    std::string toReturn;
+    int i = 0;
+    while (strToPars[i] && !isalnum(strToPars[i]) && strToPars[i] != '-' && strToPars[i] != '_')
+        i++;
+    while (strToPars[i] && strToPars[i] != ',')
+    {
+        toReturn += strToPars[i];
+        i++;
+    }
+    return (toReturn);
 }
 
 
