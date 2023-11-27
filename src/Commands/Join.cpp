@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/27 12:36:02 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/27 15:31:56 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void Server::executeJoinOrder(Message message, int fd)
 
     if (message.getParameters().size() >= 2)
         keyword_list = message.getParameters()[1];
+    // Check if there is enough parameter
     if (atLeastOneAlphaNum(channel_list) == false)
     {
         sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
@@ -51,15 +52,19 @@ void Server::executeJoinOrder(Message message, int fd)
         if (posn != std::string::npos)
             channel = channel.erase(posn, std::string::npos);
 
+        // erase de la string le channel = "#foo,#bar" devient "#,#bar"
         channel_list.erase(channel_list.find(channel), channel.length());
+        // Get Channel thanks to channel name
         std::map<std::string, Channel>::iterator it;
         it = channels.find(channel);
+        // Create channel if it doesn't exist
         if (it == channels.end())
         {
             // std::cout << RED << "TEST ADD" << RESET << std::endl;
             addChannel(channel, users[fd]);
             users[fd].addChannelList(channels[channel]);
         }
+        // Handle k mode
         else if (it->second.getMode().find('k') != std::string::npos) // Si channel en mode +k
 		{
 			std::string key = getChannelKeyword(keyword_list);
@@ -70,6 +75,7 @@ void Server::executeJoinOrder(Message message, int fd)
 				continue; // on passe la suite, au prochain channel à ajouter síl y en a un
 			}
 		}
+        // check if channel is full
         if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
         {
             sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
@@ -94,6 +100,8 @@ void Server::executeJoinOrder(Message message, int fd)
         //         continue;
         //     }
         // }
+
+        // check if client is already in channel or not
         std::vector<User*> channelMembers = channels[channel].getChannelMembers();
         std::vector<User*>::const_iterator iti = channelMembers.begin();
         
@@ -105,11 +113,13 @@ void Server::executeJoinOrder(Message message, int fd)
             }
             iti++;
         }
+        // Add client to channel if not
         if (iti == channelMembers.end())
         {
             // std::cout << BLUE << "TEST ADD CLIENT" << RESET << std::endl;
             addClientToChannel(channels[channel], users[fd]);
         }
+        // send error messsage if client already in channel
         else
 		    std::cout << YELLOW << users[fd].getUserNickName() << "already in the channel\n" << RESET;
         sendChanInfo(channels[channel], users[fd]);
@@ -177,27 +187,3 @@ std::string	getChannelKeyword(std::string strToPars)
     }
     return (toReturn);
 }
-
-
-// void Server::executeJoinOrder(Message message, int fd)
-// {
-//     std::map<std::string, Channel>::iterator it;
-//     for (it = channels.begin(); it != channels.end(); it++)
-//     {
-//         if (it->second.getName() == message.getParameters()[0])
-//         {
-//             it->second.addUser(users[fd]);
-//             users[fd].addChannelList(it->second);
-//             std::string channel = it->second.getName();
-//             channel.resize(channel.size() - 2);
-//             std::string chan = "You entered channel : [" + channel + "]";
-//             send(fd, chan.c_str(), chan.size(), 0);
-//             return;
-//         }
-//     }
-//     addChannel(message.getParameters()[0], users[fd]);
-//     channels[message.getParameters()[0]].addUser(users[fd]);
-//     users[fd].addChannelList(channels[message.getParameters()[0]]);
-//     std::string createchan = "You created channel : [" + message.getParameters()[0] + "] and entered as operator";
-//     send(fd, createchan.c_str(), createchan.size(), 0);
-// }

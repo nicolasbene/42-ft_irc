@@ -1,9 +1,17 @@
-- rajouter password dans join
-- rajouter trailing vide dans topic + mode k;
+- rajouter password dans join - OK
+- rajouter trailing vide dans topic -NOK + mode k - OK; 
 - Pour inviter une personne dans un canal en mode sur invitation (MODE +i), le client envoyant l'invitation doit être opérateur sur le canal désigné
 - operateur qui se barrent du channel? Genre qui /quit et qui se barrent
 - Commande USER ?
 - comment tu chope le mode? c est forcemment avec la commande mode?
 
-- voir pour changer le username?
--
+- voir pour changer le username? reque
+- verifier les mdp de lancement du serveur.
+
+
+a tester:
+- envoie des messages aux channels et/ou prive
+- envoie
+
+a modifier:
+- channel listOfMember - condisitonner le @ au operateur channel;

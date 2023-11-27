@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/27 13:58:28 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/27 14:06:07 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,8 +266,6 @@ void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pa
     std::string userName = extractNextWord(str, "USER");
     if (userExistName(nickName))
         nickName = changeNickname(nickName, userName, sockId);
-    // if (userExistUserName(userName))
-        // changeUserName(nickName, sockId);
     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
     return;
 }
