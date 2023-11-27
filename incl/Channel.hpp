@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:01:28 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:02:01 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ class Channel
 		void	setChannelTopic(std::string topic);
 		void	setChannelOperator(User& ops);
 
+		void	setChannelMode(std::string mode);
+
 		std::string listOfMember() const;
 		
 		bool hasUser(User& user) const;
@@ -69,6 +71,13 @@ class Channel
 		void addOperatorChannel(User& user);
 		void removeChannelOperator(User& user);
 
+		bool getInviteOnlyMode(void);
+		void setInviteOnlyMode(bool mode);
+
+		bool getTopicMode(void);
+		void setTopicMode(bool mode);
+
+		void add_mode_string(std::string mode);
 
 	private:
 		std::string _channelName;
@@ -80,7 +89,11 @@ class Channel
 		std::string			_channelPassword;
 		size_t				_channelCapacity;
 		std::string			_channelSymbol;
-		std::string			_channelMode;
+		std::string			_channelModeString;
+		
+		bool				_inviteOnlyMode;
+		bool				_topicMode;
+		
 
 };
 

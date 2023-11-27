@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:01:37 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:02:34 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelMembers.push_back(&channelOperator);
 	_channelCapacity = 0;
 	_channelSymbol = "#";
+	_inviteOnlyMode = false;
 }
 
 Channel::~Channel()
@@ -80,7 +81,7 @@ const std::string Channel::getChannelTopic() const
 
 const std::string Channel::getChannelMode() const
 {
-	return (this->_channelMode);
+	return (this->_channelModeString);
 }
 
 // -- Setter
@@ -92,7 +93,12 @@ void	Channel::setPassword(std::string pass)
 
 void	Channel::setChannelCap(int cap)
 {
-	_channelCapacity = cap;
+	if (cap < 0)
+		_channelCapacity = 0;
+	else if (cap > 9999)
+		_channelCapacity = 9999;
+	else
+		_channelCapacity = cap;
 }
 
 void	Channel::setChannelTopic(std::string topic)
@@ -265,6 +271,7 @@ bool Channel::isUserInMap(std::map<int, User> users, std::string userNickName) {
 void Channel::addOperatorChannel(User& user)
 {
 	_channelOperators.push_back(&user);
+	
 }
 
 void Channel::removeChannelOperator(User& user)
@@ -280,3 +287,44 @@ void Channel::removeChannelOperator(User& user)
 		i++;
 	}
 }
+
+void Channel::setChannelMode(std::string mode)
+{
+	_channelModeString = mode;
+}
+
+
+bool Channel::getInviteOnlyMode(void)
+{
+	return (_inviteOnlyMode);
+}
+
+void Channel::setInviteOnlyMode(bool mode)
+{
+	_inviteOnlyMode = mode;
+}
+
+void Channel::setTopicMode(bool mode)
+{
+	_topicMode = mode;
+}
+
+bool Channel::getTopicMode(void)
+{
+	return (_topicMode);
+}
+
+void Channel::add_mode_string(std::string mode)
+{
+	if (mode[0] == '+')
+	{
+		if (_channelModeString.find(mode[1]) == std::string::npos)
+			_channelModeString += mode[1];
+	}
+	else if (mode[0] == '-')
+	{
+		if (_channelModeString.find(mode[1]) != std::string::npos)
+			_channelModeString.erase(_channelModeString.find(mode[1]), 1);
+	}
+}
+

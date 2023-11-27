@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:01:33 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:02:22 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,17 @@ class	Server {
 		// -- Mode
 		void handleMode(Message message, int fd);
 		void operator_mode(Channel& target, User& user, bool operand, Message& message);
-		int getUserIdByNickName(std::string& userNickName);
+		int	 getUserIdByNickName(std::string& userNickName);
+		void invite_only_mode(Channel& target, User& user, bool operand, Message& message);
+		void topic_mode(Channel& channel, User& user, bool operand, Message& message);
+		void password_mode(Channel& channel, User& user, bool operand, Message& message);
+		void limit_mode(Channel& channel, User& user, bool operand, Message& message);
+
+
+
+		
+		void notice(Message message, int fd);
+		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
 
 		// -- Utils
 		bool userExistName(std::string user);
