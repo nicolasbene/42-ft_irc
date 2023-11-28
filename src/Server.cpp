@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:08:40 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:35:11 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,8 @@ int Server::create_client()
         ++_nb_clients;
         sleep(1); // ici test
         Log::info() << "Client connected : " << client_fd << '\n';
-        message_creation(client_fd, client_addr);
+        if (message_creation(client_fd, client_addr) == 1)
+            return 1;
 
         // Envoi du code RPL au client
         sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
@@ -178,17 +179,35 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
             perror("epoll_ctl");
             exit(1);
         }
-
+        
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
     else
     {
         std::cout << "-Received << " << buffer << std::endl;
+        if (extractNextWord(std::string(&buffer[0]), "PASS") != _password)
+            return (WrongPassWord(buffer,fd));
         addUser(fd, &buffer[0], addrClient);
     }
 
     return 0;
+}
+
+int Server::WrongPassWord(char* buffer, int fd)
+{
+    if (extractNextWord(std::string(&buffer[0]), "PASS") == "Mot-clé non trouvé")
+        sendServerRpl(fd, ERR_NEEDMOREPARAMS(extractNextWord(std::string(&buffer[0]), "NICK"), "PASS"));
+    else
+        sendServerRpl(fd, ERR_PASSWDMISMATCH(extractNextWord(std::string(&buffer[0]), "NICK")));
+    if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+    {
+        perror("epoll_ctl");
+        exit(1);
+    }
+    close(fd);
+    Log::info() << "Client disconnected" << '\n';
+    return 1;
 }
 
 int Server::receive_message(int fd)
@@ -212,7 +231,7 @@ int Server::receive_message(int fd)
             perror("epoll_ctl");
             exit(1);
         }
-
+        users.erase(fd);
         close(fd);
         Log::info() << "Client disconnected" << '\n';
     }
@@ -255,21 +274,13 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-// void Server::addUser(int sockId, struct sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
-// {
-    //static int i = 1;
-    // users.insert(std::make_pair(sockId, User(sockId, "userTest", addrClient)));
-
 void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
 {
-    //static int i = 1;
     std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
     if (userExistName(nickName))
         nickName = changeNickname(nickName, userName, sockId);
-    // if (userExistUserName(userName))
-        // changeUserName(nickName, sockId);
     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
     return;
 }

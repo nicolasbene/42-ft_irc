@@ -6,7 +6,7 @@
 /*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 18:00:45 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 16:27:40 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/27 16:22:57 by jgautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 Message::Message(const std::string& raw) : rawMessage(raw), istrailing(false)
 {
     istrailing = false;
-    std::istringstream stream(TrimString(rawMessage, "\n\r"));//est ce que je trim ici
-    std::istringstream tmp(stream.str());//seul solution pour choper le trailing proprement
+    std::istringstream stream(TrimString(rawMessage, "\n\r"));
+    std::istringstream tmp(stream.str());
 	
 	if (rawMessage.empty())
 		return ;
