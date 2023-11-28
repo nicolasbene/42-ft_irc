@@ -1,4 +1,4 @@
-PROJECT	= ircserver
+PROJECT	= ircserv
 
 ### COMPILATION ###
 CC		= c++

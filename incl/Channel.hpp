@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:05:36 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 14:26:46 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ class Channel
 		void removeBannedUser(User& user);
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
+
+		void addInvitedUser(User& user);
+		void removeInvitedUser(User& user);
+
 		bool hasUser(User& user) const;
 		bool isUserInMap(const std::map<int, User> users, const std::string userNickName);
 
@@ -46,6 +50,7 @@ class Channel
 		const std::vector<User*> getBannedUsers() const;
 		const std::vector<User*> getKickedUsers() const;
 		const std::vector<User*> getChannelOperators() const;
+		const std::vector<User*> getChannelInvitedUsers() const;
 		const std::string getName() const;
 		const std::string getPassword() const;
 		size_t getChannelCap() const;
@@ -83,8 +88,9 @@ class Channel
 		std::string _channelTopic;
 		std::vector<User*>	_channelMembers;
 		std::vector<User*>	_channelOperators;
-		std::vector<User*>	_bannedUsers;
-		std::vector<User*>	_kickedUsers;
+		std::vector<User*>	_channelInvitedUser;
+		std::vector<User*>	_bannedUsers; // ici + fonction
+		std::vector<User*>	_kickedUsers; // ici + fonction
 		std::string			_channelPassword;
 		size_t				_channelCapacity;
 		std::string			_channelSymbol;

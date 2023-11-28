@@ -21,9 +21,8 @@ int	main(int argc, char** argv)
 
 	Server	server(argv[1], argv[2]);
 	// server.write_logo();
-	server.start();
-
-	server.poll();
+	if (!server.start())
+		server.poll();
 
 	return (0);
 }
