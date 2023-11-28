@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:05:54 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 15:28:27 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Channel::Channel(const std::string &name,  User& channelOperator)
     _channelName = name;
     _channelOperators.push_back(&channelOperator);
     _channelMembers.push_back(&channelOperator);
+	_channelInvitedUser.push_back(&channelOperator);
 	_channelCapacity = 0;
 	_channelSymbol = "#";
 	_inviteOnlyMode = false;
@@ -51,6 +52,11 @@ const std::vector<User*> Channel::getKickedUsers() const
 const std::vector<User*> Channel::getChannelOperators() const
 {
 	return (this->_channelOperators);
+}
+
+const std::vector<User*> Channel::getChannelInvitedUsers() const
+{
+	return (this->_channelInvitedUser);
 }
 
 
@@ -123,6 +129,25 @@ void Channel::removeUser(User& user)
 	while (i < _channelMembers.size())
 	{
 		if (_channelMembers[i] == &user)
+		{
+			_channelMembers.erase(_channelMembers.begin() + i);
+			return;
+		}
+		i++;
+	}
+}
+
+void Channel::addInvitedUser(User& user)
+{
+    _channelInvitedUser.push_back(&user);
+}
+
+void Channel::removeInvitedUser(User& user)
+{
+	unsigned long int i = 0;
+	while (i < _channelInvitedUser.size())
+	{
+		if (_channelInvitedUser[i] == &user)
 		{
 			_channelMembers.erase(_channelMembers.begin() + i);
 			return;
@@ -231,11 +256,13 @@ std::string Channel::listOfMember() const
 
 	for (size_t i = 0; i < _channelMembers.size() - 1; i++)
 	{
-		if (i == 0)
+		if (is_operator(*_channelMembers[i]))
 			toReturn += "@";
-		else
-			toReturn += " @";
+		// else
+		// 	toReturn += " ";
 		toReturn += _channelMembers[i]->getUserNickName();
+		if (i < _channelMembers.size() - 1)
+		toReturn += " ";
 	}
 
 	return(toReturn);

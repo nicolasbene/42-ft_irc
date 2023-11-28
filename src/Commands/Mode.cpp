@@ -349,7 +349,8 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 		
 		Log::info() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << std::endl;
 		channel.addOperatorChannel(users[getUserIdByNickName(targetUserNickName)]);
-		std::string reply = ":" + user.getUserNickName() + " MODE #" + channel.getName() + " +o " + targetUserNickName + "\r\n";
+		channel.addInvitedUser(users[getUserIdByNickName(targetUserNickName)]);
+		std::string reply = ":" + user.getUserNickName() + " add " + targetUserNickName + " as operator\r\n";
 		broadcastToChannel(channel.getName() , reply, user.getUserSockId());
 		sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), targetUserNickName, "+o"));
 		return ;

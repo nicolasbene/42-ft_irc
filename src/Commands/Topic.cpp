@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 12:31:07 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/22 16:20:22 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 12:05:28 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,21 @@ void Server::setReadTopic(Message message, int fd)
     {
         channel = channel.erase(posn, std::string::npos);
     }
+    // parse channel name
 	if (channel.empty() || channel.find('#') == channel.npos)
     {
         sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
         return;
     }
     channel.erase(channel.find("#"), 1); // ici
-    // std::cout << RED << "TEST CHANNEL : [" << channel << "] testret" << RESET << std::endl;
-    // std::cout << RED << "TEST CHANNEL LIST :" << channels[channel].getName() << " testret" << RESET << std::endl;
-    // std::cout << RED << "TEST CHANNEL SIZE :" << channels.size() << RESET << std::endl;
     std::map<std::string, Channel>::iterator it;
     it = channels.find(channel);
     if (it == channels.end())
     {
-        // std::cout << BLUE << "TEST find :" << RESET << std::endl;
         sendServerRpl(fd, ERR_NOSUCHCHANNEL(users[fd].getUserNickName(), channel));
         return;
     }
+    // verifie que le user est dans le channel
     std::vector<User*> itc = channels[channel].getChannelMembers();
     size_t i = 0;
     while (i < itc.size())
@@ -78,6 +76,7 @@ void Server::setReadTopic(Message message, int fd)
         topic = topic.erase(postn, std::string::npos);
     }
 
+    // broadcast topic
     if(topic.empty())
     {
         if (channels[channel].getChannelTopic().empty() == false)
@@ -90,6 +89,7 @@ void Server::setReadTopic(Message message, int fd)
             sendServerRpl(fd, RPL_NOTOPIC(users[fd].getUserNickName(), channel));
         }
     }
+    // set new topic
     else
     {
         std::vector<User*> ito = channels[channel].getChannelOperators();
@@ -100,14 +100,13 @@ void Server::setReadTopic(Message message, int fd)
                 break;
             i++;
         }
-        if (i == ito.size()) // rajouter ici la condition au mode
+        if (channels[channel].getChannelMode().find('t') != std::string::npos && i == ito.size()) // rajouter ici la condition au mode
         {
             sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channel));
             return;
         }
         else
         {
-            //rajouter trailing vide;
             channels[channel].setChannelTopic(topic);
             std::vector<User*>  channelMembers = channels[channel].getChannelMembers();
             std::vector<User*>::const_iterator member = channelMembers.begin();
