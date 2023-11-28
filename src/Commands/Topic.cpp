@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 12:31:07 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/27 15:53:08 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/28 12:05:28 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void Server::setReadTopic(Message message, int fd)
                 break;
             i++;
         }
-        if (channels[channel].getMode().find('t') != std::string::npos && i == ito.size()) // rajouter ici la condition au mode
+        if (channels[channel].getChannelMode().find('t') != std::string::npos && i == ito.size()) // rajouter ici la condition au mode
         {
             sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channel));
             return;

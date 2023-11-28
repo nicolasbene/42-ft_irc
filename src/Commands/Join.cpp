@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/27 15:31:56 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/28 15:05:44 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void Server::executeJoinOrder(Message message, int fd)
 
     if (message.getParameters().size() >= 2)
         keyword_list = message.getParameters()[1];
+
     // Check if there is enough parameter
     if (atLeastOneAlphaNum(channel_list) == false)
     {
@@ -57,6 +58,7 @@ void Server::executeJoinOrder(Message message, int fd)
         // Get Channel thanks to channel name
         std::map<std::string, Channel>::iterator it;
         it = channels.find(channel);
+
         // Create channel if it doesn't exist
         if (it == channels.end())
         {
@@ -64,17 +66,40 @@ void Server::executeJoinOrder(Message message, int fd)
             addChannel(channel, users[fd]);
             users[fd].addChannelList(channels[channel]);
         }
+
         // Handle k mode
-        else if (it->second.getMode().find('k') != std::string::npos) // Si channel en mode +k
+        else if (it->second.getChannelMode().find('k') != std::string::npos) // Si channel en mode +k
 		{
 			std::string key = getChannelKeyword(keyword_list);
 			keyword_list.erase(keyword_list.find(key), key.length()); // on erase la key de la string
-			if (key != it->second.getChannelPassword())
+			if (key != it->second.getPassword())
 			{
 				sendServerRpl(fd, ERR_BADCHANNELKEY(users[fd].getUserNickName(), channel));
 				continue; // on passe la suite, au prochain channel à ajouter síl y en a un
 			}
 		}
+
+        // Handle i mode
+        else if (it->second.getChannelMode().find('i') != std::string::npos) // Si channel en mode +i
+		{
+			std::vector<User*> InvitedList = it->second.getChannelInvitedUsers();
+	        size_t i = 0;
+	        while (i < InvitedList.size())
+	        {
+	        	if (*(InvitedList)[i] == users[fd])
+	        	{
+                    std::cout << RED << "JOIN - TEST 1" << RESET << std::endl;
+	        		break;
+	        	}
+	        	i++;
+	        }
+	        if (i == InvitedList.size())
+	        {
+	        	sendServerRpl(fd, ERR_INVITEONLYCHAN(users[fd].getUserNickName(), channel));
+                continue;
+	        }
+		}
+        
         // check if channel is full
         if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
         {
@@ -113,10 +138,10 @@ void Server::executeJoinOrder(Message message, int fd)
             }
             iti++;
         }
+
         // Add client to channel if not
         if (iti == channelMembers.end())
         {
-            // std::cout << BLUE << "TEST ADD CLIENT" << RESET << std::endl;
             addClientToChannel(channels[channel], users[fd]);
         }
         // send error messsage if client already in channel

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 16:58:53 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/27 15:21:42 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/28 16:11:55 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,56 @@ void Server::sendInvitation(Message message, int fd)
 			return;
 		}
 
+		// Check that the person inviting is an operator
+		std::vector<User*> operatorsList = channels[channel].getChannelOperators();
+		size_t i = 0;
+		while (i < operatorsList.size())
+		{
+			if (*(operatorsList)[i] == users[fd])
+				break;
+			i++;
+		}
+		if (i == theOneWhoInvite.size())
+		{
+			sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channel));
+			return;
+		}
+
 		// Check that the invited user is not already on the channel
 		std::vector<User*> userInvited = channels[channel].getChannelMembers();
 		size_t j = 0;
 		while (j < userInvited.size())
 		{
 			if ((userInvited)[j]->getUserNickName() == client)
-				break;
+			{
+				sendServerRpl(fd, ERR_USERONCHANNEL(users[fd].getUserNickName(), client, channel));
+				return;
+			}
 			j++;
 		}
-		if (j == userInvited.size())
+		// if (j == userInvited.size())
+		// {
+		// 	std::cout << RED << "INVITE - TEST 3" << RESET << std::endl;
+		// 	sendServerRpl(fd, ERR_USERONCHANNEL(users[fd].getUserNickName(), client, channel));
+		// 	return;
+		// }
+	}
+
+	// Check that the person invited is already on the invited list
+	std::vector<User*> InvitedList = channels[channel].getChannelInvitedUsers();
+	size_t i = 0;
+	while (i < InvitedList.size())
+	{
+		if (*(InvitedList)[i] == users[getUserIdByNickName(client)])
 		{
 			sendServerRpl(fd, ERR_USERONCHANNEL(users[fd].getUserNickName(), client, channel));
 			return;
 		}
+		i++;
+	}
+	if (i == InvitedList.size())
+	{
+		channels[channel].addInvitedUser(users[getUserIdByNickName(client)]);
 	}
 
 	// If all checks are successful => send a RPL_INVITING + invite to the inviting user 
