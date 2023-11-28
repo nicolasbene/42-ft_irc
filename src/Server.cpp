@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:35:11 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/28 16:35:59 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,8 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
     else
     {
         std::cout << "-Received << " << buffer << std::endl;
-        if (extractNextWord(std::string(&buffer[0]), "PASS") != _password)
-            return (WrongPassWord(buffer,fd));
+        // if (extractNextWord(std::string(&buffer[0]), "PASS") != _password)
+        //     return (WrongPassWord(buffer,fd));
         addUser(fd, &buffer[0], addrClient);
     }
 
