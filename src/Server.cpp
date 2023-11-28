@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/23 18:03:14 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:08:40 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,8 @@ int Server::executeCommand(char* buffer, int fd)
         sendInvitation(message, fd);
     else if (message.getCommande() == "NOTICE")
         notice(message, fd);
+	else if (message.getCommande() == "MODE")
+		handleMode(message, fd);
     else
         std::cout << "-------" << std::endl;
     return (0);
@@ -275,6 +277,7 @@ void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pa
 void Server::addChannel(const std::string& name, User& channelOperator)
 {
     channels.insert(std::make_pair(name, Channel(name, channelOperator)));
+    
     return;
 }
 
@@ -348,4 +351,13 @@ int Server::userNameToFd(std::string& user)
 std::string Server::getDate() const
 {
     return (this->_date);
+}
+
+int Server::getUserIdByNickName(std::string& userNickName) {
+    for (std::map<int, User>::iterator it = users.begin(); it != users.end(); ++it) {
+        if (it->second.getUserNickName() == userNickName) {
+            return it->first; // Retourne l'ID de l'utilisateur trouvé
+        }
+    }
+    return -1; // Retourne -1 si l'utilisateur n'est pas trouvé
 }

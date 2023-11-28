@@ -9,7 +9,9 @@ INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
 ### EXECUTABLE ###
 NAME	= $(PROJECT)
 
-PORT	= 6667
+PORT	= 6668
+
+
 PASSWD	= password
 ARGS	= $(PORT) $(PASSWD)
 
@@ -47,6 +49,7 @@ SRCS	=	main.cpp \
 			Commands/Ping-Pong.cpp \
 			Commands/Kick.cpp \
 			Commands/Topic.cpp \
+			Commands/Mode.cpp \
 			Commands/Invite.cpp \
 			Commands/Notice.cpp \
 
