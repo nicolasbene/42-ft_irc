@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:47:24 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/28 16:15:05 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@
 #include <fstream>
 #include <sstream>
 #include "Log.hpp"
+#include <csignal>
+
+bool g_sig = true;
+
+void quit(int)
+{
+    g_sig = false;
+}
+
 
 Server::Server(const std::string& port, const std::string& password) :
     _sockfd(-1), _nb_clients(0), _port(port),
@@ -58,19 +67,20 @@ Server::~Server()
 int Server::start()
 {
     // Création, liaison et écoute du socket du serveur
+    signal(SIGINT, &quit);
     _sockfd = socket(_servinfo->ai_family, _servinfo->ai_socktype,
         _servinfo->ai_protocol);
     if (_sockfd == -1) {
         Log::error() << "Could not create server socket" << '\n';
-        exit(1);
+        return (1);
     }
     if (bind(_sockfd, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
         Log::error() << "Could not bind server socket" << '\n';
-        exit(1);
+        return (1);
     }
     if (listen(_sockfd, MAX_CONNEXIONS) == -1) {
         Log::error() << "Could not listen on server socket" << '\n';
-        exit(1);
+        return (1);
     }
     Log::info() << "Server started" << '\n';
 
@@ -84,22 +94,21 @@ int Server::poll()
     _epoll_fd = epoll_create1(0);
     if (_epoll_fd == -1) {
         Log::error() << "Could not create epoll fd" << '\n';
-        exit(1);
+        g_sig = false;
     }
     server_event.events = EPOLLIN;
     server_event.data.fd = _sockfd;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _sockfd, &server_event) == -1) {
         Log::error() << "Could not add server fd to epoll" << '\n';
-        exit(1);
+        g_sig = false;
     }
 
-    while (true) {
+    while (g_sig) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
         int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
         if (num_events == -1) 
         {
-            perror("epoll_wait");
-            exit(1);
+            break;
         }
 
         for (int i = 0; i < num_events; i++) {
@@ -111,6 +120,8 @@ int Server::poll()
             }
         }
     }
+    close(_epoll_fd);
+    return 0;
 }
 
 int Server::create_client()
