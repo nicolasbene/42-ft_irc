@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/27 16:44:31 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:47:26 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <sys/epoll.h>
 # include <sstream>
 
-# include "utils.hpp"
+# include "utils.h"
 # include "User.hpp"
 # include "Channel.hpp"
 # include "Message.hpp"
@@ -120,6 +120,10 @@ class	Server {
 
 		// -- Utils
 		bool userExistName(std::string user);
+		// bool userExistUserName(std::string user);
+		std::string changeNickname(std::string nickNameTochange, std::string NameTochange, int fd);
+		// std::string changeUserName(std::string NameTochange);
+
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
