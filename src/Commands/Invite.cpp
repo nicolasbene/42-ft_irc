@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 16:58:53 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 16:11:55 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/28 16:21:05 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,14 @@ void Server::sendInvitation(Message message, int fd)
 
 		// Check that the person inviting is an operator
 		std::vector<User*> operatorsList = channels[channel].getChannelOperators();
-		size_t i = 0;
-		while (i < operatorsList.size())
+		size_t k = 0;
+		while (k < operatorsList.size())
 		{
 			if (*(operatorsList)[i] == users[fd])
 				break;
-			i++;
+			k++;
 		}
-		if (i == theOneWhoInvite.size())
+		if (k == theOneWhoInvite.size())
 		{
 			sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channel));
 			return;
