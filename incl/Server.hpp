@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:02:22 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:04:14 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,6 @@ class	Server {
 
 
 		void setReadTopic(Message message, int fd);
-		void sendInvitation(Message message, int fd);
-		void notice(Message message, int fd);
-		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
-		void partb(Message message, int fd);
 		
 		void sendInvitation(Message message, int fd);
 		
@@ -129,7 +125,6 @@ class	Server {
 		// std::string changeUserName(std::string NameTochange);
 
 		
-		void handleMode(Message message, int fd);
 
 		// -- SendText
 		void	sendServerRpl(int const fd, std::string reply);
