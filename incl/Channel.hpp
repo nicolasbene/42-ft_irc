@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 17:10:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 11:03:27 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:05:36 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Channel
 		void removeBannedUser(User& user);
 		void addKickedUser(User& user);
 		void removeKickedUser(User& user);
+		bool hasUser(User& user) const;
 		bool isUserInMap(const std::map<int, User> users, const std::string userNickName);
 
 		
@@ -62,7 +63,6 @@ class Channel
 
 		std::string listOfMember() const;
 		
-		bool hasUser(User& user) const;
 		bool hasOp(User& user) const;
 		bool hasBanUser(User& user)const ;
 		bool hasKickUser(User& user)const ;

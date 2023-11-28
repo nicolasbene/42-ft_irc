@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:00:12 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:05:58 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,8 @@ int Server::executeCommand(char* buffer, int fd)
         executeJoinOrder(message, fd);
     else if (message.getCommande() == "PART")
         executePart(message, fd);
+	else if (message.getCommande() == "MODE")
+		handleMode(message, fd);
     else if (message.getCommande() == "PING")
         sendPong(message, fd);
     else if (message.getCommande() == "KICK")

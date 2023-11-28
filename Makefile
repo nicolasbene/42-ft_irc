@@ -49,6 +49,7 @@ SRCS	=	main.cpp \
 			Commands/Ping-Pong.cpp \
 			Commands/Kick.cpp \
 			Commands/Topic.cpp \
+			Commands/Mode.cpp \
 			Commands/Invite.cpp \
 			Commands/Notice.cpp \
 			Commands/Mode.cpp \
