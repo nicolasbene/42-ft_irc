@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 11:55:24 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/29 18:19:15 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ class	Server {
 		void sendChanInfo(Channel& channel, User& user);
 		void	sendPong(Message msg, int fd);
 		void	executeKick(Message msg, int fd);
+		void	serverquit(Message message, int fd);
+		void	broadcastQuitToChan(Channel& Target, User& user, std::string reason);
 
 
 		void setReadTopic(Message message, int fd);
