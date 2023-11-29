@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 14:20:52 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/29 14:24:04 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
         action += buffer;
     }
 
-    
     if (extractNextWord(action, "PASS") != _password)
         return (WrongPassWord(action,fd));
     addUser(fd, action, addrClient);
