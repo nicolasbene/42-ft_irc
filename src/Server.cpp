@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 16:15:05 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/29 13:56:34 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
+    std::string action;
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
@@ -180,6 +181,21 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
     {
         perror("recv");
         exit(1);
+    }
+    std::string str(buffer);
+    std::cout << "-Received << " << buffer << std::endl;
+    if (str.find("\r\n") == std::string::npos)
+    {
+        _ctrlDBuff.push_back(str);
+        return (1);
+    }
+    else
+    {
+        for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
+        {
+            action += _ctrlDBuff[i];
+        }
+        action += buffer;
     }
 
     if (num_bytes == 0)
@@ -196,21 +212,20 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
     }
     else
     {
-        std::cout << "-Received << " << buffer << std::endl;
-        if (extractNextWord(std::string(&buffer[0]), "PASS") != _password)
-            return (WrongPassWord(buffer,fd));
-        addUser(fd, &buffer[0], addrClient);
+        if (extractNextWord(action, "PASS") != _password)
+            return (WrongPassWord(action,fd));
+        addUser(fd, action, addrClient);
     }
 
     return 0;
 }
 
-int Server::WrongPassWord(char* buffer, int fd)
+int Server::WrongPassWord(std::string str, int fd)
 {
-    if (extractNextWord(std::string(&buffer[0]), "PASS") == "Mot-clé non trouvé")
-        sendServerRpl(fd, ERR_NEEDMOREPARAMS(extractNextWord(std::string(&buffer[0]), "NICK"), "PASS"));
+    if (extractNextWord(str, "PASS") == "Mot-clé non trouvé")
+        sendServerRpl(fd, ERR_NEEDMOREPARAMS(extractNextWord(str, "NICK"), "PASS"));
     else
-        sendServerRpl(fd, ERR_PASSWDMISMATCH(extractNextWord(std::string(&buffer[0]), "NICK")));
+        sendServerRpl(fd, ERR_PASSWDMISMATCH(extractNextWord(str, "NICK")));
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
     {
         perror("epoll_ctl");
@@ -225,6 +240,7 @@ int Server::receive_message(int fd)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
+    std::string action;
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
@@ -232,6 +248,22 @@ int Server::receive_message(int fd)
     {
         perror("recv");
         exit(1);
+    }
+    std::string str(buffer);
+    if (!str.empty())
+        std::cout << "Received << " << str << std::endl;
+    if (str.find("\r\n") == std::string::npos)
+    {
+        _ctrlDBuff.push_back(str);
+        return (1);
+    }
+    else
+    {
+        for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
+        {
+            action += _ctrlDBuff[i];
+        }
+        action += buffer;
     }
 
     if (num_bytes == 0)
@@ -248,17 +280,14 @@ int Server::receive_message(int fd)
     }
     else
     {
-        std::cout << "Received << " << buffer << std::endl;
-        executeCommand(&buffer[0], fd);
+        executeCommand(action, fd);
     }
 
     return 0;
 }
 
-int Server::executeCommand(char* buffer, int fd)
+int Server::executeCommand(std::string str, int fd)
 {
-    std::string str(buffer);
-
     Message message(str);
     if (message.getCommande() == "NICK")
         setUserNickName(message, fd);
@@ -285,9 +314,9 @@ int Server::executeCommand(char* buffer, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, char *buffer, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
+void Server::addUser(int sockId, std::string str, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
 {
-    std::string str(buffer);
+    //std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
     if (userExistName(nickName))

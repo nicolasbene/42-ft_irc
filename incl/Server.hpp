@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/28 11:35:24 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/29 11:55:24 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ class	Server {
 		int			create_client();
 		int 		receive_message(int fd);
 		int			message_creation(int fd, sockaddr_in addrClient);
-		int 		WrongPassWord(char* buffer, int fd);
+		int 		WrongPassWord(std::string str, int fd); // ici
 
 
 
@@ -81,7 +81,7 @@ class	Server {
 		// -- Users 
 		std::map<int, User> users;
 		// void addUser(int sockId, struct sockaddr_in addrClient);
-		void addUser(int sockId, char *buffer, sockaddr_in addrClient);
+		void addUser(int sockId, std::string str, sockaddr_in addrClient); // ici
 		int userNameToFd(std::string& user);
 
 		// -- Channels
@@ -90,7 +90,7 @@ class	Server {
 		void addChannel(const std::string& name, User& channelOperator); 
 
 		// -- Execution
-		int executeCommand(char* buffer, int fd);
+		int executeCommand(std::string str, int fd); //ici
 		void setUserNickName(Message message, int fd);
 		void sendPrivateMessage(Message message, int fd);
 		void broadcastToChannel(std::string target, std::string speech, int fd);
@@ -149,6 +149,8 @@ class	Server {
 		epoll_event						_events[MAX_CONNEXIONS];
 		
 		std::vector<pollfd>				_client_pfds;
+
+		std::vector<std::string>		_ctrlDBuff;
 
 };
 
