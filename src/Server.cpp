@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 13:56:34 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/29 14:24:04 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,19 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
         perror("recv");
         exit(1);
     }
+    if (num_bytes == 0)
+    {
+        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+        {
+            perror("epoll_ctl");
+            exit(1);
+        }
+        
+        close(fd);
+        Log::info() << "Client disconnected" << '\n';
+        return (0);
+    }
     std::string str(buffer);
     std::cout << "-Received << " << buffer << std::endl;
     if (str.find("\r\n") == std::string::npos)
@@ -198,24 +211,10 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
         action += buffer;
     }
 
-    if (num_bytes == 0)
-    {
-        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-        {
-            perror("epoll_ctl");
-            exit(1);
-        }
-        
-        close(fd);
-        Log::info() << "Client disconnected" << '\n';
-    }
-    else
-    {
-        if (extractNextWord(action, "PASS") != _password)
-            return (WrongPassWord(action,fd));
-        addUser(fd, action, addrClient);
-    }
+    if (extractNextWord(action, "PASS") != _password)
+        return (WrongPassWord(action,fd));
+    addUser(fd, action, addrClient);
+    
 
     return 0;
 }
@@ -249,6 +248,19 @@ int Server::receive_message(int fd)
         perror("recv");
         exit(1);
     }
+    if (num_bytes == 0)
+    {
+        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
+        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+        {
+            perror("epoll_ctl");
+            exit(1);
+        }
+        users.erase(fd);
+        close(fd);
+        Log::info() << "Client disconnected" << '\n';
+        return (0);
+    }
     std::string str(buffer);
     if (!str.empty())
         std::cout << "Received << " << str << std::endl;
@@ -266,22 +278,7 @@ int Server::receive_message(int fd)
         action += buffer;
     }
 
-    if (num_bytes == 0)
-    {
-        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-        {
-            perror("epoll_ctl");
-            exit(1);
-        }
-        users.erase(fd);
-        close(fd);
-        Log::info() << "Client disconnected" << '\n';
-    }
-    else
-    {
-        executeCommand(action, fd);
-    }
+    executeCommand(action, fd);
 
     return 0;
 }
