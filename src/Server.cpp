@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 18:21:22 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/29 18:33:54 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,7 +259,7 @@ int Server::receive_message(int fd)
             perror("epoll_ctl");
             exit(1);
         }
-        users.erase(fd);
+        // users.erase(fd);
         close(fd);
         Log::info() << "Client disconnected" << '\n';
         return (0);
