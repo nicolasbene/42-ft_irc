@@ -27,6 +27,12 @@ void Server::executePart(Message message, int fd)
 			else
 			{
 				sendServerRpl(fd, RPL_PART(user_id(users[fd].getUserNickName(), users[fd].getUserName()), argChannels[i].substr(1), message.getTrailing()));
+				std::vector<User*> channel_users = channels[argChannels[i].substr(1)].getChannelMembers();
+                for (std::vector<User*>::iterator it = channel_users.begin(); it != channel_users.end(); it++)
+                {
+                    if ((*it)->getUserSockId() != fd)
+                        sendServerRpl((*it)->getUserSockId(), RPL_PART(user_id(users[fd].getUserNickName(), users[fd].getUserName()), argChannels[i].substr(1), message.getTrailing()));
+                }
 				unregisterClientToChannel(argChannels[i].substr(1), fd);
 			}
 		}
