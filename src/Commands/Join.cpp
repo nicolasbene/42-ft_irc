@@ -6,7 +6,7 @@
 /*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 13:53:51 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/30 15:37:36 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,13 @@ void Server::executeJoinOrder(Message message, int fd)
         std::map<std::string, Channel>::iterator it;
         it = channels.find(channel);
 
+        int flag = 0;
         // Create channel if it doesn't exist
         if (it == channels.end())
         {
             addChannel(channel, users[fd]);
             users[fd].addChannelList(channels[channel]);
+            flag = 1;
         }
 
         // Handle k mode
@@ -124,7 +126,7 @@ void Server::executeJoinOrder(Message message, int fd)
             addClientToChannel(channels[channel], users[fd]);
         }
         // send error messsage if client already in channel
-        else
+        else if (flag == 0)
 		    std::cout << YELLOW << users[fd].getUserNickName() << "already in the channel\n" << RESET;
         sendChanInfo(channels[channel], users[fd]);
     }
