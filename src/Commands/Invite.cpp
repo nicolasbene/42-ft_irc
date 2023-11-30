@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 16:58:53 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 16:21:05 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 13:53:25 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,6 @@ void Server::sendInvitation(Message message, int fd)
 			}
 			j++;
 		}
-		// if (j == userInvited.size())
-		// {
-		// 	std::cout << RED << "INVITE - TEST 3" << RESET << std::endl;
-		// 	sendServerRpl(fd, ERR_USERONCHANNEL(users[fd].getUserNickName(), client, channel));
-		// 	return;
-		// }
 	}
 
 	// Check that the person invited is already on the invited list

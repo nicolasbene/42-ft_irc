@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/23 16:24:54 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/30 13:52:34 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ User::User(int sockId, const std::string& userNickName, const std::string& userN
 		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
 {
 	_IPchar = std::string(inet_ntoa(_addrClient.sin_addr));
-	_userID = _nickName + "!" + _userName + "@" + _IPchar;//probleme quand le user va change de nick et username
+	_userID = _nickName + "!" + _userName + "@" + _IPchar;
 	return;
 }
 

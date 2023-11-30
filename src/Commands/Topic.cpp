@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 12:31:07 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 12:05:28 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 13:59:47 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void Server::setReadTopic(Message message, int fd)
 {
     std::string channel = message.getParameters()[0];
 
-    size_t posr = channel.find('\r');//ici
+    size_t posr = channel.find('\r');
     if (posr != std::string::npos)
     {
         channel = channel.erase(posr, std::string::npos);
@@ -41,7 +41,7 @@ void Server::setReadTopic(Message message, int fd)
         sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
         return;
     }
-    channel.erase(channel.find("#"), 1); // ici
+    channel.erase(channel.find("#"), 1);
     std::map<std::string, Channel>::iterator it;
     it = channels.find(channel);
     if (it == channels.end())
@@ -64,7 +64,7 @@ void Server::setReadTopic(Message message, int fd)
         return;
     }
 
-    std::string topic = message.getTrailing(); //ici
+    std::string topic = message.getTrailing();
     size_t postr = topic.find('\r');
     if (postr != std::string::npos)
     {
@@ -100,7 +100,7 @@ void Server::setReadTopic(Message message, int fd)
                 break;
             i++;
         }
-        if (channels[channel].getChannelMode().find('t') != std::string::npos && i == ito.size()) // rajouter ici la condition au mode
+        if (channels[channel].getChannelMode().find('t') != std::string::npos && i == ito.size())
         {
             sendServerRpl(fd, ERR_CHANOPRIVSNEEDED(users[fd].getUserNickName(), channel));
             return;

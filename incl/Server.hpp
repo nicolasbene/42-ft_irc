@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 18:19:15 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 14:00:34 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ class	Server {
 		// -- Public Functions --
 		int		    start();
 		int		    poll();
-		void		write_logo() const;
 		
 		int			create_client();
 		int 		receive_message(int fd);
@@ -159,7 +158,6 @@ class	Server {
 //utils
 std::vector<std::string> mySplit(const std::string& s, char delimiter);
 std::string extractNextWord(const std::string& input, const std::string& keyword);
-void printVector(const std::vector<std::string>& vec);
 void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& TrimStr);
 std::string TrimString(const std::string& str, const std::string& TrimStr);
 

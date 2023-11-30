@@ -32,7 +32,7 @@ void Server::handleMode(Message message, int fd)
 
 	// ---------------------------------------------- //
 	std::string channel = message.getParameters()[0];
-	Log::info() << "channel before = " << channel << std::endl;
+	// Log::info() << "channel before = " << channel << std::endl;
 	//channel ne peut que commencer par #
 	if (channel[0] != '#')
 	{
@@ -56,7 +56,7 @@ void Server::handleMode(Message message, int fd)
         sendServerRpl(fd, ERR_NEEDMOREPARAMS(users[fd].getUserNickName(), message.getCommande()));
         return;
     }
-    channel.erase(channel.find("#"), 1); // ici
+    channel.erase(channel.find("#"), 1);
 	Log::info() << "channel name = " << channel << std::endl;
 
 	Channel& target = channels[channel];
@@ -88,7 +88,7 @@ void Server::handleMode(Message message, int fd)
 		return ;
 	}
 
-	posr = mode.find('\r');//ici
+	posr = mode.find('\r');
     if (posr != std::string::npos)
     {
         mode = mode.erase(posr, std::string::npos);
@@ -166,7 +166,7 @@ void Server::limit_mode(Channel& channel, User& user, bool operand, Message& mes
 		sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), channel.getName(), "+l"));
 		channel.add_mode_string("+l");
 
-		//afficher les modes
+		// //afficher les modes
 		Log::info() << "channel mode string = " << channel.getChannelMode() << std::endl;
 		return ;
 
@@ -216,7 +216,7 @@ void Server::password_mode(Channel& channel, User& user, bool operand, Message& 
 		sendServerRpl(user.getUserSockId(), RPL_UMODEIS(user.getUserNickName(), channel.getName(), "+k"));
 		channel.add_mode_string("+k");
 
-		//afficher les modes
+		// //afficher les modes
 		Log::info() << "channel mode string = " << channel.getChannelMode() << std::endl;
 		return ;
 
@@ -360,7 +360,6 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 	else if (operand && channel.is_operator(users[getUserIdByNickName(targetUserNickName)]))
 	{
 		Log::warning() << "User " << user.getUserNickName() << " is trying to execute command MODE on channel #" << channel.getName() << " with operand " << operand << " and target user " << targetUserNickName << " but target user is already operator" << std::endl;
-		// sendServerRpl(user.getUserSockId(), ERR_CHANOPRIVSNEEDED(user.getUserNickName(), channel.getName()));
 		return ;
 	}
 
@@ -382,9 +381,6 @@ void Server::operator_mode(Channel& channel, User& user, bool operand, Message& 
 		sendServerRpl(user.getUserSockId(), ERR_UNKNOWNCOMMAND(user.getUserNickName(), message.getCommande()));
 		return ;
 	}
-
-
-
-
+	
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:06:34 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 15:28:27 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 13:53:04 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,8 +258,6 @@ std::string Channel::listOfMember() const
 	{
 		if (is_operator(*_channelMembers[i]))
 			toReturn += "@";
-		// else
-		// 	toReturn += " ";
 		toReturn += _channelMembers[i]->getUserNickName();
 		if (i < _channelMembers.size() - 1)
 		toReturn += " ";

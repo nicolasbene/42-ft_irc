@@ -20,7 +20,6 @@ int	main(int argc, char** argv)
 	}
 
 	Server	server(argv[1], argv[2]);
-	// server.write_logo();
 	if (!server.start())
 		server.poll();
 

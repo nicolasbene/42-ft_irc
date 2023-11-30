@@ -1,30 +1,5 @@
 # include "Server.hpp"
 
-// bool Server::userExistUserName(std::string user)
-// {
-// 	std::map<int, User>::iterator it;
-// 	for (it = users.begin(); it != users.end(); it++)
-// 	{
-// 		if (it->second.getUserUserName() == user)
-// 			return (true);
-// 	}
-// 	return (false);
-// }
-
-// std::string Server::changeUserName(std::string nickNameTochange, std::string NameTochange, int fd)
-// {
-//     int i = 1;
-//     std::string tmp(NameTochange);
-
-//     while (userExistUserName(tmp))
-//     {
-//         tmp = incrementString(NameTochange, i);
-//         i++;
-//     }
-//     trouver la requete a envoi
-//     return (tmp)
-// }
-
 std::string incrementString(const std::string& baseString, int number) 
 {
     std::ostringstream oss;

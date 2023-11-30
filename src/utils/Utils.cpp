@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgautier <jgautier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:16:29 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/21 16:42:45 by jgautier         ###   ########.fr       */
+/*   Updated: 2023/11/30 14:00:50 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,16 +78,4 @@ void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& Trim
         else
             it = vec.erase(it);
     }
-}
-
-void printVector(const std::vector<std::string>& vec)
-{
-    std::cout << "[";
-    for (size_t i = 0; i < vec.size(); ++i) {
-        std::cout << "\"" << vec[i] << "\"";
-        if (i < vec.size() - 1) {
-            std::cout << ", ";
-        }
-    }
-    std::cout << "]" << std::endl;
 }

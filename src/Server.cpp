@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/29 18:33:54 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 13:52:08 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ int Server::create_client()
         }
 
         ++_nb_clients;
-        sleep(1); // ici test
+        sleep(1);
         Log::info() << "Client connected : " << client_fd << '\n';
         if (message_creation(client_fd, client_addr) == 1)
             return 1;
@@ -199,16 +199,13 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
     std::cout << "-Received << " << buffer << std::endl;
     if (str.find("\r\n") == std::string::npos)
     {
-        std::cout << YELLOW << "TEST 1" << RESET << std::endl;
         _ctrlDBuff.push_back(str);
         return (1);
     }
     else
     {
-        std::cout << YELLOW << "TEST 2" << RESET << std::endl;
         for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
         {
-            std::cout << YELLOW << "TEST 3" << RESET << std::endl;
             action += _ctrlDBuff[i];
         }
         action += buffer;
@@ -216,7 +213,6 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
 
     if (extractNextWord(action, "PASS") != _password)
         return (WrongPassWord(action,fd));
-    std::cout << YELLOW << "TEST 4" << RESET << std::endl;
     addUser(fd, action, addrClient);
 
     return 0;
@@ -269,22 +265,17 @@ int Server::receive_message(int fd)
         std::cout << "Received << " << str << std::endl;
     if (str.find("\r\n") == std::string::npos)
     {
-        std::cout << RED << "TEST 1" << RESET << std::endl;
         _ctrlDBuff.push_back(str);
         return (1);
     }
     else
     {
-        std::cout << RED << "TEST 2" << RESET << std::endl;
         for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
         {
-            std::cout << RED << "TEST 3" << RESET << std::endl;
             action += _ctrlDBuff[i];
         }
         action += buffer;
     }
-
-    std::cout << RED << "TEST 4" << RESET << std::endl;
     executeCommand(action, fd);
     _ctrlDBuff.clear();
 
@@ -321,9 +312,8 @@ int Server::executeCommand(std::string str, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, std::string str, sockaddr_in addrClient) // ici pas satisfait avec le name par defaut
+void Server::addUser(int sockId, std::string str, sockaddr_in addrClient)
 {
-    //std::string str(buffer);
     std::string nickName = extractNextWord(str, "NICK");
     std::string userName = extractNextWord(str, "USER");
     if (userExistName(nickName))
@@ -381,17 +371,6 @@ bool Server::is_valid_password(const std::string& password)
     }
     return true;
 }
-
-void Server::write_logo() const
-{
-    std::ifstream infile("assets/logo.txt");
-    std::string line;
-    while (std::getline(infile, line))
-    {
-        std::cout << line << std::endl;
-    }
-}
-
 
 int Server::userNameToFd(std::string& user)
 {
