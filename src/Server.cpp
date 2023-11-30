@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/30 13:52:08 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/30 18:49:33 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int Server::poll()
 
     while (g_sig) {
         // Ne pas réutiliser num_events, car vous avez déjà une variable i dans la boucle for
-        int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 200);
+        int num_events = epoll_wait(_epoll_fd, _events, MAX_CONNEXIONS, 0);
         if (num_events == -1) 
         {
             break;
@@ -152,15 +152,8 @@ int Server::create_client()
         ++_nb_clients;
         sleep(1);
         Log::info() << "Client connected : " << client_fd << '\n';
-        if (message_creation(client_fd, client_addr) == 1)
+        if (message_creation(client_fd) == 1)
             return 1;
-
-        // Envoi du code RPL au client
-        sendServerRpl(client_fd, RPL_WELCOME(user_id(users[client_fd].getUserNickName(), users[client_fd].getUserName()), users[client_fd].getUserNickName()));
-        sendServerRpl(client_fd, RPL_YOURHOST(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
-        sendServerRpl(client_fd, RPL_CREATED(users[client_fd].getUserNickName(), this->_date));
-        sendServerRpl(client_fd, RPL_MYINFO(users[client_fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
-        sendServerRpl(client_fd, RPL_ISUPPORT(users[client_fd].getUserNickName(), "CHANNELLEN=50 NICKLEN=30 TOPICLEN=307"));
     }
     else
     {
@@ -169,7 +162,7 @@ int Server::create_client()
     return 0;
 }
 
-int Server::message_creation(int fd, sockaddr_in addrClient)
+int Server::message_creation(int fd)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
@@ -196,7 +189,7 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
         return (0);
     }
     std::string str(buffer);
-    std::cout << "-Received << " << buffer << std::endl;
+    std::cout << "[1]Received << " << buffer << std::endl;
     if (str.find("\r\n") == std::string::npos)
     {
         _ctrlDBuff.push_back(str);
@@ -211,9 +204,22 @@ int Server::message_creation(int fd, sockaddr_in addrClient)
         action += buffer;
     }
 
-    if (extractNextWord(action, "PASS") != _password)
-        return (WrongPassWord(action,fd));
-    addUser(fd, action, addrClient);
+    addUser(fd, action);
+    if (!users[fd].getPassword().empty())
+    {
+        if (users[fd].getPassword() != _password)
+            return (WrongPassWord(action,fd));
+    }
+    if (userHasAllInfo(fd))
+    {
+        users[fd].setIsConnected(true);
+        // Envoi du code RPL au client
+        sendServerRpl(fd, RPL_WELCOME(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName()));
+        sendServerRpl(fd, RPL_YOURHOST(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
+        sendServerRpl(fd, RPL_CREATED(users[fd].getUserNickName(), this->_date));
+        sendServerRpl(fd, RPL_MYINFO(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
+        sendServerRpl(fd, RPL_ISUPPORT(users[fd].getUserNickName(), "CHANNELLEN=50 NICKLEN=30 TOPICLEN=307"));
+    }
 
     return 0;
 }
@@ -229,6 +235,7 @@ int Server::WrongPassWord(std::string str, int fd)
         perror("epoll_ctl");
         exit(1);
     }
+    users.erase(fd);
     close(fd);
     Log::info() << "Client disconnected" << '\n';
     return 1;
@@ -276,7 +283,27 @@ int Server::receive_message(int fd)
         }
         action += buffer;
     }
-    executeCommand(action, fd);
+    if (users[fd].getIsConnected() == false)
+    {
+        extractInfo(action, users[fd]);
+        if (!users[fd].getPassword().empty())
+        {
+             if (users[fd].getPassword() != _password)
+                return (WrongPassWord(action,fd));
+         }
+        if (userHasAllInfo(fd))
+        {
+            users[fd].setIsConnected(true);
+            // Envoi du code RPL au client
+            sendServerRpl(fd, RPL_WELCOME(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName()));
+            sendServerRpl(fd, RPL_YOURHOST(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
+            sendServerRpl(fd, RPL_CREATED(users[fd].getUserNickName(), this->_date));
+            sendServerRpl(fd, RPL_MYINFO(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
+            sendServerRpl(fd, RPL_ISUPPORT(users[fd].getUserNickName(), "CHANNELLEN=50 NICKLEN=30 TOPICLEN=307"));
+         }
+    }
+    else
+        executeCommand(action, fd);
     _ctrlDBuff.clear();
 
     return 0;
@@ -312,15 +339,23 @@ int Server::executeCommand(std::string str, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, std::string str, sockaddr_in addrClient)
+void Server::addUser(int sockId, std::string str)
 {
-    std::string nickName = extractNextWord(str, "NICK");
-    std::string userName = extractNextWord(str, "USER");
-    if (userExistName(nickName))
-        nickName = changeNickname(nickName, userName, sockId);
-    users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
+    users.insert(std::make_pair(sockId, User(sockId)));
+    extractInfo(str, users[sockId]);
     return;
 }
+
+
+// void Server::addUser(int sockId, std::string str, sockaddr_in addrClient)
+// {
+//     std::string nickName = extractNextWord(str, "NICK");
+//     std::string userName = extractNextWord(str, "USER");
+//     if (userExistName(nickName))
+//         nickName = changeNickname(nickName, userName, sockId);
+//     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
+//     return;
+// }
 
 void Server::addChannel(const std::string& name, User& channelOperator)
 {
@@ -396,4 +431,12 @@ int Server::getUserIdByNickName(std::string& userNickName) {
         }
     }
     return -1; // Retourne -1 si l'utilisateur n'est pas trouvé
+}
+
+bool Server::userHasAllInfo(int fd)
+{
+    if (users[fd].getUserNickName().empty() || users[fd].getUserName().empty() || users[fd].getPassword().empty()) 
+        return false;
+    else
+        return true;
 }

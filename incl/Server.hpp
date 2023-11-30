@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/30 14:00:34 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/30 18:49:18 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ class	Server {
 		
 		int			create_client();
 		int 		receive_message(int fd);
-		int			message_creation(int fd, sockaddr_in addrClient);
+		int			message_creation(int fd);
 		int 		WrongPassWord(std::string str, int fd); // ici
 
 
@@ -80,7 +80,7 @@ class	Server {
 		// -- Users 
 		std::map<int, User> users;
 		// void addUser(int sockId, struct sockaddr_in addrClient);
-		void addUser(int sockId, std::string str, sockaddr_in addrClient); // ici
+		void addUser(int sockId, std::string str);
 		int userNameToFd(std::string& user);
 
 		// -- Channels
@@ -135,6 +135,9 @@ class	Server {
 		// -- unregister Client in channel
 		void unregisterClientToChannel(std::string unregisterChannnel, int fd);
 
+		//connexion
+		bool userHasAllInfo(int fd);
+
 	private:
 		// -- Private attributes --
 		int						        _sockfd;
@@ -160,5 +163,6 @@ std::vector<std::string> mySplit(const std::string& s, char delimiter);
 std::string extractNextWord(const std::string& input, const std::string& keyword);
 void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& TrimStr);
 std::string TrimString(const std::string& str, const std::string& TrimStr);
+void extractInfo(const std::string& input, User& user);
 
 #endif
