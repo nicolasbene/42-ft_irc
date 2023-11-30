@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:12:23 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/28 15:05:44 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/11/30 12:54:28 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void Server::executeJoinOrder(Message message, int fd)
         // check if channel is full
         if (channels[channel].getChannelMembers().size() >= channels[channel].getChannelCap() && channels[channel].getChannelCap() != 0)
         {
-            sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), '#' + channel));
+            sendServerRpl(fd, ERR_CHANNELISFULL(users[fd].getUserNickName(), channel));
             continue;
         }
         // std::vector<User*>::const_iterator itb;

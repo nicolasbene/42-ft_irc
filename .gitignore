@@ -4,6 +4,7 @@ a.out
 **/*.o
 tags
 ircserver
+ircserv
 compile_commands.json
 .cache
 .env
