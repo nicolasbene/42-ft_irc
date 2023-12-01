@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/30 18:49:33 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 12:35:25 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,12 @@ int Server::start()
         _servinfo->ai_protocol);
     if (_sockfd == -1) {
         Log::error() << "Could not create server socket" << '\n';
+        return (1);
+    }
+    int optvalue = 1; // enables the re-use of a port if the IP address is different
+	if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &optvalue, sizeof(optvalue)) < 0)
+    {
+        Log::error() << "Error with setsockopt" << std::endl;
         return (1);
     }
     if (bind(_sockfd, _servinfo->ai_addr, _servinfo->ai_addrlen) == -1) {
@@ -152,8 +158,7 @@ int Server::create_client()
         ++_nb_clients;
         sleep(1);
         Log::info() << "Client connected : " << client_fd << '\n';
-        if (message_creation(client_fd) == 1)
-            return 1;
+        addUser(client_fd);
     }
     else
     {
@@ -162,11 +167,11 @@ int Server::create_client()
     return 0;
 }
 
-int Server::message_creation(int fd)
+int Server::message_creation(int fd, std::string* action)
 {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
-    std::string action;
+    //std::string action;
 
     // Lire les données du socket
     int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
@@ -199,20 +204,23 @@ int Server::message_creation(int fd)
     {
         for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
         {
-            action += _ctrlDBuff[i];
+            (*action) += _ctrlDBuff[i];
         }
-        action += buffer;
+        (*action) += buffer;
     }
 
-    addUser(fd, action);
+    std::cout << RED << "TEST 1" << RESET << std::endl;
+    //addUser(fd, (*action));
     if (!users[fd].getPassword().empty())
     {
         if (users[fd].getPassword() != _password)
-            return (WrongPassWord(action,fd));
+            return (WrongPassWord((*action),fd));
     }
     if (userHasAllInfo(fd))
     {
         users[fd].setIsConnected(true);
+        if (userExistNameLeRetour(users[fd].getUserNickName(), fd))
+                users[fd].setNickName(changeNickname(users[fd].getUserNickName(), users[fd].getUserName(), fd));
         // Envoi du code RPL au client
         sendServerRpl(fd, RPL_WELCOME(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName()));
         sendServerRpl(fd, RPL_YOURHOST(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
@@ -294,6 +302,8 @@ int Server::receive_message(int fd)
         if (userHasAllInfo(fd))
         {
             users[fd].setIsConnected(true);
+            if (userExistNameLeRetour(users[fd].getUserNickName(), fd))
+                users[fd].setNickName(changeNickname(users[fd].getUserNickName(), users[fd].getUserName(), fd));
             // Envoi du code RPL au client
             sendServerRpl(fd, RPL_WELCOME(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName()));
             sendServerRpl(fd, RPL_YOURHOST(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
@@ -303,8 +313,12 @@ int Server::receive_message(int fd)
          }
     }
     else
+    {
+        std::cout << RED << "TEST 1" << RESET << std::endl;
         executeCommand(action, fd);
+    }
     _ctrlDBuff.clear();
+
 
     return 0;
 }
@@ -339,10 +353,11 @@ int Server::executeCommand(std::string str, int fd)
     return (0);
 }
 
-void Server::addUser(int sockId, std::string str)
+void Server::addUser(int sockId)
 {
     users.insert(std::make_pair(sockId, User(sockId)));
-    extractInfo(str, users[sockId]);
+    std::cout << RED << "TEST 2" << RESET << std::endl;
+    //extractInfo(str, users[sockId]);
     return;
 }
 

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/11/30 18:49:18 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 12:34:47 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ class	Server {
 		
 		int			create_client();
 		int 		receive_message(int fd);
-		int			message_creation(int fd);
+		int			message_creation(int fd, std::string *action);
 		int 		WrongPassWord(std::string str, int fd); // ici
 
 
@@ -80,7 +80,7 @@ class	Server {
 		// -- Users 
 		std::map<int, User> users;
 		// void addUser(int sockId, struct sockaddr_in addrClient);
-		void addUser(int sockId, std::string str);
+		void addUser(int sockId);
 		int userNameToFd(std::string& user);
 
 		// -- Channels
@@ -126,6 +126,7 @@ class	Server {
 		// bool userExistUserName(std::string user);
 		std::string changeNickname(std::string nickNameTochange, std::string NameTochange, int fd);
 		// std::string changeUserName(std::string NameTochange);
+		bool userExistNameLeRetour(std::string user, int fd);
 
 		
 

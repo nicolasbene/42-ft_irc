@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:16:29 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 18:13:24 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 12:28:58 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,15 @@ void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& Trim
         else
             it = vec.erase(it);
     }
+}
+
+bool Server::userExistNameLeRetour(std::string user, int fd)
+{
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); it++)
+    {
+        if (it->second.getUserNickName() == user && fd != it->first)
+            return (true);
+    }
+    return (false);
 }
