@@ -9,7 +9,7 @@ INCLUDE	= -I$(H_DIR) -I$(TEST_DIR)
 ### EXECUTABLE ###
 NAME	= $(PROJECT)
 
-PORT	= 6669
+PORT	= 6661
 
 
 PASSWD	= password
@@ -81,7 +81,7 @@ UNAME_S = $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	VALGRIND	= leaks --list --groupByType --atExit --
 else
-	VALGRIND	= valgrind --track-origins=yes --leak-check=full
+	VALGRIND	= valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all
 endif
 
 ### RULES ###

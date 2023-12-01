@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/12/01 14:30:07 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 15:29:24 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,11 +132,11 @@ int Server::poll()
 
 int Server::create_client()
 {
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_size = sizeof(client_addr);
+    int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
     if (_nb_clients < MAX_CONNEXIONS)
     {
-        struct sockaddr_in client_addr;
-        socklen_t client_addr_size = sizeof(client_addr);
-        int client_fd = accept(_sockfd, (struct sockaddr *)&client_addr, &client_addr_size);
 
         if (client_fd == -1)
         {
@@ -162,7 +162,10 @@ int Server::create_client()
     }
     else
     {
-        Log::info() << "Client connection refused: Too many clients" << '\n';
+        Log::info() << "Max clients reached" << '\n';
+        sendServerRpl(client_fd, "ERROR :Max clients reached\r\n");
+        close(client_fd);
+        
     }
     return 0;
 }
@@ -180,6 +183,7 @@ int Server::WrongPassWord(std::string str, int fd)
     }
     users.erase(fd);
     close(fd);
+    --_nb_clients;
     Log::info() << "Client disconnected" << '\n';
     return 1;
 }

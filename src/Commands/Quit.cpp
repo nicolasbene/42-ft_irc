@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 17:26:50 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/12/01 14:08:38 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 15:27:14 by nibenoit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	Server::serverquit(Message message, int fd)
     }
     users.erase(fd);
     close(fd);
+	--_nb_clients;
     Log::info() << "Client disconnected" << '\n';
 }
 
