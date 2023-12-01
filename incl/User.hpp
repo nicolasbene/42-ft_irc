@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 18:48:11 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 14:31:43 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ class User
 		void setOldNickName(const std::string userNickName);
 		void setNickName(const std::string userNickName);
 		int getUserSockId(void);
+		void setPassword(const std::string password);
+		std::string getPassword(void);
 		std::string getUserName(void);
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
@@ -45,8 +47,6 @@ class User
 		bool getIsConnected(void) const;
 		void setIsConnected(bool value);
 
-		void setPassword(const std::string password);
-		std::string getPassword(void);
 	
 
 	private:

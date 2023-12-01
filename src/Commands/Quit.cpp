@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 17:26:50 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/29 18:24:45 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 14:08:38 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,14 @@ void	Server::serverquit(Message message, int fd)
 			}
 		}
 	}
+	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+    {
+        perror("epoll_ctl");
+        exit(1);
+    }
+    users.erase(fd);
+    close(fd);
+    Log::info() << "Client disconnected" << '\n';
 }
 
 void	Server::broadcastQuitToChan(Channel& channel, User& user, std::string reason)

@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:08:32 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/12/01 12:34:47 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 14:31:18 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ class	Server {
 		
 		int			create_client();
 		int 		receive_message(int fd);
-		int			message_creation(int fd, std::string *action);
 		int 		WrongPassWord(std::string str, int fd); // ici
 
 
@@ -115,17 +114,12 @@ class	Server {
 		void password_mode(Channel& channel, User& user, bool operand, Message& message);
 		void limit_mode(Channel& channel, User& user, bool operand, Message& message);
 
-
-
-		
 		void notice(Message message, int fd);
 		void broadcastToChannelNotice(std::string target, std::string speech, int fd);
 
 		// -- Utils
 		bool userExistName(std::string user);
-		// bool userExistUserName(std::string user);
 		std::string changeNickname(std::string nickNameTochange, std::string NameTochange, int fd);
-		// std::string changeUserName(std::string NameTochange);
 		bool userExistNameLeRetour(std::string user, int fd);
 
 		
@@ -152,8 +146,6 @@ class	Server {
 
 		int								_epoll_fd;
 		epoll_event						_events[MAX_CONNEXIONS];
-		
-		std::vector<pollfd>				_client_pfds;
 
 		std::vector<std::string>		_ctrlDBuff;
 

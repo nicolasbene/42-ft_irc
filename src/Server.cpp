@@ -6,7 +6,7 @@
 /*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 18:51:44 by nibenoit          #+#    #+#             */
-/*   Updated: 2023/12/01 12:35:25 by nwyseur          ###   ########.fr       */
+/*   Updated: 2023/12/01 14:30:07 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,71 +167,6 @@ int Server::create_client()
     return 0;
 }
 
-int Server::message_creation(int fd, std::string* action)
-{
-    char buffer[1024];
-    memset(buffer, 0, sizeof(buffer));
-    //std::string action;
-
-    // Lire les données du socket
-    int num_bytes = recv(fd, buffer, sizeof(buffer), 0);
-    if (num_bytes == -1)
-    {
-        perror("recv");
-        exit(1);
-    }
-    if (num_bytes == 0)
-    {
-        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-        {
-            perror("epoll_ctl");
-            exit(1);
-        }
-        
-        close(fd);
-        Log::info() << "Client disconnected" << '\n';
-        return (0);
-    }
-    std::string str(buffer);
-    std::cout << "[1]Received << " << buffer << std::endl;
-    if (str.find("\r\n") == std::string::npos)
-    {
-        _ctrlDBuff.push_back(str);
-        return (1);
-    }
-    else
-    {
-        for ( size_t i = 0; i < _ctrlDBuff.size(); i++)
-        {
-            (*action) += _ctrlDBuff[i];
-        }
-        (*action) += buffer;
-    }
-
-    std::cout << RED << "TEST 1" << RESET << std::endl;
-    //addUser(fd, (*action));
-    if (!users[fd].getPassword().empty())
-    {
-        if (users[fd].getPassword() != _password)
-            return (WrongPassWord((*action),fd));
-    }
-    if (userHasAllInfo(fd))
-    {
-        users[fd].setIsConnected(true);
-        if (userExistNameLeRetour(users[fd].getUserNickName(), fd))
-                users[fd].setNickName(changeNickname(users[fd].getUserNickName(), users[fd].getUserName(), fd));
-        // Envoi du code RPL au client
-        sendServerRpl(fd, RPL_WELCOME(user_id(users[fd].getUserNickName(), users[fd].getUserName()), users[fd].getUserNickName()));
-        sendServerRpl(fd, RPL_YOURHOST(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION));
-        sendServerRpl(fd, RPL_CREATED(users[fd].getUserNickName(), this->_date));
-        sendServerRpl(fd, RPL_MYINFO(users[fd].getUserNickName(), SERVER_NAME, SERVER_VERSION, "io", "kost", "k"));
-        sendServerRpl(fd, RPL_ISUPPORT(users[fd].getUserNickName(), "CHANNELLEN=50 NICKLEN=30 TOPICLEN=307"));
-    }
-
-    return 0;
-}
-
 int Server::WrongPassWord(std::string str, int fd)
 {
     if (extractNextWord(str, "PASS") == "Mot-clé non trouvé")
@@ -264,15 +199,8 @@ int Server::receive_message(int fd)
     }
     if (num_bytes == 0)
     {
-        // Le client s'est déconnecté, vous devez supprimer le descripteur de fichier de epoll.
-        if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
-        {
-            perror("epoll_ctl");
-            exit(1);
-        }
-        // users.erase(fd);
-        close(fd);
-        Log::info() << "Client disconnected" << '\n';
+        Message message("QUIT :crash");
+        serverquit(message, fd);
         return (0);
     }
     std::string str(buffer);
@@ -314,7 +242,6 @@ int Server::receive_message(int fd)
     }
     else
     {
-        std::cout << RED << "TEST 1" << RESET << std::endl;
         executeCommand(action, fd);
     }
     _ctrlDBuff.clear();
@@ -356,21 +283,8 @@ int Server::executeCommand(std::string str, int fd)
 void Server::addUser(int sockId)
 {
     users.insert(std::make_pair(sockId, User(sockId)));
-    std::cout << RED << "TEST 2" << RESET << std::endl;
-    //extractInfo(str, users[sockId]);
     return;
 }
-
-
-// void Server::addUser(int sockId, std::string str, sockaddr_in addrClient)
-// {
-//     std::string nickName = extractNextWord(str, "NICK");
-//     std::string userName = extractNextWord(str, "USER");
-//     if (userExistName(nickName))
-//         nickName = changeNickname(nickName, userName, sockId);
-//     users.insert(std::make_pair(sockId, User(sockId, nickName, userName, addrClient)));
-//     return;
-// }
 
 void Server::addChannel(const std::string& name, User& channelOperator)
 {
