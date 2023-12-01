@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:46:17 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 16:38:30 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/12/01 14:31:43 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class User
 	public:
 
 		User(void);
-		User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient);
+		User(int sockId);
 		~User();
 		bool operator!=(User& other) {return (this->_userSockId != other.getUserSockId());}
 		bool operator==(User& other) {return (this->_userSockId == other.getUserSockId());}
@@ -34,6 +34,8 @@ class User
 		void setOldNickName(const std::string userNickName);
 		void setNickName(const std::string userNickName);
 		int getUserSockId(void);
+		void setPassword(const std::string password);
+		std::string getPassword(void);
 		std::string getUserName(void);
 		std::string getOldNickName(void);
 		std::string getUserNickName(void);
@@ -44,6 +46,7 @@ class User
 		bool isChannel(const std::string& name);
 		bool getIsConnected(void) const;
 		void setIsConnected(bool value);
+
 	
 
 	private:
@@ -51,9 +54,8 @@ class User
 	std::string _userName;
 	std::string _nickName;
 	std::string _oldNickName;
-	struct sockaddr_in _addrClient;
+	std::string _password;
 	std::string			_userID;
-	std::string 			_IPchar;
 	bool	_isConnected;
 	std::vector<Channel*> _channelList;
 	// std::map<std::string, Channel> _channelList;

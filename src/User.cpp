@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 12:13:24 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 13:52:34 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/11/30 18:48:28 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@ User::User(void)
 	return;
 }
 
-User::User(int sockId, const std::string& userNickName, const std::string& userName, struct sockaddr_in addrClient) : 
-		_userSockId(sockId), _userName(userName), _nickName(userNickName), _oldNickName(userNickName), _addrClient(addrClient), _isConnected(false) 
+User::User(int sockId) : 
+		_userSockId(sockId), _isConnected(false) 
 {
-	_IPchar = std::string(inet_ntoa(_addrClient.sin_addr));
-	_userID = _nickName + "!" + _userName + "@" + _IPchar;
+	_userID = _nickName + "!" + _userName + "@localhost";
 	return;
 }
 
@@ -55,6 +54,12 @@ void User::setNickName(const std::string userNickName)
 	return;
 }
 
+void User::setPassword(const std::string password)
+{
+	_password = password;
+	return;
+}
+
 std::string User::getUserName(void)
 {
 	return (this->_userName);
@@ -68,6 +73,11 @@ std::string User::getUserNickName(void)
 std::string User::getOldNickName(void)
 {
 	return (this->_oldNickName);
+}
+
+std::string User::getPassword(void)
+{
+	return (this->_password);
 }
 
 void User::addChannelList(Channel& channel)

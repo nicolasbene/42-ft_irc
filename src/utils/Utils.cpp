@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nibenoit <nibenoit@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nwyseur <nwyseur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 15:16:29 by nwyseur           #+#    #+#             */
-/*   Updated: 2023/11/30 14:00:50 by nibenoit         ###   ########.fr       */
+/*   Updated: 2023/12/01 12:28:58 by nwyseur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,28 @@ std::string extractNextWord(const std::string& input, const std::string& keyword
     return "Mot-clé non trouvé";
 }
 
+void extractInfo(const std::string& input, User& user) 
+{
+    std::istringstream iss(input);
+    std::string token;
+    std::string value;
+
+    while (iss >> token >> value) 
+    {
+        if (token == "NICK") 
+        {
+            user.setNickName(value);
+        } 
+        else if (token == "USER") 
+        {
+            user.setUserName(value);
+        } 
+        else if (token == "PASS") 
+        {
+            user.setPassword(value);
+        }
+    }
+}
 
 
 std::string TrimString(const std::string& str, const std::string& TrimStr) 
@@ -78,4 +100,15 @@ void TrimVectorWhiteSpace(std::vector<std::string> &vec, const std::string& Trim
         else
             it = vec.erase(it);
     }
+}
+
+bool Server::userExistNameLeRetour(std::string user, int fd)
+{
+    std::map<int, User>::iterator it;
+    for (it = users.begin(); it != users.end(); it++)
+    {
+        if (it->second.getUserNickName() == user && fd != it->first)
+            return (true);
+    }
+    return (false);
 }
